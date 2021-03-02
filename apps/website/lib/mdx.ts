@@ -62,20 +62,22 @@ export async function getFileBySlug({
          * Add anchor links to headings
          * Reference: https://github.com/rehypejs/rehype-autolink-headings
          */
-        [
-          rehypeAutoLinkHeadings,
-          {
-            behavior: 'append', // 'prepend' or 'wrap'
-            content: {
-              type: 'element',
-              tagName: 'span',
-              properties: {
-                className: ['anchor-link'],
-              },
-              children: [],
-            },
-          },
-        ],
+        // FIXME enable once https://github.com/rehypejs/rehype-autolink-headings/issues/9 is solved
+        // cfr https://github.com/dsebastien/website-dsebastien/issues/25
+        // [
+        //   rehypeAutoLinkHeadings,
+        //   {
+        //     behavior: 'append', // 'prepend' or 'wrap'
+        //     content: {
+        //       type: 'element',
+        //       tagName: 'span',
+        //       properties: {
+        //         className: ['anchor-link'],
+        //       },
+        //       children: [],
+        //     },
+        //   },
+        // ],
       ],
     },
   });
