@@ -65,7 +65,7 @@ export async function getFileBySlug({
         [
           rehypeAutoLinkHeadings,
           {
-            behavior: 'append', // 'wrap'
+            behavior: 'append', // 'prepend' or 'wrap'
             content: {
               type: 'element',
               tagName: 'span',
