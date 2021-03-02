@@ -16,6 +16,7 @@ const ThemeSwitcher = () => {
         aria-label="Toggle Dark Mode"
         type="button"
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        className="hover:text-purple-100"
       >
         {theme === 'dark' ? <FaSun /> : <FaMoon />}
       </button>
