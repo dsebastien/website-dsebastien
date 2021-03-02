@@ -42,11 +42,6 @@ export default class CustomDocument extends Document<{
       <Html lang="en">
         <Head>
           {this.props.styleTags}
-          <link
-            rel="preconnect"
-            href="https://cdn.usefathom.com"
-            crossOrigin=""
-          />
           {/* Preload the fonts */}
           <link
             rel="preload"
