@@ -17,6 +17,7 @@ body > div:first-child,
   /* Standard line height */
   /* Reference for line-height: https://dev.to/lampewebdev/css-line-height-jjp */
   line-height: 1.5;
+  overflow: auto;
 }
 
 .full-page {
