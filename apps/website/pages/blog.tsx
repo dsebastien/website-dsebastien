@@ -27,7 +27,7 @@ export default function Blog(input: { posts: FrontMatter[] }) {
       customMeta={{
         title: 'Blog – Sébastien Dubois',
         description:
-          'A glimpse of my journey. I write about programming, software/IT/solution architecture, code quality, entrepreneurship, management, leadership, and more.',
+          'A glimpse of my journey. I write about programming, software/IT/solution architecture, code quality, IT security, entrepreneurship, management, leadership, and more.',
       }}
     >
       <article className="page-content-wrapper">

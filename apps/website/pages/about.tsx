@@ -39,7 +39,7 @@ const AboutPage = () => {
               15+ years in the IT industry
             </a>{' '}
             . Since day one, I have always been passionate about IT, software
-            development, code quality, the open Web, and open-source software. I
+            development, IT security, code quality, the open Web, and open-source software. I
             write about programming, architecture, code quality,
             entrepreneurship, management, leadership, and more.{' '}
             <a href="https://mailchi.mp/fb661753d54a/developassion-newsletter">
