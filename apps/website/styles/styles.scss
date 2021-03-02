@@ -1,0 +1,53 @@
+html {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* no blue flashes */
+}
+
+html,
+body,
+body > div:first-child,
+#__next {
+  @apply min-w-full h-full min-h-full m-0 p-0 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-black font-writerplan text-base font-normal;
+  letter-spacing: -0.1px;
+  /* Standard line height */
+  /* Reference for line-height: https://dev.to/lampewebdev/css-line-height-jjp */
+  line-height: 1.5;
+}
+
+.full-page {
+  @apply min-h-full min-w-full;
+}
+
+.site-button {
+  @apply bg-purple-500 dark:bg-purple-400 hover:bg-purple-600 dark:hover:bg-purple-500 px-3 py-1 rounded-md font-medium text-sm text-purple-100 dark:text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-purple-300 focus:ring-opacity-50 ease-in-out transition-all duration-300;
+}
+
+h1 {
+  @apply text-3xl font-semibold #{!important}; /* FIXME avoid forcing important once the GlobalStyles get loaded in the right order) */
+
+  &.page-heading {
+    @apply font-bold text-3xl md:text-5xl tracking-tight mb-4 text-black dark:text-white;
+  }
+}
+
+/**
+  Anchor links
+  Links are generated through mdx.ts
+ */
+h1:hover,
+h2:hover,
+h3:hover,
+h4:hover,
+h5:hover,
+h6:hover {
+  & > a {
+    @apply outline-none;
+    & > span.anchor-link:after {
+      @apply ml-2 inline-block;
+      content: '#';
+    }
+  }
+}
+
+.article-content-wrapper {
+  @apply mt-8 prose dark:prose-dark max-w-2xl mx-auto mb-16 min-h-full;
+}
