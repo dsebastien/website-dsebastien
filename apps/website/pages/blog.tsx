@@ -49,7 +49,7 @@ export default function Blog(input: { posts: FrontMatter[] }) {
           />{' '}
           and{' '}
           <SocialLink
-            url="https://hashnode.com/@dSebastien"
+            url="https://dsebastien.hashnode.dev"
             name="Hashnode"
             icon={<FaHashtag className="inline" />}
           />
