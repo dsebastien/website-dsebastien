@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
 import ThemeSwitcher from '@/components/theme-switcher';
+import { FaGithub } from 'react-icons/fa';
 
 const StyledPage = tw.div``;
 
@@ -99,7 +100,18 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
             </Link>
           </nav>
         </div>
-        <div className="header-right-side mt-2 sm:mt-0 flex flex-col sm:flex-row items-center object-center"></div>
+        <div className="header-right-side mt-2 sm:mt-0 flex flex-col sm:flex-row items-center object-center">
+          <a
+            href="https://github.com/dsebastien/website-dsebastien"
+            className="rounded-full"
+            target="_blank"
+          >
+            <FaGithub
+              className="inline text-white dark:text-white hover:text-black dark:hover:text-purple-300"
+              size="24"
+            />
+          </a>
+        </div>
       </header>
       <main id="main" className="mt-2 px-8 flex-grow">
         {children}
