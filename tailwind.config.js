@@ -242,11 +242,14 @@ module.exports = {
       typography: (theme) => ({
         DEFAULT: {
           css: {
-            color: theme('colors.black'),
+            color: theme('colors.gray-900'),
             a: {
               color: theme('colors.purple.500'),
               '&:hover': {
                 color: theme('colors.purple.300'),
+              },
+              '&:visited': {
+                color: theme('colors.purple.500'),
               },
               code: { color: theme('colors.blue.200') },
             },
@@ -260,11 +263,14 @@ module.exports = {
         },
         dark: {
           css: {
-            color: theme('colors.gray.300'),
+            color: theme('colors.gray.100'),
             a: {
               color: theme('colors.purple.300'),
               '&:hover': {
                 color: theme('colors.purple.100'),
+              },
+              '&:visited': {
+                color: theme('colors.purple.300'),
               },
               code: { color: theme('colors.purple.300') },
             },
