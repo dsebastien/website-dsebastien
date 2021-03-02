@@ -4,13 +4,14 @@ interface SocialLinkProps {
   url: string;
   name: string;
   icon: React.ReactNode;
+  hideText?: boolean;
 }
 
-const SocialLink = ({ url, icon, name }: SocialLinkProps) => {
+const SocialLink = ({ url, icon, name, hideText }: SocialLinkProps) => {
   return (
     <a href={url}>
       {icon}
-      <span className="ml-1">{name}</span>
+      {!hideText && <span className="ml-1">{name}</span>}
     </a>
   );
 };
