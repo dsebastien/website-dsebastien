@@ -76,11 +76,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         <div className="header-left-side flex flex-col sm:flex-row items-center object-center">
           <ThemeSwitcher />
           <div className="header-app-logo">
-            <h1 className="sm:ml-2">
-              <Link href="/">
-                <a>dSebastien</a>
-              </Link>
-            </h1>
+            <h1 className="sm:ml-2">dSebastien</h1>
           </div>
           <nav className="header-menu sm:ml-10 flex items-baseline space-x-4 font-semibold">
             <Link href="/">
