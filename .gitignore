@@ -61,5 +61,5 @@ Thumbs.db
 .now
 /.vercel/
 /.next/
-sitemap.xml
-feed.xml
+apps/website/public/sitemap.xml
+apps/website/public/feed.xml
