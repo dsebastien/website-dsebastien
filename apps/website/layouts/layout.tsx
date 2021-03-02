@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import tw from 'twin.macro';
 import ThemeSwitcher from '@/components/theme-switcher';
 import { FaGithub } from 'react-icons/fa';
+import Footer from '@/components/footer';
 
 const StyledPage = tw.div``;
 
@@ -112,6 +113,9 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
       <main id="main" className="mt-12 px-4 sm:px-8 flex-grow">
         {children}
       </main>
+      <footer className="px-4 mb-4 sm:px-8">
+        <Footer />
+      </footer>
     </StyledPage>
   );
 };
