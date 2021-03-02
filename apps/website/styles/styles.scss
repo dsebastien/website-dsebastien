@@ -6,7 +6,7 @@ html,
 body,
 body > div:first-child,
 #__next {
-  @apply min-w-full h-full min-h-full m-0 p-0 bg-gradient-to-b from-gray-100 to-gray-200 dark:from-gray-900 dark:to-black font-writerplan text-base font-normal;
+  @apply min-w-full h-full min-h-full m-0 p-0 bg-gray-100 dark:bg-gray-900 font-writerplan text-base font-normal;
   letter-spacing: -0.1px;
   /* Standard line height */
   /* Reference for line-height: https://dev.to/lampewebdev/css-line-height-jjp */
