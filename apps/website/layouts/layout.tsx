@@ -113,7 +113,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
           </a>
         </div>
       </header>
-      <main id="main" className="mt-2 px-8 flex-grow">
+      <main id="main" className="mt-12 px-4 sm:px-8 flex-grow">
         {children}
       </main>
     </StyledPage>

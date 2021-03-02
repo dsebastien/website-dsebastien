@@ -23,10 +23,10 @@ body > div:first-child,
 
 h1 {
   @apply text-3xl font-semibold #{!important}; /* FIXME avoid forcing important once the GlobalStyles get loaded in the right order) */
+}
 
-  &.page-heading {
-    @apply font-bold text-3xl md:text-5xl tracking-tight mb-4 text-black dark:text-white;
-  }
+.page-heading {
+  @apply font-bold text-3xl md:text-5xl tracking-tight mb-4 text-black dark:text-white #{!important};
 }
 
 /**
@@ -49,5 +49,9 @@ h6:hover {
 }
 
 .article-content-wrapper {
-  @apply mt-8 prose dark:prose-dark max-w-2xl mx-auto mb-16 min-h-full;
+  @apply prose dark:prose-dark max-w-2xl mx-auto mb-16;
+}
+
+.page-content-wrapper {
+  @apply max-w-2xl mx-auto mb-16;
 }

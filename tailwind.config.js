@@ -244,31 +244,14 @@ module.exports = {
           css: {
             color: theme('colors.black'),
             a: {
-              color: theme('colors.purple.600'),
+              color: theme('colors.purple.500'),
               '&:hover': {
-                color: theme('colors.purple.400'),
+                color: theme('colors.purple.300'),
               },
               code: { color: theme('colors.blue.200') },
             },
             'h2,h3,h4': {
               'scroll-margin-top': spacing[32],
-            },
-            ol: {
-              li: {
-                '&:before': {
-                  color: theme('colors.gray.400'),
-                  fontWeight: 'bold',
-                },
-              },
-            },
-            ul: {
-              li: {
-                '&:before': {
-                  //color: theme('colors.gray.400'),
-                  color: 'red',
-                  fontWeight: 'bold',
-                },
-              },
             },
             code: { color: theme('colors.pink.500') },
             'blockquote p:first-of-type::before': false,
@@ -279,37 +262,21 @@ module.exports = {
           css: {
             color: theme('colors.gray.300'),
             a: {
-              color: theme('colors.purple.500'),
+              color: theme('colors.purple.300'),
               '&:hover': {
-                color: theme('colors.purple.300'),
+                color: theme('colors.purple.100'),
               },
-              code: { color: theme('colors.purple.500') },
+              code: { color: theme('colors.purple.300') },
             },
             blockquote: {
-              borderLeftColor: theme('colors.gray.500'),
+              borderLeftColor: theme('colors.gray.400'),
               color: theme('colors.gray.300'),
             },
             'h2,h3,h4': {
               color: theme('colors.gray.100'),
               'scroll-margin-top': spacing[32],
             },
-            hr: { borderColor: theme('colors.gray.700') },
-            ol: {
-              li: {
-                '&:before': {
-                  color: theme('colors.gray.300'),
-                  fontWeight: 'bold',
-                },
-              },
-            },
-            ul: {
-              li: {
-                '&:before': {
-                  color: theme('colors.gray.300'),
-                  fontWeight: 'bold',
-                },
-              },
-            },
+            hr: { borderColor: theme('colors.gray.200') },
             strong: { color: theme('colors.gray.300') },
             thead: {
               color: theme('colors.gray.100'),
