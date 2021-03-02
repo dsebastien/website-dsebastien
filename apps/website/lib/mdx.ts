@@ -2,7 +2,7 @@ import fs from 'fs';
 import matter from 'gray-matter';
 import * as mdxPrism from 'mdx-prism';
 import * as rehypeSlug from 'rehype-slug';
-import * as rehypeAutoLinkHeadings from 'rehype-autolink-headings';
+//import * as rehypeAutoLinkHeadings from 'rehype-autolink-headings';
 
 import path from 'path';
 import readingTime from 'reading-time';
