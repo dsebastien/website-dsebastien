@@ -69,7 +69,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
           <meta property="article:published_time" content={meta.date} />
         )}
       </Head>
-      <header className="sticky-nav py-4 px-8 flex flex-col sm:flex-row justify-between dark:bg-gray-800 bg-purple-500 text-gray-100 border-b-2 border-purple-700 dark:border-purple-400 shadow-lg">
+      <header className="main-header sticky-nav py-4 px-8 flex flex-col sm:flex-row justify-between bg-purple-500 text-gray-100 border-b-2 border-purple-700 shadow-lg">
         <a href="#main" className="sr-only focus:not-sr-only">
           Skip to content
         </a>
@@ -80,18 +80,18 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
           </div>
           <nav className="header-menu sm:ml-10 flex items-baseline space-x-4 font-semibold">
             <Link href="/">
-              <a className="hover:text-red-500 hover:cursor-pointer">
-                <div className="wp-button text-base">Home</div>
+              <a className="main-menu-link">
+                <div className="site-button text-base">Home</div>
               </a>
             </Link>
             <Link href="/blog">
-              <a>
-                <div className="wp-button text-base">Blog</div>
+              <a className="main-menu-link">
+                <div className="site-button text-base">Blog</div>
               </a>
             </Link>
             <Link href="/about">
-              <a>
-                <div className="wp-button text-base">About</div>
+              <a className="main-menu-link">
+                <div className="site-button text-base">About</div>
               </a>
             </Link>
           </nav>
@@ -103,7 +103,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
             target="_blank"
           >
             <FaGithub
-              className="inline text-white dark:text-white hover:text-black dark:hover:text-purple-300"
+              className="inline text-white dark:text-white hover:text-gray-900 dark:hover:text-gray-900"
               size="24"
             />
           </a>
