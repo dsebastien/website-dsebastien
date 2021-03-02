@@ -29,9 +29,9 @@ const AboutPage = () => {
             Hey there! I'm{' '}
             <a href="https://twitter.com/dSebastien">Sébastien Dubois</a>. I
             wear many hats: father, author, software crafter, CTO, solution
-            architect, mentor, coach, geek, gamer. I'm also the CEO of{' '}
-            <a href="https://developassion.be">DeveloPassion</a>, a software
-            development company located in Belgium.
+            architect, mentor, coach, entrepreneur, geek, gamer. I'm also the
+            CEO of <a href="https://developassion.be">DeveloPassion</a>, a
+            software development company located in Belgium.
           </p>
           <p>
             I've been working for{' '}
@@ -39,9 +39,9 @@ const AboutPage = () => {
               15+ years in the IT industry
             </a>{' '}
             . Since day one, I have always been passionate about IT, software
-            development, IT security, code quality, the open Web, and open-source software. I
-            write about programming, architecture, code quality,
-            entrepreneurship, management, leadership, and more.{' '}
+            development, IT security, code quality, the open Web, and
+            open-source software. I write about programming, architecture, code
+            quality, entrepreneurship, management, leadership, and more.{' '}
             <a href="https://mailchi.mp/fb661753d54a/developassion-newsletter">
               Subscribe to my newsletter
             </a>{' '}
@@ -151,7 +151,7 @@ const AboutPage = () => {
               </li>
               <li>
                 <SocialLink
-                  url="https://hashnode.com/@dSebastien"
+                  url="https://dsebastien.hashnode.dev"
                   name="Hashnode"
                   icon={<FaHashtag className="inline" />}
                 />
