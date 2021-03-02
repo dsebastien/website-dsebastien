@@ -4,7 +4,7 @@
 
 Source for https://dsebastien.net
 
-Inspired by [Lee Robinson's Website](https://leerob.io)
+This site is _heavily_ inspired by [Lee Robinson's wonderful Website](https://leerob.io). I've converted code to TypeScript, adapted to my own needs, simplified some parts, and added my own twist ;-)
 
 ## Running Locally
 
