@@ -5,7 +5,10 @@ import tw from 'twin.macro';
 
 const StyledLink = tw.a``;
 
-type BlogPostSummaryProps = Pick<FrontMatter, 'title' | 'summary' | 'slug'>;
+type BlogPostSummaryProps = Pick<
+  FrontMatter,
+  'title' | 'summary' | 'slug' | 'publishedAt'
+>;
 
 /**
  * Short summary of a blog post
@@ -14,16 +17,28 @@ type BlogPostSummaryProps = Pick<FrontMatter, 'title' | 'summary' | 'slug'>;
  * @param slug
  * @constructor
  */
-const BlogPostSummary = ({ title, summary, slug }: BlogPostSummaryProps) => {
+const BlogPostSummary = ({
+  title,
+  summary,
+  slug,
+  publishedAt,
+}: BlogPostSummaryProps) => {
   return (
     <Link href={`/blog/${slug}`}>
-      <StyledLink className="w-full mb-4">
-        <div className="flex flex-col md:flex-row justify-between">
-          <h4 className="text-lg md:text-xl font-medium mb-2 w-full text-gray-900 dark:text-gray-100">
-            {title}
-          </h4>
+      <StyledLink className="w-full my-3 px-2 flex justify-between">
+        <div>
+          <div className="flex flex-col md:flex-row justify-between">
+            <h4 className="text-lg md:text-xl font-medium mb-2 w-full text-gray-900 dark:text-gray-100">
+              {title}
+            </h4>
+          </div>
+          <p className="text-gray-900 dark:text-gray-400">{summary}</p>
         </div>
-        <p className="text-gray-900 dark:text-gray-400">{summary}</p>
+        <div className="flex flex-col justify-end">
+          <span className="text-sm text-gray-900 dark:text-gray-400">
+            {publishedAt}
+          </span>
+        </div>
       </StyledLink>
     </Link>
   );
