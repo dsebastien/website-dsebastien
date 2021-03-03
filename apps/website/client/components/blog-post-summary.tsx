@@ -17,7 +17,7 @@ type BlogPostSummaryProps = Pick<FrontMatter, 'title' | 'summary' | 'slug'>;
 const BlogPostSummary = ({ title, summary, slug }: BlogPostSummaryProps) => {
   return (
     <Link href={`/blog/${slug}`}>
-      <StyledLink className="w-full">
+      <StyledLink className="w-full hover:cursor-pointer">
         <div className="border-2 rounded-md p-2 hover:border-gray-600 hover:shadow-md transition-all ease-in duration-150">
           <div className="mb-4 w-full">
             <div className="flex flex-col md:flex-row justify-between">
