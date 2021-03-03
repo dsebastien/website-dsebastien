@@ -33,8 +33,8 @@ export default function Blog(input: { posts: FrontMatter[] }) {
       <article className="page-content-wrapper">
         <h1 className="page-heading">Blog</h1>
         <p className="text-gray-900 dark:text-gray-400 mb-4">
-          I've been writing for 10+ years now. So far, I've published{' '}
-          {`${input.posts.length}`} articles. I usually post everything here,
+          I've published {`${input.posts.length}`} article
+          {input.posts.length > 1 && 's'} here. I usually post everything here,
           but you can also find my some of my content on{' '}
           <SocialLink
             url="http://dsebastien.medium.com"
