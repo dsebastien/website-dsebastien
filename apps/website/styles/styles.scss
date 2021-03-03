@@ -72,3 +72,10 @@ h6:hover {
 .scroll-to-top:active {
   transform: matrix(0.95, 0, 0, 0.95, 0, 0);
 }
+
+/**
+  Improve rendering of gists (remove line borders)
+ */
+.gist tr {
+  @apply border-none;
+}
