@@ -1,0 +1,260 @@
+---
+title: My GPG configuration
+summary: Some notes about my current setup for GPG/PGP.
+publishedAt: '2017-11-28'
+categories: []
+keywords: []
+---
+
+Some notes about my current setup for GPG/PGP.
+
+I’m currently using [GnuPG](https://www.gnupg.org/) and in particular [GPG4Win](https://www.gpg4win.org/).
+
+### Portable mode
+
+As usual, I like portable installs and GPG is no exception. I’ve uncompressed it in my tools folder (synchronized across my machines). By itself, the tool is portable, maybe Kleopatra isn’t but I don’t care too much.
+
+By default, Gpg4win installs in two locations:
+
+- Gpg4win: C:\\Program Files (x86)\\Gpg4win
+- GnuPG: C:\\Program Files (x86)\\GnuPG
+
+### Bash profile
+
+Here’s how my bash profile is configured to have GPG tools available:
+
+<Gist gistLink="dsebastien/08d87d6174764c602c11ee657b600fa2" />
+
+### GPG configuration
+
+Here’s my current GPG configuration (~/.gnupg/gpg.conf). I’ve removed comments for stuff I don’t use for clarity, although I like to keep those in my actual configs):
+
+<Gist gistLink="dsebastien/ec42192b1831d9b6492dbd5d27e663ab" />
+
+The most important with this configuration it that I’ve…
+
+- set preferences towards the usage of stronger secure hash algorithms by default
+- disabled key ids (short & long) since those are insecure. There’s nothing much to it.
+
+### How I’ve generated my keys
+
+First of all, I didn’t reinvent the wheel, I’ve mostly applied [what Alex Cabal has described here](https://alexcabal.com/creating-the-perfect-gpg-keypair/), so thanks to him!
+
+You might ask “Why not a simple key that does it all?”. Because in general, mixing signing and encryption keys is not a good idea, management & security wise. Firstly, different key types have different lifecycles. Secondly, it might just not be safe to do so.
+
+Also, without this setup, if the keys I use on a daily bases were to be compromised, I wouldn’t have any other choice but to re-create everything from scratch (i.e., new identity!). With the configuration below I can just revoke a specific sub-key and create a new one, while keeping my identity.
+
+Here’s the whole shabang.
+
+### Create the keypair
+
+First of all, create the key:
+
+```
+gpg --gen-key
+```
+
+Settings to use:
+
+- Kind of key: (1) RSA and RSA
+- Key size: 4096 (longer = safer?)
+- Valid for: 0 (never expires)
+- mail: ...
+
+When selecting the passphrase, use a tool like Keepass, don’t choose the passphrase yourself, you’re not smart enough ;-)
+
+### Set strong hash preferences on the keypair
+
+Just to make sure:
+
+```
+gpg --edit-key <mail>
+...
+gpg> setpref SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAMELLIA256 CAMELLIA192 CAMELLIA128 TWOFISH CAST5 ZLIB BZIP2 ZIP Uncompressed
+gpg> save
+```
+
+### Add a signing sub-key
+
+Next, create a signing sub-key for code signing:
+
+```
+gpg --edit-key <mail>
+...
+gpg> addkey
+...
+gpg> save
+```
+
+Settings:
+
+- Key type: (4) RSA (sign only)
+- Key size: 4096 (longer = safer?)
+- Valid for: 0 (never expires)
+- mail: ...
+
+### Add an authentication sub-key
+
+Next, create an authentication sub-key for SSH authentication:
+
+```
+gpg --expert --edit-key <mail>
+gpg> addkey
+...
+gpg> save
+```
+
+Settings:
+
+- (8) RSA (set your own capabilities)
+- S: disable sign
+- E: disable encrypt
+- A: enable authenticate
+- –> now you must see “Currently allowed actions: Authenticate”
+- Q: finished
+- Key size: 4096
+- Expires: today + 365 days
+
+### Create a revocation certificate
+
+Generating a revocation certificate will allow me to later revoke this keypair if it is compromised. It must be kept safe because it can render my keys useless ;-)
+
+```
+gpg --output ./<mail>.gpg-revocation-certificate --gen-revoke <mail>
+```
+
+### Export the keypair/subkeys to a safe location and make the key safe to use
+
+First export the private key:
+
+```
+gpg --export-secret-keys --armor <mail> > <mail>.private.gpg-key.asc
+```
+
+Then export the public key:
+
+```
+gpg --export --armor <mail> > <mail>.public.gpg-key.asc
+```
+
+Finally, you can export the sub-keys alone:
+
+```
+gpg --export-secret-subkeys <mail> > /tmp/gpg/subkeys
+```
+
+We’ll see why afterwards.
+
+Ideally, you should export your private key to a temporary in-memory file system. Alex proposed the following:
+
+```
+mkdir /tmp/gpg # create a temp folder
+sudo mount -t tmpfs -o size=1M tmpfs /tmp/gpg
+```
+
+Once that’s mounted, you can safely write there and remove the folder once you’re done. Once exported, back-up those keys in a safe location (e.g., Keepass). Once you’re 100% it’s backed-up, delete the secret key from the gpg keyring:
+
+```
+gpg --delete-secret-key <mail>
+```
+
+Now re-import the sub-keys. With this you’ll only have the sub-keys at your disposal (and you don’t need more than that on a daily basis):
+
+```
+gpg --import /tmp/gpg/subkeys
+```
+
+So simple steps:
+
+- create/mount the temporary in-memory file system
+- export your private ke
+
+  y
+- back it up in a safe location
+- remove the temporary file system
+- bonus: burn the machine you’ve done this upon ;-)
+
+To verify that you didn’t mess up, go ahead and try to add a new sub-key; you shouldn’t be able to:
+
+```
+gpg --edit-key <mail>
+gpg> addkey
+Secret parts of primary key are not available.
+gpg: Key generation failed: No secret key
+```
+
+That’s it!
+
+### How I can revoke a sub-key
+
+Using Google! Err I mean like this: [https://wiki.debian.org/Subkeys](https://wiki.debian.org/Subkeys).
+
+First re-import my whole key (i.e., master + sub-keys)
+
+```
+gpg --alow-secret-key-import --import
+```
+
+Second, edit the key and revoke the sub-key that I don’t want anymore:
+
+```
+gpg --edit-key <mail>
+gpg> list # list the keys
+gpg> xyz # select the unwanted key
+gpg> revkey # revoke that key
+gpg> save
+```
+
+Once done, export/back-up the result and finally make sure to send the updated key to the key servers! (send-keys).
+
+### Where I’ve published my key
+
+Once my key was ready, I’ve published it at various locations.
+
+For starters I needed the full fingerprint (the 40 chars beauty):
+
+```
+gpg --fingerprint
+```
+
+In my case: 9AEC 7595 2F0F 8E52 65A8 4364 6448 ABB4 AEAD 81A2.
+
+Just to be in the clear, if you need to share your key, always try to use the full fingerprint, certainly never the short version (8 hex chars one) nor the “long” (16 hex chars) since [those are really unsafe](https://security.stackexchange.com/questions/84280/short-openpgp-key-ids-are-insecure-how-to-configure-gnupg-to-use-long-key-ids-i).
+
+First I sent the public key to the MIT key server using gpg:
+
+```
+gpg --send-keys <mail>
+```
+
+Then I exported my public key to a file (ASCII-armored):
+
+```
+gpg --export --armor > <mail>-pgp-key.asc
+```
+
+I then uploaded that file to my FTP, updated [my about page](https://www.dsebastien.net/about/) to add the full fingerprint and a link to my public key. Then I added a [blog post with the same information](https://www.dsebastien.net/2017/11/27/new-pgp-key/).
+
+I’ve also sent an [update on twitter](https://twitter.com/dSebastien/status/935261142859075585) the same. After that I’ve updated my Twitter bio to link to that tweet (optimizing character count :p).
+
+Next up, I’ve uploaded the public key manually on [Ubuntu’s key server](https://keyserver.ubuntu.com/).
+
+Finally, I’ve updated my GitHub profile to add my PGP key.
+
+### Git client configuration
+
+I’ve also updated my git client configuration in order to make my life easier.
+
+```
+git config –global user.signingkey 9AEC75952F0F8E5265A843646448ABB4AEAD81A2
+```
+
+This tells git which key to use. BTW, [don’t enable automatic commit signing](https://stackoverflow.com/questions/10161198/is-there-a-way-to-autosign-commits-in-git-with-a-gpg-key). Sign tags instead.
+
+Verifying signatures is a breeze with git.
+
+### Later
+
+In a later post, I’ll explain how I use my PGP keys with SSH, git and my Yubikey.
+
+That’s all folks!
