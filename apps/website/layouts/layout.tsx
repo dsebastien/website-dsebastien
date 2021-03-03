@@ -87,12 +87,20 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
           </div>
           <nav className="header-menu sm:ml-10 flex items-baseline space-x-4 font-semibold">
             <Link href="/">
-              <a className="main-menu-link" aria-label="Go to the home page">
+              <a
+                className="main-menu-link"
+                aria-label="Go to the home page"
+                title="Go to the home page"
+              >
                 <div className="site-button text-base">Home</div>
               </a>
             </Link>
             <Link href="/blog">
-              <a className="main-menu-link" aria-label="Go to the blog">
+              <a
+                className="main-menu-link"
+                aria-label="Go to the blog"
+                title="Go to the blog"
+              >
                 <div className="site-button text-base">Blog</div>
               </a>
             </Link>
@@ -105,7 +113,11 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
               <div className="site-button text-base">Dev Concepts</div>
             </a>
             <Link href="/about">
-              <a className="main-menu-link" aria-label="Go to the about page">
+              <a
+                className="main-menu-link"
+                aria-label="Go to the about page"
+                title="Go to the about page"
+              >
                 <div className="site-button text-base">About</div>
               </a>
             </Link>
@@ -116,8 +128,9 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
             href="https://github.com/dsebastien/website-dsebastien"
             className="rounded-full"
             target="_blank"
-            aria-label="See the source on GitHub"
+            aria-label="See the source code on GitHub"
             rel="noopener noreferrer"
+            title="See the source code on GitHub"
           >
             <FaGithub
               className="inline text-white dark:text-white hover:text-gray-900 dark:hover:text-gray-900"

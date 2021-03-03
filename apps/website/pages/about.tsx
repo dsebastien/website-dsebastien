@@ -119,14 +119,18 @@ const AboutPage = () => {
                   name="Twitter"
                   icon={<FaTwitter className="inline hover:text-blue-500" />}
                   ariaLabelText="Go to my Twitter profile"
+                  titleText="Go to my Twitter profile"
                 />
               </li>
               <li>
                 <SocialLink
                   url="https://www.linkedin.com/in/sebastiend"
                   name="LinkedIn"
-                  icon={<FaLinkedin className="inline hover:text-blue-500 hover:bg-white" />}
+                  icon={
+                    <FaLinkedin className="inline hover:text-blue-500 hover:bg-white" />
+                  }
                   ariaLabelText="Go to my LinkedIn profile"
+                  titleText="Go to my LinkedIn profile"
                 />
               </li>
               <li>
@@ -135,6 +139,7 @@ const AboutPage = () => {
                   name="GitHub"
                   icon={<FaGithub className="inline hover:text-black" />}
                   ariaLabelText="Go to my GitHub profile"
+                  titleText="Go to my GitHub profile"
                 />
               </li>
               <li>
@@ -143,54 +148,73 @@ const AboutPage = () => {
                   name="Gitlab"
                   icon={<FaGitlab className="inline hover:text-orange-500" />}
                   ariaLabelText="Go to my GitLab profile"
+                  titleText="Go to my GitLab profile"
                 />
               </li>
               <li>
                 <SocialLink
                   url="http://dsebastien.medium.com"
                   name="Medium"
-                  icon={<FaMedium className="inline hover:text-black hover:bg-white" />}
+                  icon={
+                    <FaMedium className="inline hover:text-black hover:bg-white" />
+                  }
                   ariaLabelText="Go to my blog on Medium"
+                  titleText="Go to my blog on Medium"
                 />
               </li>
               <li>
                 <SocialLink
                   url="https://dev.to/dsebastien"
                   name="DEV.to"
-                  icon={<FaDev className="inline hover:text-black hover:bg-white" />}
+                  icon={
+                    <FaDev className="inline hover:text-black hover:bg-white" />
+                  }
                   ariaLabelText="Go to my blog on DEV.to"
+                  titleText="Go to my blog on DEV.to"
                 />
               </li>
               <li>
                 <SocialLink
                   url="https://www.youtube.com/channel/UCz0x-VJhvKwV-PK3E_i5G1w"
                   name="Youtube"
-                  icon={<FaYoutube className="inline hover:text-red hover:bg-white" />}
+                  icon={
+                    <FaYoutube className="inline hover:text-red hover:bg-white" />
+                  }
                   ariaLabelText="Go to my Youtube channel"
+                  titleText="Go to my Youtube channel"
                 />
               </li>
               <li>
                 <SocialLink
                   url="https://www.twitch.tv/dsebastien"
                   name="Twitch"
-                  icon={<FaTwitch className="inline hover:text-purple-500 hover:bg-white" />}
+                  icon={
+                    <FaTwitch className="inline hover:text-purple-500 hover:bg-white" />
+                  }
                   ariaLabelText="Go to my Twitch channel"
+                  titleText="Go to my Twitch channel"
                 />
               </li>
               <li>
                 <SocialLink
                   url="https://stackoverflow.com/users/226630/dsebastien"
                   name="StackOverflow"
-                  icon={<FaStackOverflow className="inline hover:text-orange-500" />}
+                  icon={
+                    <FaStackOverflow className="inline hover:text-orange-500" />
+                  }
                   ariaLabelText="Go to my profile on StackOverflow"
+                  titleText="Go to my profile on StackOverflow"
                 />
               </li>
               <li>
                 <SocialLink
                   url="https://www.facebook.com/trankill"
                   name="Facebook"
-                  icon={<FaFacebook className="inline hover:text-blue-500 hover:bg-white" />}
+                  icon={
+                    <FaFacebook className="inline hover:text-blue-500 hover:bg-white" />
+                  }
                   ariaLabelText="Go to my Facebook profile"
+                  titleText="Go to my Facebook profile"
                 />
               </li>
               <li>
@@ -199,6 +223,7 @@ const AboutPage = () => {
                   name="Hashnode"
                   icon={<FaHashtag className="inline" />}
                   ariaLabelText="Go to my blog on HashNode"
+                  titleText="Go to my blog on HashNode"
                 />
               </li>
               <li>and more.. ;-)</li>

@@ -42,8 +42,11 @@ export default function Blog(input: { posts: FrontMatter[] }) {
           <SocialLink
             url="http://dsebastien.medium.com"
             name="Medium"
-            icon={<FaMedium className="inline hover:text-black hover:bg-white" />}
+            icon={
+              <FaMedium className="inline hover:text-black hover:bg-white" />
+            }
             ariaLabelText="Go to my blog on Medium"
+            titleText="Go to my blog on Medium"
           />
           ,{' '}
           <SocialLink
@@ -51,6 +54,7 @@ export default function Blog(input: { posts: FrontMatter[] }) {
             name="DEV.to"
             icon={<FaDev className="inline hover:text-black hover:bg-white" />}
             ariaLabelText="Go to my blog on DEV.to"
+            titleText="Go to my blog on DEV.to"
           />{' '}
           and{' '}
           <SocialLink
@@ -58,6 +62,7 @@ export default function Blog(input: { posts: FrontMatter[] }) {
             name="Hashnode"
             icon={<FaHashtag className="inline" />}
             ariaLabelText="Go to my blog on HashNode"
+            titleText="Go to my blog on HashNode"
           />
           . Use the search below to filter by title.
         </p>

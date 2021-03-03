@@ -8,6 +8,7 @@ interface SocialLinkProps {
   name: string;
   icon: React.ReactNode;
   ariaLabelText: string;
+  titleText?: string;
   hideText?: boolean;
 }
 
@@ -16,10 +17,11 @@ const SocialLink = ({
   icon,
   name,
   ariaLabelText,
+  titleText = '',
   hideText,
 }: SocialLinkProps) => {
   return (
-    <StyledLink href={url} aria-label={ariaLabelText}>
+    <StyledLink href={url} aria-label={ariaLabelText} title={titleText}>
       {icon}
       {!hideText && <span className="ml-1">{name}</span>}
     </StyledLink>
