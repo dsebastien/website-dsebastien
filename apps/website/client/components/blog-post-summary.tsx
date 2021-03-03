@@ -23,7 +23,7 @@ const BlogPostSummary = ({ title, summary, slug }: BlogPostSummaryProps) => {
                 {title}
               </h4>
             </div>
-            <p className="text-gray-600 dark:text-gray-400">{summary}</p>
+            <p className="text-gray-900 dark:text-gray-400">{summary}</p>
           </div>
         </div>
       </a>

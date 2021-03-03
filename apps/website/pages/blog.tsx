@@ -32,7 +32,7 @@ export default function Blog(input: { posts: FrontMatter[] }) {
     >
       <article className="page-content-wrapper">
         <h1 className="page-heading">Blog</h1>
-        <p className="text-gray-600 dark:text-gray-400 mb-4">
+        <p className="text-gray-900 dark:text-gray-400 mb-4">
           I've been writing for 10+ years now. So far, I've published{' '}
           {`${input.posts.length}`} articles. I usually post everything here,
           but you can also find my some of my content on{' '}
@@ -82,7 +82,7 @@ export default function Blog(input: { posts: FrontMatter[] }) {
           All Posts
         </h3>
         {!filteredBlogPosts.length && (
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+          <p className="text-gray-900 dark:text-gray-400 mb-4">
             No posts found.
           </p>
         )}

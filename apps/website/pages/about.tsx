@@ -24,7 +24,7 @@ const AboutPage = () => {
         <h1 className="page-heading">
           A little about me <FaCoffee className="inline" />
         </h1>
-        <section className="mb-8 prose leading-6 text-gray-600 dark:text-gray-400">
+        <section className="mb-8 prose leading-6 text-gray-900 dark:text-gray-400">
           <p>
             Hey there! I'm{' '}
             <a href="https://twitter.com/dSebastien">Sébastien Dubois</a>. I
