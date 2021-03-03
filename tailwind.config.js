@@ -81,6 +81,32 @@ module.exports = {
       colors: {
         white: '#FFFFFF',
         black: '#000000',
+        blue: {
+          DEFAULT: '#3C74DB',
+          50: '#FEFEFF',
+          100: '#E8EFFB',
+          200: '#BDD0F3',
+          300: '#92B1EB',
+          400: '#6793E3',
+          500: '#3C74DB',
+          600: '#245BC0',
+          700: '#1C4695',
+          800: '#14326A',
+          900: '#0C1E3F',
+        },
+        yellow: {
+          DEFAULT: '#FFDE0A',
+          50: '#FFFDF0',
+          100: '#FFFAD6',
+          200: '#FFF3A3',
+          300: '#FFEC70',
+          400: '#FFE53D',
+          500: '#FFDE0A',
+          600: '#D6BA00',
+          700: '#A38D00',
+          800: '#706100',
+          900: '#3D3500',
+        },
         purple: {
           DEFAULT: '#7134A0',
           50: '#DFCBEE',
@@ -106,19 +132,6 @@ module.exports = {
           700: '#C50512',
           800: '#93040D',
           900: '#620209',
-        },
-        blue: {
-          DEFAULT: '#3C74DB',
-          50: '#FEFEFF',
-          100: '#E8EFFB',
-          200: '#BDD0F3',
-          300: '#92B1EB',
-          400: '#6793E3',
-          500: '#3C74DB',
-          600: '#245BC0',
-          700: '#1C4695',
-          800: '#14326A',
-          900: '#0C1E3F',
         },
         green: {
           DEFAULT: '#05B560',
@@ -200,15 +213,15 @@ module.exports = {
           css: {
             color: theme('colors.gray.900'),
             a: {
-              color: theme('colors.purple.500'),
+              color: theme('colors.blue.500'),
               '&:hover': {
-                color: theme('colors.purple.300'),
+                color: theme('colors.blue.300'),
               },
               '&:visited': {
-                color: theme('colors.purple.500'),
+                color: theme('colors.blue.500'),
               },
               '&:visited:hover': {
-                color: theme('colors.purple.300'),
+                color: theme('colors.blue.300'),
               },
               code: { color: theme('colors.blue.200') },
             },
@@ -224,17 +237,17 @@ module.exports = {
           css: {
             color: theme('colors.gray.400'),
             a: {
-              color: theme('colors.purple.300'),
+              color: theme('colors.blue.300'),
               '&:hover': {
-                color: theme('colors.purple.100'),
+                color: theme('colors.blue.100'),
               },
               '&:visited': {
-                color: theme('colors.purple.300'),
+                color: theme('colors.blue.300'),
               },
               '&:visited:hover': {
-                color: theme('colors.purple.100'),
+                color: theme('colors.blue.100'),
               },
-              code: { color: theme('colors.purple.300') },
+              code: { color: theme('colors.blue.300') },
             },
             blockquote: {
               borderLeftColor: theme('colors.gray.400'),

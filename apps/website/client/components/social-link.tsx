@@ -23,7 +23,11 @@ const SocialLink = ({
   return (
     <StyledLink href={url} aria-label={ariaLabelText} title={titleText}>
       {icon}
-      {!hideText && <span className="ml-1">{name}</span>}
+      {!hideText && (
+        <span className="ml-1 hover:text-blue-400 hover:dark:text-blue-100">
+          {name}
+        </span>
+      )}
     </StyledLink>
   );
 };

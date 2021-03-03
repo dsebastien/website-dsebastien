@@ -189,7 +189,7 @@ const AboutPage = () => {
                   url="https://www.twitch.tv/dsebastien"
                   name="Twitch"
                   icon={
-                    <FaTwitch className="inline hover:text-purple-500 hover:bg-white" />
+                    <FaTwitch className="inline hover:text-blue-500 hover:bg-white" />
                   }
                   ariaLabelText="Go to my Twitch channel"
                   titleText="Go to my Twitch channel"

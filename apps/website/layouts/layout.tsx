@@ -72,7 +72,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
           <meta property="article:published_time" content={meta.date} />
         )}
       </Head>
-      <header className="main-header sticky-nav py-4 px-8 flex flex-col sm:flex-row justify-between bg-purple-500 text-gray-100 border-b-2 border-purple-700 shadow-lg">
+      <header className="main-header sticky-nav py-4 px-8 flex flex-col sm:flex-row justify-between bg-blue-500 text-gray-100 border-b-2 border-blue-700 shadow-lg">
         <a
           href="#main"
           aria-label="Skip to the content"

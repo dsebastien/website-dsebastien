@@ -1,7 +1,7 @@
 import { useTheme } from 'next-themes';
 import React from 'react';
 import { FaMoon, FaSun } from 'react-icons/fa';
-import tw from "twin.macro";
+import tw from 'twin.macro';
 
 const StyledButton = tw.button``;
 
@@ -19,9 +19,12 @@ const ThemeSwitcher = () => {
         aria-label="Toggle Dark Mode"
         type="button"
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-        className="hover:text-purple-100"
       >
-        {theme === 'dark' ? <FaSun /> : <FaMoon />}
+        {theme === 'dark' ? (
+          <FaSun className="hover:text-yellow-500" />
+        ) : (
+          <FaMoon className="hover:text-gray-400" />
+        )}
       </StyledButton>
     </>
   );
