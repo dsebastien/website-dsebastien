@@ -62,3 +62,13 @@ h6:hover {
 .page-content-wrapper {
   @apply max-w-2xl mx-auto mb-16;
 }
+
+.scroll-to-top {
+  @apply fixed z-10 cursor-pointer rounded-md w-10 h-10 p-2 shadow-lg hover:shadow-2xl border-0 bg-purple-500 dark:hover:bg-purple-400 hover:bg-purple-700 transition-all ease-in-out duration-500;
+  right: 40px;
+  bottom: 40px;
+}
+
+.scroll-to-top:active {
+  transform: matrix(0.95, 0, 0, 0.95, 0, 0);
+}

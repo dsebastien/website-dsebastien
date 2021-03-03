@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
 import ThemeSwitcher from '@/components/theme-switcher';
-import { FaGithub } from 'react-icons/fa';
+import { FaArrowUp, FaGithub } from 'react-icons/fa';
 import Footer from '@/components/footer';
+import ScrollToTop from '@/components/scroll-to-top';
+import { IS_BROWSER } from '../constants';
 
 const StyledPage = tw.div``;
 
@@ -123,6 +125,14 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
           </a>
         </div>
       </header>
+      <ScrollToTop
+        smooth={true}
+        scrollingElement={
+          IS_BROWSER ? document.getElementById('__next')! : undefined
+        }
+        className="scroll-to-top"
+        icon={<FaArrowUp className="w-full h-full text-white" />}
+      />
       <main id="main" className="mt-12 px-4 sm:px-8 flex-grow">
         {children}
       </main>
