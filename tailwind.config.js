@@ -251,6 +251,9 @@ module.exports = {
               '&:visited': {
                 color: theme('colors.purple.500'),
               },
+              '&:visited:hover': {
+                color: theme('colors.purple.300'),
+              },
               code: { color: theme('colors.blue.200') },
             },
             'h2,h3,h4': {
@@ -271,6 +274,9 @@ module.exports = {
               },
               '&:visited': {
                 color: theme('colors.purple.300'),
+              },
+              '&:visited:hover': {
+                color: theme('colors.purple.100'),
               },
               code: { color: theme('colors.purple.300') },
             },
