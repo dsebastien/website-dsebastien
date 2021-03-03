@@ -73,7 +73,7 @@
     "@nrwl/eslint-plugin-nx": "11.1.5",
     "@nrwl/jest": "11.1.5",
     "@nrwl/next": "11.1.5",
-    "@nrwl/nx-cloud": "11.0.2",
+    "@nrwl/nx-cloud": "11.1.4",
     "@nrwl/react": "11.1.5",
     "@nrwl/tao": "11.1.5",
     "@nrwl/web": "11.1.5",
