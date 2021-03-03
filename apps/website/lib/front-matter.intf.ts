@@ -5,7 +5,17 @@ export interface FrontMatter {
   publishedAt: string;
   image: string;
   by?: string;
+  /**
+   * To be used for highlighting posts
+   */
+  featured?: boolean;
+  /**
+   * To be used for display (tags)
+   */
   categories: string[];
+  /**
+   * Used as page meta keywords if provided
+   */
   keywords: string[];
   /**
    * Added automatically

@@ -4,7 +4,7 @@ import { parseISO, format } from 'date-fns';
 
 import { FrontMatter } from '@/lib/front-matter.intf';
 import Layout from './layout';
-import tw from "twin.macro";
+import tw from 'twin.macro';
 
 const StyledArticle = tw.article``;
 
@@ -35,6 +35,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
         image: `https://dsebastien.net${frontMatter.image}`,
         date: new Date(frontMatter.publishedAt).toISOString(),
         type: 'article',
+        keywords: frontMatter.keywords.join(', '),
       }}
     >
       <StyledArticle className="article-content-wrapper">

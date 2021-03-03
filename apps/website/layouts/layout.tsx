@@ -22,6 +22,7 @@ interface SupportedMeta {
   description: string;
   type: string;
   date?: string;
+  keywords?: string;
 }
 
 interface LayoutProps {
@@ -41,6 +42,8 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
     description: `Sébastien Dubois' home on the Web`,
     image: 'https://dsebastien.net/static/images/banner-2560.jpg',
     type: 'website',
+    keywords:
+      'software, programming, software development, coding, it security, it architecture, code quality',
     /**
      * Replace by custom values if any were defined
      */
@@ -68,6 +71,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
+        <meta name="keywords" content={meta.keywords} />
         {meta.date && (
           <meta property="article:published_time" content={meta.date} />
         )}
