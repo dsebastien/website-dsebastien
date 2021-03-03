@@ -5,17 +5,20 @@ const mdx = require('@mdx-js/mdx');
 
 module.exports = {
   purge: {
-    enable: true,
     content: [
       './apps/**/*.html',
       './apps/**/*.mdx',
       './apps/**/*.tsx',
       './apps/**/*.ts',
+      './apps/**/*.jsx',
+      './apps/**/*.js',
       './apps/**/*.scss',
       './libs/**/*.html',
       './libs/**/*.mdx',
       './libs/**/*.tsx',
       './libs/**/*.ts',
+      './libs/**/*.jsx',
+      './libs/**/*.js',
       './libs/**/*.scss',
     ],
     // PurgeCSS options
