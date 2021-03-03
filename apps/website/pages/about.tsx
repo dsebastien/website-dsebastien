@@ -17,6 +17,7 @@ import {
 import Link from 'next/link';
 import SocialLink from '@/components/social-link';
 import tw from "twin.macro";
+import Image from "next/image";
 
 const StyledArticle = tw.article``;
 
@@ -30,8 +31,18 @@ const AboutPage = () => {
         <section className="mb-8 prose leading-6 text-gray-900 dark:text-gray-400">
           <p>
             Hey there! I'm{' '}
-            <a href="https://twitter.com/dSebastien">Sébastien Dubois</a>. I
-            wear many hats: father, author, software crafter, CTO, solution
+            <a href="https://twitter.com/dSebastien">Sébastien Dubois</a> 👋
+          </p>
+          <div className="">
+            <Image
+              alt="Dubois Sébastien"
+              height={317}
+              width={264}
+              src="/static/images/sebastien.png"
+              className="rounded-lg"
+            />
+          </div>
+          <p>I wear many hats: father, husband, author, software crafter, CTO, solution
             architect, mentor, coach, entrepreneur, geek, gamer. I'm also the
             CEO of <a href="https://developassion.be">DeveloPassion</a>, a
             software development company located in Belgium.
