@@ -21,3 +21,9 @@ $ npm run start
 - [Vercel](https://vercel.com)
 - [MDX](https://github.com/mdx-js/mdx)
 - [Tailwind CSS](https://tailwindcss.com/)
+
+## Useful MD snippets
+
+- GitHub gist: `<Gist gistLink="dsebastien/GIST_ID" />`
+- Tweet: `<Tweet tweetLink="USER_ID/WHATEVER" />`
+- Codepen: `<CodePen codePenId="PEN_ID" />`

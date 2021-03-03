@@ -2,9 +2,17 @@ import React from 'react';
 
 import Link from 'next/link';
 import Image from 'next/image';
-import Tweet from 'react-tweet-embed';
 
 import Step from '@/components/step';
+import {
+  CodePen,
+  Gist,
+  Spotify,
+  Tweet,
+  Twitch,
+  TwitterFollowButton,
+  YouTube,
+} from 'mdx-embed';
 
 type CustomLinkProps = { href: string } & any;
 
@@ -27,7 +35,13 @@ const MDXComponents = {
   Image,
   a: CustomLink,
   Step,
+  Gist,
+  CodePen,
+  Spotify,
+  Twitch,
   Tweet,
+  YouTube,
+  TwitterFollowButton,
 };
 
 export default MDXComponents;
