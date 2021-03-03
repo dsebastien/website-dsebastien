@@ -117,6 +117,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
             className="rounded-full"
             target="_blank"
             aria-label="See the source on GitHub"
+            rel="noopener noreferrer"
           >
             <FaGithub
               className="inline text-white dark:text-white hover:text-gray-900 dark:hover:text-gray-900"
