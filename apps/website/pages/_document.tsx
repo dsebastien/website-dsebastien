@@ -86,7 +86,7 @@ export default class CustomDocument extends Document<{
             crossOrigin="anonymous"
           />
           {/* TODO add favicon */}
-          {/*<link href="/static/favicons/favicon.ico" rel="shortcut icon" />*/}
+          <link href="/static/favicons/favicon.ico" rel="shortcut icon" />
           {/* TODO add manifest */}
           {/*<link href="/static/favicons/site.webmanifest" rel="manifest" />*/}
           <meta content="#ffffff" name="theme-color" />
