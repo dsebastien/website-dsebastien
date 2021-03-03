@@ -31,7 +31,10 @@ const AboutPage = () => {
         <section className="mb-8 prose leading-6 text-gray-900 dark:text-gray-400">
           <p>
             Hey there! I'm{' '}
-            <a href="https://twitter.com/dSebastien">Sébastien Dubois</a> 👋
+            <a href="https://twitter.com/dSebastien" rel="noopener">
+              Sébastien Dubois
+            </a>{' '}
+            👋
           </p>
           <div className="">
             <Image
@@ -45,40 +48,56 @@ const AboutPage = () => {
           <p>
             I wear many hats: father, husband, author, software crafter, CTO,
             solution architect, mentor, coach, entrepreneur, geek, gamer. I'm
-            also the CEO of <a href="https://developassion.be">DeveloPassion</a>
+            also the CEO of{' '}
+            <a href="https://developassion.be" rel="noopener">
+              DeveloPassion
+            </a>
             , a software development company located in Belgium.
           </p>
           <p>
             I've been working for{' '}
-            <a href="https://www.linkedin.com/in/sebastiend/">
+            <a href="https://www.linkedin.com/in/sebastiend/" rel="noopener">
               15+ years in the IT industry
             </a>{' '}
             . Since day one, I have always been passionate about IT, software
             development, IT security, code quality, the open Web, and
             open-source software. I write about programming, architecture, code
             quality, entrepreneurship, management, leadership, and more.{' '}
-            <a href="https://mailchi.mp/fb661753d54a/developassion-newsletter">
+            <a
+              href="https://mailchi.mp/fb661753d54a/developassion-newsletter"
+              rel="noopener"
+            >
               Subscribe to my newsletter
             </a>{' '}
             if you're interested in those subjects.
           </p>
           <p>
             Back in 2019, I wrote{' '}
-            <a href="https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860?tag=developassion-20">
+            <a
+              href="https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860?tag=developassion-20"
+              rel="noopener"
+            >
               a book called "Learn TypeScript by Building Web Applications"
             </a>{' '}
             about{' '}
-            <a href="https://www.typescriptlang.org/" target="_blank">
+            <a
+              href="https://www.typescriptlang.org/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               TypeScript
             </a>
             , a wonderful programming language.
           </p>
           <p>
             Currently (March 2021), I'm busy writing my next book:{' '}
-            <a href="https://dev-concepts.dev/">Dev Concepts</a>, which explains
-            a gazillion concepts around around software development. The goal of
-            that book is to explain what the software craft is all about, and
-            help those interested on their way to become full-stack developers.
+            <a href="https://dev-concepts.dev/" rel="noopener">
+              Dev Concepts
+            </a>
+            , which explains a gazillion concepts around around software
+            development. The goal of that book is to explain what the software
+            craft is all about, and help those interested on their way to become
+            full-stack developers.
           </p>
           <p>
             I grew up when the world was waking up to the World Wide Web. I

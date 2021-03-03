@@ -98,6 +98,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
               href="https://dev-concepts.dev"
               className="main-menu-link"
               target="_blank"
+              rel="noopener"
             >
               <div className="site-button text-base">Dev Concepts</div>
             </a>
