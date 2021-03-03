@@ -82,18 +82,22 @@ export async function getFileBySlug({
     },
   });
 
+  const frontMatter: FrontMatter = {
+    wordCount: content.split(/\s+/gu).length,
+    readingTime: readingTime(content),
+    slug: slug || '',
+    title: '',
+    publishedAt: '',
+    summary: '',
+    image: '',
+    categories: [],
+    keywords: [],
+    ...data,
+  };
+
   return {
     mdxSource,
-    frontMatter: {
-      wordCount: content.split(/\s+/gu).length,
-      readingTime: readingTime(content),
-      slug: slug || '',
-      title: '',
-      publishedAt: '',
-      summary: '',
-      image: '',
-      ...data,
-    },
+    frontMatter,
   };
 }
 
