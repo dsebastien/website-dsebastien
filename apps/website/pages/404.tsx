@@ -1,6 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import Layout from '@/layouts/layout';
+import tw from "twin.macro";
+
+const StyledDiv = tw.div``;
 
 const NotFound = () => {
   return (
@@ -9,7 +12,7 @@ const NotFound = () => {
         title: '404 Page not found – Sébastien Dubois',
       }}
     >
-      <div className="max-w-2xl mx-auto">
+      <StyledDiv className="max-w-2xl mx-auto">
         <h1 className="page-heading">Doh...</h1>
         <p className="text-gray-900 dark:text-gray-400 mb-8">
           You seem to be lost. Hold my hand (yes, it's safe here), and let me
@@ -18,7 +21,7 @@ const NotFound = () => {
         <Link href="/">
           <a className="site-button">Go back home</a>
         </Link>
-      </div>
+      </StyledDiv>
     </Layout>
   );
 };

@@ -5,6 +5,9 @@ import BlogPostSummary from '@/components/blog-post-summary';
 import Layout from '@/layouts/layout';
 import { FaDev, FaHashtag, FaMedium } from 'react-icons/fa';
 import SocialLink from '@/components/social-link';
+import tw from "twin.macro";
+
+const StyledArticle = tw.article``;
 
 /**
  * Blog homepage
@@ -30,7 +33,7 @@ export default function Blog(input: { posts: FrontMatter[] }) {
           'A glimpse of my journey. I write about programming, software/IT/solution architecture, code quality, IT security, entrepreneurship, management, leadership, and more.',
       }}
     >
-      <article className="page-content-wrapper">
+      <StyledArticle className="page-content-wrapper">
         <h1 className="page-heading">Blog</h1>
         <p className="text-gray-900 dark:text-gray-400 mb-4">
           I've published {`${input.posts.length}`} article
@@ -91,7 +94,7 @@ export default function Blog(input: { posts: FrontMatter[] }) {
             <BlogPostSummary {...post} />
           </div>
         ))}
-      </article>
+      </StyledArticle>
     </Layout>
   );
 }

@@ -16,11 +16,14 @@ import {
 } from 'react-icons/fa';
 import Link from 'next/link';
 import SocialLink from '@/components/social-link';
+import tw from "twin.macro";
+
+const StyledArticle = tw.article``;
 
 const AboutPage = () => {
   return (
     <Layout>
-      <article className="article-content-wrapper">
+      <StyledArticle className="article-content-wrapper">
         <h1 className="page-heading">
           A little about me <FaCoffee className="inline" />
         </h1>
@@ -160,7 +163,7 @@ const AboutPage = () => {
             </ul>
           </div>
         </section>
-      </article>
+      </StyledArticle>
     </Layout>
   );
 };

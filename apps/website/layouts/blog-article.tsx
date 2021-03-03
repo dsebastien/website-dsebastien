@@ -4,6 +4,9 @@ import { parseISO, format } from 'date-fns';
 
 import { FrontMatter } from '@/lib/front-matter.intf';
 import Layout from './layout';
+import tw from "twin.macro";
+
+const StyledArticle = tw.article``;
 
 const editUrl = (slug: string) =>
   `https://github.com/dsebastien/website-dsebastien/edit/main/apps/website/data/blog/${slug}.mdx`;
@@ -34,7 +37,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
         type: 'article',
       }}
     >
-      <article className="article-content-wrapper">
+      <StyledArticle className="article-content-wrapper">
         <h1 className="page-heading">{frontMatter.title}</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full mt-2 mb-8">
           <div className="flex items-center">
@@ -77,7 +80,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
             {'Edit on GitHub'}
           </a>
         </div>
-      </article>
+      </StyledArticle>
     </Layout>
   );
 };

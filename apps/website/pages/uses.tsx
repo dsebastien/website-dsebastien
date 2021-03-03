@@ -5,6 +5,9 @@ import MDXComponents from '@/components/mdx-components';
 import { WebsiteDataType } from '@/lib/website-data-types.intf';
 import { InferGetStaticPropsType } from 'next';
 import Layout from '@/layouts/layout';
+import tw from "twin.macro";
+
+const StyledArticle = tw.article``;
 
 type UsesProps = InferGetStaticPropsType<typeof getStaticProps>;
 
@@ -20,7 +23,7 @@ export default function Uses({ mdxSource }: UsesProps) {
         description: 'Stuff I use',
       }}
     >
-      <article className="article-content-wrapper">
+      <StyledArticle className="article-content-wrapper">
         <h1 className="page-heading">
           What I use, like, enjoy, love, or can't live without
         </h1>
@@ -33,7 +36,7 @@ export default function Uses({ mdxSource }: UsesProps) {
           Links for hardware are affiliate links.
         </p>
         <div>{content}</div>
-      </article>
+      </StyledArticle>
     </Layout>
   );
 }

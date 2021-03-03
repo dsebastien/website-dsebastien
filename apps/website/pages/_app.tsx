@@ -1,8 +1,5 @@
 import React from 'react';
 import { AppProps } from 'next/app';
-import '../styles/tailwind.scss';
-import '../styles/components.scss';
-import '../styles/tailwind-utilities.scss';
 import '../styles/fonts.scss';
 import '../styles/styles.scss';
 import { ThemeProvider } from 'next-themes';

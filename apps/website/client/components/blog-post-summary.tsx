@@ -1,7 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-
 import { FrontMatter } from '@/lib/front-matter.intf';
+import tw from "twin.macro";
+
+const StyledLink = tw.a``;
 
 type BlogPostSummaryProps = Pick<FrontMatter, 'title' | 'summary' | 'slug'>;
 
@@ -15,7 +17,7 @@ type BlogPostSummaryProps = Pick<FrontMatter, 'title' | 'summary' | 'slug'>;
 const BlogPostSummary = ({ title, summary, slug }: BlogPostSummaryProps) => {
   return (
     <Link href={`/blog/${slug}`}>
-      <a className="w-full">
+      <StyledLink className="w-full">
         <div className="border-2 rounded-md p-2 hover:border-gray-600 hover:shadow-md transition-all ease-in duration-150">
           <div className="mb-4 w-full">
             <div className="flex flex-col md:flex-row justify-between">
@@ -26,7 +28,7 @@ const BlogPostSummary = ({ title, summary, slug }: BlogPostSummaryProps) => {
             <p className="text-gray-900 dark:text-gray-400">{summary}</p>
           </div>
         </div>
-      </a>
+      </StyledLink>
     </Link>
   );
 };
