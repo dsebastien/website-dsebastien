@@ -5,7 +5,7 @@ import BlogPostSummary from '@/components/blog-post-summary';
 import Layout from '@/layouts/layout';
 import { FaDev, FaHashtag, FaMedium } from 'react-icons/fa';
 import SocialLink from '@/components/social-link';
-import tw from "twin.macro";
+import tw from 'twin.macro';
 
 const StyledArticle = tw.article``;
 
@@ -43,18 +43,21 @@ export default function Blog(input: { posts: FrontMatter[] }) {
             url="http://dsebastien.medium.com"
             name="Medium"
             icon={<FaMedium className="inline" />}
+            ariaLabelText="Go to my blog on Medium"
           />
           ,{' '}
           <SocialLink
             url="https://dev.to/dsebastien"
             name="DEV.to"
             icon={<FaDev className="inline" />}
+            ariaLabelText="Go to my blog on DEV.to"
           />{' '}
           and{' '}
           <SocialLink
             url="https://dsebastien.hashnode.dev"
             name="Hashnode"
             icon={<FaHashtag className="inline" />}
+            ariaLabelText="Go to my blog on HashNode"
           />
           . Use the search below to filter by title.
         </p>

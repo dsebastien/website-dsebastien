@@ -16,8 +16,8 @@ import {
 } from 'react-icons/fa';
 import Link from 'next/link';
 import SocialLink from '@/components/social-link';
-import tw from "twin.macro";
-import Image from "next/image";
+import tw from 'twin.macro';
+import Image from 'next/image';
 
 const StyledArticle = tw.article``;
 
@@ -42,10 +42,11 @@ const AboutPage = () => {
               className="rounded-lg"
             />
           </div>
-          <p>I wear many hats: father, husband, author, software crafter, CTO, solution
-            architect, mentor, coach, entrepreneur, geek, gamer. I'm also the
-            CEO of <a href="https://developassion.be">DeveloPassion</a>, a
-            software development company located in Belgium.
+          <p>
+            I wear many hats: father, husband, author, software crafter, CTO,
+            solution architect, mentor, coach, entrepreneur, geek, gamer. I'm
+            also the CEO of <a href="https://developassion.be">DeveloPassion</a>
+            , a software development company located in Belgium.
           </p>
           <p>
             I've been working for{' '}
@@ -98,6 +99,7 @@ const AboutPage = () => {
                   url="https://twitter.com/dsebastien"
                   name="Twitter"
                   icon={<FaTwitter className="inline" />}
+                  ariaLabelText="Go to my Twitter profile"
                 />
               </li>
               <li>
@@ -105,6 +107,7 @@ const AboutPage = () => {
                   url="https://www.linkedin.com/in/sebastiend"
                   name="LinkedIn"
                   icon={<FaLinkedin className="inline" />}
+                  ariaLabelText="Go to my LinkedIn profile"
                 />
               </li>
               <li>
@@ -112,6 +115,7 @@ const AboutPage = () => {
                   url="https://github.com/dsebastien"
                   name="GitHub"
                   icon={<FaGithub className="inline" />}
+                  ariaLabelText="Go to my GitHub profile"
                 />
               </li>
               <li>
@@ -119,6 +123,7 @@ const AboutPage = () => {
                   url="https://gitlab.com/dsebastien"
                   name="Gitlab"
                   icon={<FaGitlab className="inline" />}
+                  ariaLabelText="Go to my GitLab profile"
                 />
               </li>
               <li>
@@ -126,6 +131,7 @@ const AboutPage = () => {
                   url="http://dsebastien.medium.com"
                   name="Medium"
                   icon={<FaMedium className="inline" />}
+                  ariaLabelText="Go to my blog on Medium"
                 />
               </li>
               <li>
@@ -133,6 +139,7 @@ const AboutPage = () => {
                   url="https://dev.to/dsebastien"
                   name="DEV.to"
                   icon={<FaDev className="inline" />}
+                  ariaLabelText="Go to my blog on DEV.to"
                 />
               </li>
               <li>
@@ -140,6 +147,7 @@ const AboutPage = () => {
                   url="https://www.youtube.com/channel/UCz0x-VJhvKwV-PK3E_i5G1w"
                   name="Youtube"
                   icon={<FaYoutube className="inline" />}
+                  ariaLabelText="Go to my Youtube channel"
                 />
               </li>
               <li>
@@ -147,6 +155,7 @@ const AboutPage = () => {
                   url="https://www.twitch.tv/dsebastien"
                   name="Twitch"
                   icon={<FaTwitch className="inline" />}
+                  ariaLabelText="Go to my Twitch channel"
                 />
               </li>
               <li>
@@ -154,6 +163,7 @@ const AboutPage = () => {
                   url="https://stackoverflow.com/users/226630/dsebastien"
                   name="StackOverflow"
                   icon={<FaStackOverflow className="inline" />}
+                  ariaLabelText="Go to my profile on StackOverflow"
                 />
               </li>
               <li>
@@ -161,6 +171,7 @@ const AboutPage = () => {
                   url="https://www.facebook.com/trankill"
                   name="Facebook"
                   icon={<FaFacebook className="inline" />}
+                  ariaLabelText="Go to my Facebook profile"
                 />
               </li>
               <li>
@@ -168,6 +179,7 @@ const AboutPage = () => {
                   url="https://dsebastien.hashnode.dev"
                   name="Hashnode"
                   icon={<FaHashtag className="inline" />}
+                  ariaLabelText="Go to my blog on HashNode"
                 />
               </li>
               <li>and more.. ;-)</li>
