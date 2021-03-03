@@ -117,7 +117,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="https://twitter.com/dsebastien"
                   name="Twitter"
-                  icon={<FaTwitter className="inline" />}
+                  icon={<FaTwitter className="inline hover:text-blue-500" />}
                   ariaLabelText="Go to my Twitter profile"
                 />
               </li>
@@ -125,7 +125,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="https://www.linkedin.com/in/sebastiend"
                   name="LinkedIn"
-                  icon={<FaLinkedin className="inline" />}
+                  icon={<FaLinkedin className="inline hover:text-blue-500 hover:bg-white" />}
                   ariaLabelText="Go to my LinkedIn profile"
                 />
               </li>
@@ -133,7 +133,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="https://github.com/dsebastien"
                   name="GitHub"
-                  icon={<FaGithub className="inline" />}
+                  icon={<FaGithub className="inline hover:text-black" />}
                   ariaLabelText="Go to my GitHub profile"
                 />
               </li>
@@ -141,7 +141,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="https://gitlab.com/dsebastien"
                   name="Gitlab"
-                  icon={<FaGitlab className="inline" />}
+                  icon={<FaGitlab className="inline hover:text-orange-500" />}
                   ariaLabelText="Go to my GitLab profile"
                 />
               </li>
@@ -149,7 +149,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="http://dsebastien.medium.com"
                   name="Medium"
-                  icon={<FaMedium className="inline" />}
+                  icon={<FaMedium className="inline hover:text-black hover:bg-white" />}
                   ariaLabelText="Go to my blog on Medium"
                 />
               </li>
@@ -157,7 +157,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="https://dev.to/dsebastien"
                   name="DEV.to"
-                  icon={<FaDev className="inline" />}
+                  icon={<FaDev className="inline hover:text-black hover:bg-white" />}
                   ariaLabelText="Go to my blog on DEV.to"
                 />
               </li>
@@ -165,7 +165,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="https://www.youtube.com/channel/UCz0x-VJhvKwV-PK3E_i5G1w"
                   name="Youtube"
-                  icon={<FaYoutube className="inline" />}
+                  icon={<FaYoutube className="inline hover:text-red hover:bg-white" />}
                   ariaLabelText="Go to my Youtube channel"
                 />
               </li>
@@ -173,7 +173,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="https://www.twitch.tv/dsebastien"
                   name="Twitch"
-                  icon={<FaTwitch className="inline" />}
+                  icon={<FaTwitch className="inline hover:text-purple-500 hover:bg-white" />}
                   ariaLabelText="Go to my Twitch channel"
                 />
               </li>
@@ -181,7 +181,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="https://stackoverflow.com/users/226630/dsebastien"
                   name="StackOverflow"
-                  icon={<FaStackOverflow className="inline" />}
+                  icon={<FaStackOverflow className="inline hover:text-orange-500" />}
                   ariaLabelText="Go to my profile on StackOverflow"
                 />
               </li>
@@ -189,7 +189,7 @@ const AboutPage = () => {
                 <SocialLink
                   url="https://www.facebook.com/trankill"
                   name="Facebook"
-                  icon={<FaFacebook className="inline" />}
+                  icon={<FaFacebook className="inline hover:text-blue-500 hover:bg-white" />}
                   ariaLabelText="Go to my Facebook profile"
                 />
               </li>

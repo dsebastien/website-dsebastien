@@ -14,7 +14,8 @@ const Footer = () => {
             url="https://twitter.com/dsebastien"
             name="Twitter"
             hideText={true}
-            icon={<FaTwitter className="inline" />}
+            ariaLabelText="Go to my Twitter profile"
+            icon={<FaTwitter className="inline hover:text-blue-500" />}
           />
         </li>
         <li>
@@ -22,7 +23,8 @@ const Footer = () => {
             url="https://www.linkedin.com/in/sebastiend"
             name="LinkedIn"
             hideText={true}
-            icon={<FaLinkedin className="inline" />}
+            ariaLabelText="Go to my LinkedIn profile"
+            icon={<FaLinkedin className="inline hover:text-blue-500 hover:bg-white" />}
           />
         </li>
         <li>
@@ -30,7 +32,8 @@ const Footer = () => {
             url="https://github.com/dsebastien"
             name="GitHub"
             hideText={true}
-            icon={<FaGithub className="inline" />}
+            ariaLabelText="Go to my GitHub profile"
+            icon={<FaGithub className="inline hover:text-black" />}
           />
         </li>
       </StyledList>
