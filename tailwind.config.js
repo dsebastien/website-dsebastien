@@ -5,6 +5,7 @@ const mdx = require('@mdx-js/mdx');
 
 module.exports = {
   purge: {
+    enable: true,
     content: [
       './apps/**/*.html',
       './apps/**/*.mdx',
