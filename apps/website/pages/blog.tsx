@@ -42,14 +42,14 @@ export default function Blog(input: { posts: FrontMatter[] }) {
           <SocialLink
             url="http://dsebastien.medium.com"
             name="Medium"
-            icon={<FaMedium className="inline" />}
+            icon={<FaMedium className="inline hover:text-black hover:bg-white" />}
             ariaLabelText="Go to my blog on Medium"
           />
           ,{' '}
           <SocialLink
             url="https://dev.to/dsebastien"
             name="DEV.to"
-            icon={<FaDev className="inline" />}
+            icon={<FaDev className="inline hover:text-black hover:bg-white" />}
             ariaLabelText="Go to my blog on DEV.to"
           />{' '}
           and{' '}
