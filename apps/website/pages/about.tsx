@@ -76,7 +76,7 @@ const AboutPage = () => {
             If you're curious, I wrote a page about the{' '}
             <Link href="/uses">stuff I use</Link>.
           </p>
-          <p>
+          <div>
             You can find me on:
             <ul>
               <li>
@@ -158,7 +158,7 @@ const AboutPage = () => {
               </li>
               <li>and more.. ;-)</li>
             </ul>
-          </p>
+          </div>
         </section>
       </article>
     </Layout>
