@@ -56,7 +56,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
               {format(parseISO(frontMatter.publishedAt), 'MMMM dd, yyyy')}
             </p>
           </div>
-          <p className="text-sm text-gray-500 min-w-32 mt-2 md:mt-0">
+          <p className="text-sm text-gray-500 mt-2 md:mt-0">
             {frontMatter.readingTime?.text}
           </p>
         </div>
