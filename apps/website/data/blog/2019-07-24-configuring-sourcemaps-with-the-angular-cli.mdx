@@ -1,0 +1,63 @@
+---
+title: 'Configuring sourcemaps with the Angular CLI'
+summary: 'How to configure sourcemaps with the Angular CLI'
+publishedAt: '2019-07-24'
+slug: 'configuring-sourcemaps-with-the-angular-cli'
+categories: [programming, angular, javascript, typescript, sourcemaps]
+keywords:
+  [
+    programming,
+    software development,
+    web development,
+    angular,
+    javascript,
+    typescript,
+    sourcemaps,
+  ]
+---
+
+Webpack provides a lot of control over [sourcemaps generation](https://webpack.js.org/configuration/devtool/).
+
+Of course, the trade-off when using the Angular CLI is that the build system is hidden away from us.
+
+It is indeed liberating because it means that we can focus on creating business value by working on actual product features.
+
+Without the CLI, we should have to take care of defining build steps, adding and configuring loaders and dealing with a lot of nitty gritty details.
+
+On the other hand, we lose a bit of control over the build.
+
+Fortunately, the CLI has evolved a lot and provides us with means to tweak many things.
+
+Recently, I wanted to adapt the sourcemaps generation for my Angular app and couldn’t find much information in the CLI documentation.
+
+You can configure sourcemaps generation for the different targets (e.g., serve, production, etc) through the angular.json file:
+
+```json
+...
+"architect": {
+  ...
+  "serve": {
+    "builder": "@angular-devkit/build-angular:dev-server",
+    "options": {
+      "browserTarget": "web:build",
+      "sourceMap": {
+        "scripts": true,
+        "styles": true,
+        "vendor": true
+      }
+    },
+   ...
+...
+```
+
+As you can see above, we can enable/disable sourcemaps for scripts, styles and vendor code.
+
+Minko Gechev’s article provides more background about this: [https://blog.mgechev.com/2019/02/06/5-angular-cli-features#hidden-source-maps](https://blog.mgechev.com/2019/02/06/5-angular-cli-features#hidden-source-maps)
+
+Also, check out the following article on Angular in Depth, which goes in detail about how to leverage sourcemaps to troubleshoot applications in production: [https://blog.angularindepth.com/debug-angular-apps-in-production-without-revealing-source-maps-ab4a235edd85](https://blog.angularindepth.com/debug-angular-apps-in-production-without-revealing-source-maps-ab4a235edd85)
+
+That’s it for today ^^.
+
+PS: Did you know that I’m writing a book about TypeScript? It covers TypeScript and explains Angular, React and Vue in a practical way. Don’t miss it when it is released this fall!
+
+<TwitterFollowButton username="dSebastien" size="large" />
