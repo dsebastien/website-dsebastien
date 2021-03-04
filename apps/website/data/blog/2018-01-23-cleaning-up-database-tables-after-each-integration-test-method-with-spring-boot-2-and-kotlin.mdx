@@ -1,0 +1,60 @@
+---
+title: Cleaning up database tables after each integration test method with Spring Boot 2 and Kotlin
+summary: How to clean database tables after each integration test in a Spring Boot application using Kotlin
+publishedAt: '2018-01-23'
+slug: cleaning-up-database-tables-after-each-integration-test-method-with-spring-boot-2-and-kotlin
+categories: [programming, kotlin, testing, spring]
+keywords: [programming, kotlin, testing, integration tests, spring, spring boot]
+---
+
+I usually prefer to write integration tests that perform end-to-end processing (e.g., flow from a client making a REST POST/PUT or GraphQL mutation up to the database access layer and back out). I’m not a big fan of mocking parts of the system for integration tests.
+
+Of course “integration tests” mean different things to different people but I won’t get into that.
+
+One issue that I’ve faced when writing my integration tests with Spring Boot 2 (that I’m still discovering) is that it wasn’t very straightforward to clean up the in-memory database after each test method/class.
+
+It was pretty easy when I wrote tests using [@DataJpaTest](https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html), since I only needed to add @Transactional, but @DataJpaTest only loads specific parts of the application in order to test the data access layer.
+
+What I wanted and what I’m using now is `@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)`, which does what I want: starts the closest thing to the real application. Actually this feels like what I previously obtained (a lot more painfully) using Arquillian.
+
+With `@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)`, you must forget about `@Transactional` in test classes. This is clearly stated in Spring Boot’s documentation:
+
+> If your test is `@Transactional`, it will rollback the transaction at the end of each test method by default. However, as using this arrangement with either `RANDOM_PORT` or `DEFINED_PORT` implicitly provides a real servlet environment, HTTP client and server will run in separate threads, thus separate transactions. Any transaction initiated on the server won’t rollback in this case.
+
+Thus indeed, there’s no easy way to rollback the changes...
+
+The simplest thing that could work would be to perform the cleanup manually at the end of each test method/class, but that is really cumbersome and error-prone. What I want instead is something easy that does the cleanup for me.
+
+Another option could be to add DbUnit and Spring DbUnit to my project and use [@DatabaseSetup](https://github.com/springtestdbunit/spring-test-dbunit/blob/master/spring-test-dbunit/src/main/java/com/github/springtestdbunit/annotation/DatabaseSetup.java) (cfr [example project](https://github.com/21decemb/spring-boot-dbunit-example)) which uses `DatabaseOperation.CLEAN_INSERT`.
+
+But for now I don’t want to add DbUnit to my project.
+
+Another option that I’ll look at later on is [this one](https://brightinventions.pl/blog/clear-database-in-spring-boot-tests/). I like the approach but I’m using JUnit 5 and I don’t have time to go about and learn what JUnit rules have become. Although, since that’s also interesting, I’ll come back to it in a future article =)
+
+So here’s what I’ve ended up doing this evening. It’s the very first iteration, so indeed there are tons of things to improve there! ;-)
+
+First I’ve defined a `test` profile that I activate in my tests using:
+
+```java
+@ActiveProfiles("test")
+```
+
+Then I took (a lot of) inspiration from the [following article](http://www.greggbolinger.com/truncate-all-tables-in-spring-boot-jpa-app/) and adapted the code to avoid depending on Hibernate:
+
+<Gist gistLink="dsebastien/2f589e2bda86553c472e44e5888b8fb7" />
+
+As you can see it’s a simple Spring service that uses the JPA metamodel to go about and find the table names through reflection (by getting the name from the `@Table` annotation on the entities).
+
+With that in place, I’ve created a base class for my integration tests where I inject and use the `DatabaseCleanupService` after each test method:
+
+<Gist gistLink="dsebastien/b44abce49d7c8eb03f48c7e57a7e73d6" />
+
+Using the above is pretty simple and fool proof: inherit from that class and the database will be cleaned after each test method has completed.
+
+Of course this is far from perfect and will probably break for more complex models/scenarios, but it fits my current (i.e., basic) needs.
+
+What I plan to improve now is to avoid the is-a relationship and providing more flexibility regarding when/what to clean up. This should be pretty straightforward to implement now :)
+
+That’s it for today!
+
+<TwitterFollowButton username="dSebastien" size="large" />
