@@ -1,0 +1,300 @@
+---
+title: Using JUnit 5 with Spring Boot 2, Kotlin and Mockito
+summary: How to setup and use JUnit 5 and Mockito in a Spring Boot Kotlin based project
+publishedAt: '2017-12-19'
+slug: using-junit-5-with-spring-boot-2-kotlin-and-mockito
+categories: [programming, kotlin, testing, spring]
+keywords: [programming, kotlin, testing, junit, mockito, spring, spring boot]
+---
+
+A bit of a mouthful, but not _that_ hard to get working ;-)
+
+JUnit 5 is still “recent” and different frameworks/libraries are slowwwwly adding support for it. The thing is that when you’re impatient to play with the shiny new toys, it’s just too boring waiting for the stable releases.
+
+Here’s a short guide explaining how to use JUnit 5+ with Spring Boot 2 (M7 at the moment), Kotlin and Mockito.
+
+Before you go any further: yes, this is slightly “on the bleeding edge”, puzzle pieces are still moving around (e.g., Surefire support, Java 9+ compatibility, …).
+
+Steps we’ll go through:
+
+*   Build configuration
+*   Implement a JUnit 5+ Extension class for Mockito
+*   Adapt existing tests
+
+### Build configuration
+
+I’m still using Maven (sorry Gradle fanboys), so just adapt to your build system of choice.
+
+First off, add some properties for JUnit and Surefire:
+
+```xml
+<!-- Need at least 1.1.x for compatibility with Surefire -->
+<junit-platform.version>1.1.0-SNAPSHOT</junit-platform.version>
+
+<!-- Need at least 5.1.x for compatibility with Surefire -->
+<junit-jupiter.version>5.1.0-SNAPSHOT</junit-jupiter.version>
+
+<!-- TODO remove once a newer version of surefire (2.21.1+) is compatible with JUnit 5 and used by Spring Boot -->
+<!-- Reference: https://github.com/junit-team/junit5/issues/809 -->
+<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
+```
+
+As you can see at this point in time, we need to use non-stable releases, but that should not last too long ;-)
+
+For the Maven Surefire plugin, keep an eye on [that issue](https://github.com/junit-team/junit5/issues/809).
+
+Next, add the JUnit dependencies:
+
+```xml
+<!-- JUnit 5 -->
+<dependency>
+    <groupId>org.junit.platform</groupId>
+    <artifactId>junit-platform-launcher</artifactId>
+    <scope>test</scope>
+    <version>${junit-platform.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.junit.platform</groupId>
+    <artifactId>junit-platform-engine</artifactId>
+    <scope>test</scope>
+    <version>${junit-platform.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-api</artifactId>
+    <!-- TODO put back scope test once we can remove the MockitoExtension.kt class -->
+    <scope>compile</scope>
+    <version>${junit-jupiter.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-engine</artifactId>
+    <scope>test</scope>
+    <version>${junit-jupiter.version}</version>
+</dependency>
+```
+
+If you want support for [parameterized tests](http://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests), you can also add the following dependency:
+
+```xml
+<dependency>
+    <groupId>org.junit.jupiter</groupId>
+    <artifactId>junit-jupiter-params</artifactId>
+    <version>${junit-jupiter.version}</version>
+</dependency>
+```
+
+If you already have many tests written with JUnit 4, then you can ease the transition using the Vintage module of JUnit 5+:
+
+```xml
+<dependency>
+    <groupId>org.junit.vintage</groupId>
+    <artifactId>junit-vintage-engine</artifactId>
+    <version>${junit-jupiter.version}</version>
+</dependency>
+```
+
+If you use Mockito, then you’ll also need to add a direct dependency (i.e., not with scope test); we’ll see why in the next section:
+
+```xml
+<!-- TODO: Remove once we don't need MockitoExtension anymore -->
+<dependency>
+    <groupId>org.mockito</groupId>
+    <artifactId>mockito-core</artifactId>
+</dependency>
+```
+
+In order to be able to execute the tests using Maven, you also need to properly configure Surefire:
+
+```xml
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>${maven-surefire-plugin.version}</version>
+    <configuration>
+        <failIfNoTests>true</failIfNoTests>
+        <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Test.kt</include>
+            <include>**/*Tests.java</include>
+            <include>**/*Tests.kt</include>
+        </includes>
+        <properties>
+            <excludeTags>integration-test</excludeTags>
+        </properties>
+    </configuration>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-surefire-provider</artifactId>
+            <version>${junit-platform.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>${junit-jupiter.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+</plugin>
+```
+
+Some remarks about the code snippet above:
+
+*   the includes should match your personal preferences
+*   the excludeTags (you may also use includeTags) allow you to filter tests that you’re not interested in; I usually do this to distinguish between fast & slow-running tests that you’d rather only execute when a certain Maven profile is active. The ability to easily [tag and filter](http://junit.org/junit5/docs/current/user-guide/#writing-tests-tagging-and-filtering) tests is a nice improvement of JUnit 5
+*   the dependencies of the plugin ensure that the JUnit provider for Surefire is active; that’s what allows Surefire to find the JUnit 5+ tests
+
+Add the following repositories:
+
+```xml
+<repositories>
+    ...
+    <repository>
+        <id>sonatype-snaphosts</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        <snapshots>
+            <!-- Always update snapshot JARs -->
+            <updatePolicy>always</updatePolicy>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+
+<pluginRepositories>
+    <pluginRepository>
+        <id>sonatype-snaphosts</id>
+        <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <!-- Always update snapshot JARs -->
+            <updatePolicy>always</updatePolicy>
+            <enabled>true</enabled>
+        </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+        <id>spring-snapshots</id>
+        <name>Spring Snapshots</name>
+        <url>https://repo.spring.io/snapshot</url>
+        <releases>
+            <enabled>false</enabled>
+        </releases>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </pluginRepository>
+    ...
+</pluginRepositories>
+```
+
+Finally, create a file called junit-platform.properties in src/test/resources:
+
+```
+# JUnit configuration
+junit.jupiter.testinstance.lifecycle.default = per_class
+junit.jupiter.conditions.deactivate = *
+junit.jupier.extensions.autodetection.enabled = true
+```
+
+Reference: [http://junit.org/junit5/docs/current/user-guide/#running-tests-config-params](http://junit.org/junit5/docs/current/user-guide/#running-tests-config-params)
+
+### Mockito Extension
+
+At the time of writing, Mockito doesn’t support JUnit 5 yet: [https://github.com/mockito/mockito/issues/445](https://github.com/mockito/mockito/issues/445)
+
+So for the time being, some manual plumbing is required.
+
+JUnit 5+ uses an extension model rather than the old “test runner” that we’re used to (@RunWith): [http://junit.org/junit5/docs/current/user-guide/#extensions](http://junit.org/junit5/docs/current/user-guide/#extensions)
+
+The guys behind JUnit have written and published such an extension for Mockito: [_https://github.com/junit-team/junit5-samples/blob/master/junit5-mockito-extension/src/main/java/com/example/mockito/MockitoExtension.java_](https://github.com/junit-team/junit5-samples/blob/master/junit5-mockito-extension/src/main/java/com/example/mockito/MockitoExtension.java)
+
+Here’s a basic Kotlin conversion of that code; you’ll need it in your codebase for now:
+
+```java
+package who.cares.mockito
+
+import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.api.extension.ParameterContext
+import org.junit.jupiter.api.extension.ParameterResolver
+import org.junit.jupiter.api.extension.TestInstancePostProcessor
+import org.mockito.Mock
+import org.mockito.Mockito.mock
+import org.mockito.MockitoAnnotations
+import java.lang.reflect.Parameter
+
+// TODO remove once Mockito officially supports Junit 5+
+// See: https://github.com/mockito/mockito/issues/445
+
+/**
+ * JUnit 5+ extension for Mockito
+ * Reference: https://github.com/junit-team/junit5-samples/blob/master/junit5-mockito-extension/src/main/java/com/example/mockito/MockitoExtension.java
+ */
+class MockitoExtension : TestInstancePostProcessor, ParameterResolver {
+
+    override fun postProcessTestInstance(testInstance: Any,
+                                         context: ExtensionContext) {
+        MockitoAnnotations.initMocks(testInstance)
+    }
+
+    override fun supportsParameter(parameterContext: ParameterContext,
+                                   extensionContext: ExtensionContext): Boolean {
+        return parameterContext.parameter.isAnnotationPresent(Mock::class.java)
+    }
+
+    override fun resolveParameter(parameterContext: ParameterContext,
+                                  extensionContext: ExtensionContext): Any {
+        return getMock(parameterContext.parameter, extensionContext)
+    }
+
+    private fun getMock(
+            parameter: Parameter, extensionContext: ExtensionContext): Any {
+
+        val mockType = parameter.type
+        val mocks = extensionContext.getStore(ExtensionContext.Namespace.create(
+                MockitoExtension::class.java, mockType))
+        val mockName = getMockName(parameter)
+
+        return if (mockName != null) {
+            mocks.getOrComputeIfAbsent(
+                    mockName, { _ -> mock(mockType, mockName) })
+        } else {
+            mocks.getOrComputeIfAbsent(
+                    mockType.canonicalName, { _ -> mock(mockType) })
+        }
+    }
+
+    private fun getMockName(parameter: Parameter): String? {
+        val explicitMockName = parameter.getAnnotation(Mock::class.java)
+                .name.trim()
+        if (!explicitMockName.isEmpty()) {
+            return explicitMockName
+        } else if (parameter.isNamePresent) {
+            return parameter.name
+        }
+        return null;
+    }
+}
+```
+
+With the above extension on your classpath, you can now add this to your Mockito-based tests:
+
+```java
+@ExtendWith(MockitoExtension::class)
+```
+
+### Adapting existing tests
+
+Well sorry but let’s not reinvent the wheel here, [the official migration guide](http://junit.org/junit5/docs/current/user-guide/#migrating-from-junit4) should provide you with more than enough information :)
+
+That’s it, enjoy!
+
+<TwitterFollowButton username="dSebastien" size="large" />
