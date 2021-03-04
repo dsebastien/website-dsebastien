@@ -1,11 +1,20 @@
 ---
-title: GraphQL API integration tests in a Spring Boot 2.x Kotlin application
-summary: How to write integration tests for a GraphQL API using Spring Boot 2.x and Kotlin
+title: 'GraphQL API integration tests in a Spring Boot 2.x Kotlin application'
+summary: 'How to write integration tests for a GraphQL API using Spring Boot 2.x and Kotlin'
 publishedAt: '2018-01-24'
 image: '/static/images/logos/graphql.png'
-slug: graphql-api-integration-tests-in-a-spring-boot-2-kotlin-application
+slug: 'graphql-api-integration-tests-in-a-spring-boot-2-kotlin-application'
 categories: [programming, graphql, kotlin, testing, spring]
-keywords: [programming, graphql, kotlin, testing, integration tests, spring, spring boot]
+keywords:
+  [
+    programming,
+    graphql,
+    kotlin,
+    testing,
+    integration tests,
+    spring,
+    spring boot,
+  ]
 ---
 
 <Image
@@ -20,10 +29,10 @@ In a recent project, we’ve integrated [graphql-java](https://github.com/graphq
 
 In order to test end-to-end scenarios, I wanted an easy way to…
 
-* start the back-end exposing the GraphQL API endpoint
-* define test GraphQL queries
-* load the test GraphQL queries
-* prepare & send GraphQL HTTP queries
+- start the back-end exposing the GraphQL API endpoint
+- define test GraphQL queries
+- load the test GraphQL queries
+- prepare & send GraphQL HTTP queries
 
 And, most importantly, perform assertions (both on the query results and on the back-end state).
 
@@ -37,9 +46,9 @@ If you’re used to Spring Boot then I’ll play captain obvious here for a seco
 
 Notice above that:
 
-* we’re using [@SpringBootTest.WebEnvironment.RANDOM\_PORT](https://spring.io/guides/gs/testing-web/). This starts the application and should bootstrap everything needed to test the back-end
-* we’re injecting the TestRestTemplate (prepared by @SpringBootTest) and we’ll use it to easily interact with the GraphQL endpoint exposed at /graphql
-* we’re injecting GraphQLTestUtils (more on that below)
+- we’re using [@SpringBootTest.WebEnvironment.RANDOM_PORT](https://spring.io/guides/gs/testing-web/). This starts the application and should bootstrap everything needed to test the back-end
+- we’re injecting the TestRestTemplate (prepared by @SpringBootTest) and we’ll use it to easily interact with the GraphQL endpoint exposed at /graphql
+- we’re injecting GraphQLTestUtils (more on that below)
 
 ### Define test GraphQL queries
 
@@ -49,19 +58,19 @@ For example, here’s create-thing.graphql:
 
 ```graphql
 mutation {
-    createThing(name: "e", description: "cool") {
-        uuid,
-        name,
-        description
-    }
+  createThing(name: "e", description: "cool") {
+    uuid
+    name
+    description
+  }
 }
 ```
 
 Storing our test queries in dedicated files has multiple benefits:
 
-* we can have auto-completion and validation in the IDE
-* there’s no need to escape anything
-* it’s easier to maintain
+- we can have auto-completion and validation in the IDE
+- there’s no need to escape anything
+- it’s easier to maintain
 
 Now the question is “how do I use these?”
 
