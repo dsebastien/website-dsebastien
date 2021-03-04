@@ -1,0 +1,144 @@
+---
+title: 'The story behind my upcoming book: Learn TypeScript by Building Web Applications — part 1'
+summary: The story behind my TypeScript book
+publishedAt: '2018-10-07'
+image: '/static/images/logos/typescript.png'
+slug: the-story-behind-my-upcoming-book-learn-typescript-by-building-web-applications-part-1'
+categories: [programming, writing, typescript, publishing, web development]
+keywords: [programming, writing, typescript, author]
+---
+
+So it’s official, I’m writing a book about TypeScript and how to leverage it to build great Web applications.
+
+<Image
+  alt={`TypeScript`}
+  src={`/static/images/logos/typescript.png`}
+  width={400}
+  height={400}
+  priority
+/>
+
+I’m starting this series to share my experience as a technical book author. I don’t mean it to be used as a reference or anything, but just as an inside story about how my project has started and how it evolves over time.
+
+I won’t be the one to encourage or discourage you about embarking on such a journey, how to do so or what to expect, simply because [many](http://greglturnquist.com/2015/01/23/valuable-things-i-have-learned-while/) [many](https://paulcunningham.me/writing-technical-books/) [others](https://manuel.bernhardt.io/2016/07/15/the-reality-of-writing-a-technical-book/) [have](https://opensourceforu.com/2015/04/how-to-write-your-first-technical-book/) [already](https://www.quora.com/What-is-the-process-of-writing-a-technical-book) [done](https://www.youtube.com/watch?v=npfGJhh0BlE) [exactly](https://www.xaprb.com/blog/2008/06/15/what-is-it-like-to-write-a-technical-book/) [that](https://writingcooperative.com/what-it-takes-to-write-a-book-actually-tech-book-194567a9e808).
+
+The one thing that I’ll tell you is that if you ever consider writing a technical book, it shouldn’t be for the money ;-)
+
+### How did it start?
+
+In August 2018 (about two months ago), I’ve received an interesting proposal from a “Acquisition Editor” at Packt Publishing:
+
+> Hi Sebastian, I’m an Acquisition Editor with Packt Publishing. We are coming up with a new book titled ‘Learn TypeScript 3.0 by Building Web Applications’ & I’m looking for a potential author. If writing this book interests you, please get in touch. I’d be glad to share more details. Thanks,
+
+I didn’t blame him for mistyping my name since I get that all the time.
+
+I was really surprised to receive this proposal as it came out of the blue. My guess is that my name just came up after a search on LinkedIn with the “TypeScript” keyword. A more optimistic guess could also be that my name appeared in some TypeScript-related searches on the Web that showed my interest in the language. Who knows?
+
+Packt wanted to publish a practical book about TypeScript; not the kind that you fall asleep on, but rather the type that you keep next to you while experimenting.
+
+The idea piqued my interest because I really love learning by doing and I firmly believe that the best way to share experience with others is to get them to try things out by themselves.
+
+Also, I’ve always enjoy writing and “Becoming a writer” had been on my “crazy-things-to-do” list for quite some time already.
+
+As a matter of fact, I also plan on writing fiction novels someday, but that’ll have to wait because I now have to write a few hundred pages about TypeScript ^^.
+
+I have discovered TypeScript in 2015 while looking at the first alpha versions of Angular 2 and I’ve immediately loved the language. Since then, it has kept improving so fast and is getting more and more love and support from the community.
+
+A last reason for me to accept this project was that I planned on becoming a freelance software engineer after ten years working at the same place, so I thought I could use some more visibility.
+
+### Draft outline
+
+Once I agreed to consider the project, I was asked to prepare a draft table of contents and detailed outline for the book.
+
+The description that I was given looked like this:
+
+> TypeScript 3.0 is coming up, and what better way to learn it than to get your hands dirty and build some cool web applications? This book will be a no-nonsense, fully practical intro to TypeScript. It will build 3–4 projects of increasing complexity while going from the basics to intermediate concepts of the language. Readers will not only learn how to wield the language along with the Node and Angular frameworks, but they will have fully-functional web applications by the end, that they can add to their portfolios! To spice things up, we could also add a project that introduces working with ASP.NET Core.
+
+> Target Audience: Complete novices to web development, or maybe someone who has some experience with a programming language and now wants to learn TypeScript to get into web development fast!
+
+> Key Features: Understand the TypeScript type system, and how to use it effectively, Apply object-oriented design using TypeScript, Integrate existing frameworks and libraries into your TypeScript program
+
+It actually took me a few evenings of work to come up with the detailed outline, simply because doing so forced me to imagine what I would want to see in such a book and to elaborate a logical plan about what to explain and in which order.
+
+I remember learning the TypeScript language by reading through the [official handbook](https://www.typescriptlang.org/docs/home.html) and [Basarat](https://twitter.com/basarat)’s wonderful [_TypeScript Deep Dive_](https://github.com/basarat/typescript-book) book, which I definitely recommend checking out!
+
+I wanted to do something different, because those two single sources provide more than enough to actually learn about everything there is to know about TypeScript.
+
+When I dived into Angular 2 alphas and Typescript in 2015, I needed a good refresh about Web development and I remember that it literally took me _months_ to wrap my head around the big mess that the Web ecosystem had become.
+
+<Image
+  alt={`Mind blowing`}
+  src={`/static/images/mind-blowing.gif`}
+  width={720}
+  height={405}
+  priority
+/>
+
+Bower was still around, gulp was all the rage, etc etc. I wrote [two](https://www.dsebastien.net/2016/02/17/modern-web-development-part-one/) [pieces](https://www.dsebastien.net/2016/02/17/modern-web-development-part-two/) about my journey. I even created a [generic build system](https://github.com/dsebastien/modernWebDevBuild) and Yeoman [project generator](https://github.com/dsebastien/modernWebDevGenerator) hoping to free up some developers of all this complexity (hint: it failed indeed!).
+
+What I wanted to create is a book that would follow a different route and leverage more and more TypeScript features along the way. Chapter after chapter I wanted to guide the reader deeper and deeper into the tortuous and ever more complex front-end development ecosystem without making them too afraid.
+
+To me, “building modern Web applications” means leveraging modern tools, libraries and frameworks to create great user experiences. If that can be done while keeping a high quality, clean and maintainable code base, then all the better, right?
+
+Node.js, npm, Webpack, TSLint, Prettier, Jest, Protractor, Cypress, Istanbul, TypeScript, Angular, React, Vue.js, Angular Material, Element and many others are just pieces of the large puzzle that represent our current ecosystem and that can help developers create those experiences.
+
+I wanted my book to be used as a guide. Not a guide that would tell you that A is better than B and that C is horrible, but instead a book that would show you different ways of doing things and letting you decide what you prefer on your own.
+
+Of course at this point, this is pretty much all in my head; my book isn’t written yet (apart for the first chapter), so the journey is only beginning ;-)
+
+### Timeline and contract negotiation
+
+Once the detailed outline was reviewed and approved by Packt, I was offered a contract and had to agree on a timeline.
+
+The initial proposal of Packt was _wayyyyyy_ too tight for me (and probably for anyone else), so I’ve proposed them a new one which should leave me enough room to deliver the chapters without sacrificing my precious family time.
+
+I also had to carefully review the contract because, well you know it really is useful to read the fine print.. :)
+
+Once signed, I could finally get started!
+
+### Writing process and the power of the Open Source community
+
+I wrote the initial outline and the first pages of the book in Google Docs. This was pretty “okay” at the start, but I quickly felt bad because, formatting code blocks in word-like documents is not something that humans are meant to do.
+
+After a bit of Googling around, I’ve stumbled upon [Greg Turnquist](https://twitter.com/gregturn)’s [blog posts about AsciiDoctor and Packt](http://greglturnquist.com/2015/02/24/how-to-create-your-own-openoffice/) (Greg [has published a few books with Packt](https://www.amazon.com/Greg-L.-Turnquist/e/B00Q23NAXI) — go check them out!), which led me to his open source project: [https://github.com/gregturn/asciidoctor-packt](https://github.com/gregturn/asciidoctor-packt)
+
+I was thrilled, because I knew a bit about [AsciiDoctor](https://asciidoctor.org) and I was sure that it would be (at least) a _gazillion_ _times_ nicer to work on a book with that rather than with Google Docs, Word or LibreOffice.
+
+I had a few issues at first, but Greg stepped in and went as far as creating a template to help me get started: [https://github.com/gregturn/packt-book-template](https://github.com/gregturn/packt-book-template). Thank you again Greg, you’re a life saver! :)
+
+I quickly decided to fork those projects and add some personal touches, which I ended up publishing on Github: [https://github.com/dsebastien/asciidoctor-packt](https://github.com/dsebastien/asciidoctor-packt)
+
+Most importantly, I’ve improved the assets management, the build system for the book and re-implemented live reloading of the content using node, npm, Chokidar and BrowserSync.
+
+All in all, that took me a few sleepless nights, but now I can really focus on the content while writing the book.
+
+Here’s my current process:
+
+- start the book’s build using npm run serve, which watches the AsciiDoctor (.adoc) source files, builds the HTML version which is then served by BrowserSync and automatically reloaded as soon as something changes. The build also copies the assets automatically
+- edit the AsciiDoctor files through Visual Studio Code
+- edit the code samples using the same instance of Visual Studio Code
+- proof read my changes, then git add & commit
+
+With that in place, I could drastically improve my comfort to write the book. Now I can really focus on the content and the code, while checking/proof reading the results in a nicely formatted HTML version that gets updated all the time.
+
+Also, since the whole book is stored in text files, I can version it along with the source code in a git repository and benefit from awesome tooling to review/diff/persist/revert my changes.
+
+Finally, when the time came to deliver the first chapter, I could rely on the build to generate an Open Document version of it, again thanks to the previous work done by Greg.
+
+### Worries
+
+Unfortunately for me, the Packt editors responsible for my book didn’t have LibreOffice anymore, so they’ve asked me to send Word files instead. Luckily, the conversion from .fodt to .docx done by LibreOffice seems to be “good enough”.
+
+I don’t know yet if they’ll accept to continue working with that, as they have their own online content editing platform, but we’ll see…
+
+Even if that platform has its merits, using it would most certainly be a huge step back for me given the comfort that my current editing process gives me.
+
+Another worry of mine is my level of English. It may or may not be obvious, but I’m not a native speaker, so I just hope that my level is good enough to write a book ;-)
+
+### Next up
+
+In the next post, I’ll tell you a bit more about the book contents and my progress so far!
+
+That’s it for today!
+
+<TwitterFollowButton username="dSebastien" size="large" />
