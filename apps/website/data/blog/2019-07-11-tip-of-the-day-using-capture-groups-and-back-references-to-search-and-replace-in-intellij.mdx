@@ -1,0 +1,46 @@
+---
+title: 'Tip of the day: using capture groups and back references to search and replace in IntelliJ'
+summary: 'Using capture groups and back references to search and replace in IntelliJ'
+publishedAt: '2019-07-11'
+slug: 'tip-of-the-day-using-capture-groups-and-back-references-to-search-and-replace-in-intellij'
+categories: [programming, ide, intelli, regex, tips]
+keywords: [programming, ide, intellij, regex, tips]
+---
+
+Yesterday, I wanted to fix a small issue across a codebase: for some reasons, previous developers thought it was a good idea to use a lowercase ‘l’ (L) in all of the unit tests in order to define Long values.
+
+Here’s an example:
+
+```java
+calculator.add(1l);
+```
+
+The issue with this is that it is unreadable and it is tiresome have to guess whether it is 1 or 11. It’s not a big issue, but it annoyed me enough to want to quickly fix it in the whole codebase.
+
+Luckily, I could make use of IntelliJ’s search & replace functionality. To find all the occurrences, I’ve used the following regular expression:
+
+```regex
+(\d)(l)
+```
+
+With it, I simply look for all numbers directly followed by a ‘l’ (L).
+
+Finding the occurrences was quite easy and as a matter of fact, replacing is also very easy to do, thanks to the capture group back-reference support of IntelliJ.
+
+Here’s the replacement string that I’ve used to fix it everywhere easily:
+
+```
+$1L
+```
+
+The `$1` refers to the first capturing group of the search regular expression. This basically tells IntelliJ to use the value of the first capturing group (which would be “1” in my example above) and replace the rest with “L”.
+
+Problem solved! :)
+
+You can learn more about this feature here: [https://www.jetbrains.com/help/idea/tutorial-finding-and-replacing-text-using-regular-expressions.html#capture\_groups\_and\_backreference](https://www.jetbrains.com/help/idea/tutorial-finding-and-replacing-text-using-regular-expressions.html#capture_groups_and_backreference)
+
+That’s it for today ^^.
+
+PS: Did you know that I’m writing a book about TypeScript? It covers TypeScript and explains Angular, React and Vue in a practical way. Don’t miss it when it is released this fall!
+
+<TwitterFollowButton username="dSebastien" size="large" />
