@@ -6,6 +6,8 @@
 html {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0); /* no blue flashes */
   scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 html,
