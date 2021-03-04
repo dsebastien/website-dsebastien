@@ -1,0 +1,42 @@
+---
+title: 'Fixing ‘bash’ is not recognized as an internal or external command when used within npm scripts on Windows'
+summary: The story behind my TypeScript book
+publishedAt: '2019-02-13'
+slug: '2019-02-13-fixing-bash-is-not-recognized-as-an-internal-or-external-command-when-used-within-npm-scripts-on-windows'
+categories: [programming, javascript, npm, bash, scripts]
+keywords: [programming, javascript, npm, bash]
+---
+
+Recently, I’ve lost quite a bit of time figuring why npm scripts would suddenly fail on Windows under Git bash if they tried to execute bash (e.g., “do-something”: “bash ./do-something.sh”).
+
+I was executing the npm scripts from Git Bash as usual, so of course bash.exe was on my path but, it wasn’t found in the environment tied to the process for the script execution:
+
+```bash
+‘bash’ is not recognized as an internal or external command,
+operable program or batch file.
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! asciidoctor-packt@1.0.0 clean-assets: `bash ./build.sh clean_assets`
+npm ERR! Exit status 1
+npm ERR!
+npm ERR! Failed at the asciidoctor-packt@1.0.0 clean-assets script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+```
+
+To my surprise, after digging for a while, I’ve realized that the script was executed under cmd.exe.
+
+Apparently, since npm 5, we can select the shell to use by defining the “script-shell” setting in the npm config:
+
+```
+npm config set script-shell "C:\\Program Files\\git\\bin\\bash.exe"
+```
+
+After setting this, my problem was directly fixed.
+
+Hope this helps! :)
+
+For reference, I found this related SO question: [https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-scripts-in-windows](https://stackoverflow.com/questions/23243353/how-to-set-shell-for-npm-run-scripts-in-windows)
+
+That’s it for today!
+
+<TwitterFollowButton username="dSebastien" size="large" />
