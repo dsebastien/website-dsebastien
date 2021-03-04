@@ -1,0 +1,24 @@
+---
+title: 'Searching for final methods in a Java project'
+summary: 'Efficient way to find final methods in a Java project'
+publishedAt: '2019-05-23'
+slug: 'quick-tip-of-the-day-searching-for-final-methods-in-a-java-project'
+categories: [programming, java, regex, tips]
+keywords: [programming, java, regex, tips]
+---
+
+Quick tip of the day: searching for final methods in a Java project.
+
+Recently at work, I had to find all final methods in a codebase.
+
+The following regular expression helped me out:
+
+```regex
+(public|protected|private|static|\\s) (final) +\[\\w\\<\\>\\\[\\\]\]+\\s+(\\w+) \*\\(\[^\\)\]\*\\) \*(\\{?|\[^;\])
+```
+
+For the curious among you, I needed to do this because of an issue where some Spring bean mysteriously had null properties. The issue was caused by the fact that we had final methods in some beans that CGLib did not like (i.e., could not proxy).
+
+That’s it for today 😉
+
+<TwitterFollowButton username="dSebastien" size="large" />
