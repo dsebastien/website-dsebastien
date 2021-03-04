@@ -53,9 +53,15 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
   return (
     <StyledPage className="full-page flex flex-col flex-grow dark:prose-dark">
       <Head>
+        <meta charSet="utf-8" />
         <title>{meta.title}</title>
-        <meta name="robots" content="follow, index" />
         <meta content={meta.description} name="description" />
+        <meta name="keywords" content={meta.keywords} />
+        <meta name="robots" content="index,follow,max-image-preview:large" />
+        <meta
+          name="viewport"
+          content="width=device-width,minimum-scale=1,initial-scale=1"
+        />
         <meta
           property="og:url"
           content={`https://dsebastien.net${router.asPath}`}
@@ -66,15 +72,18 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         <meta property="og:description" content={meta.description} />
         <meta property="og:title" content={meta.title} />
         <meta property="og:image" content={meta.image} />
-        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="author" content="Sébastien Dubois" />
+        <meta property="article:author" content="https://dsebastien.net" />
+        <meta name="twitter:creator" content="@dSebastien" />
         <meta name="twitter:site" content="@dSebastien" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={meta.title} />
         <meta name="twitter:description" content={meta.description} />
         <meta name="twitter:image" content={meta.image} />
-        <meta name="keywords" content={meta.keywords} />
         {meta.date && (
           <meta property="article:published_time" content={meta.date} />
         )}
+        <meta name="theme-color" content="#3C74DB" /> {/* blue-500 */}
       </Head>
       <header className="main-header sticky-nav py-4 px-8 flex flex-col sm:flex-row justify-between bg-blue-500 text-gray-100 border-b-2 border-blue-700 shadow-lg">
         <a
