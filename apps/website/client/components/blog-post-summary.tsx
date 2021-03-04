@@ -34,7 +34,7 @@ const BlogPostSummary = ({
           </div>
           <p className="text-gray-900 dark:text-gray-400">{summary}</p>
         </div>
-        <div className="flex flex-col justify-end">
+        <div className="flex flex-col justify-end flex-shrink-0">
           <span className="text-sm text-gray-900 dark:text-gray-400">
             {publishedAt}
           </span>
