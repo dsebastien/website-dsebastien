@@ -1,0 +1,80 @@
+---
+title: 'Leveraging Type-Only imports and exports with TypeScript 3.8'
+summary: 'How to use Type-Only imports and exports with TypeScript 3.8'
+publishedAt: '2020-04-16'
+slug: 'leveraging-type-only-imports-and-exports-with-typescript-3-8'
+categories: [remote work, work, team management, management, team, leadership]
+keywords: [remote work, work, team management, management, team, leadership]
+---
+
+A few months back, I started seeing strange warnings in Webpack about exports that couldn’t be found.
+
+I was puzzled. Obviously, there was something wrong, since the export was really there:
+
+<Gist gistLink="dsebastien/f542e2b00a3be272c4ad58ace37b50ce" />
+
+And I couldn’t notice what was wrong where I was using that type:
+
+<Gist gistLink="dsebastien/db4f8516ece24de8afe61ee2e99eab81" />
+
+Can you spot the problem?
+
+## The root cause…
+
+After digging for a little while without having a clue, I’ve stumbled on the following issue: [https://github.com/webpack/webpack/issues/7378](https://github.com/webpack/webpack/issues/7378)
+
+I had a feeling it has something to do with TypeScript & transpilation, since I was importing/using a TypeScript type, but it wasn’t clear…
+
+And then it clicked; [Tobias Koppers immediately saw](https://github.com/webpack/webpack/issues/7378#issuecomment-392264102) what I failed to understand. I was “ashamed” since I had just [published a book about TypeScript](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding-ebook/dp/B081FB89BL/ref=sr_1_4?dchild=1&keywords=typescript+3&qid=1587049779&sr=8-4) :D
+
+The thing is that once TypeScript code is transpiled, interfaces/types are gone. They don’t exist anymore; they don’t exist in the _emitted_ files.
+
+What I didn’t think much about before is that while the types are erased, the imports/exports aren’t necessarily. The reason is that there are ambiguities and that the compiler doesn’t always know for sure whether something that is exported is a type or a value.
+
+In my particular case, what Webpack saw when it processed the resulting JavaScript code is that an import was there for something that didn’t exist.
+
+Webpack was lenient, so it only emitted a warning, but the issue was indeed really there and I had no control over what TypeScript generated in that case.
+
+## TypeScript 3.8 to the rescue
+
+I didn’t have much time to look further into the issue at that point, so I let it rest for a while (it wasn’t blocking), but later, once TypeScript 3.8 was released, I noticed something really interesting in the release notes: [Type-Only Imports and Exports](https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/#type-only-imports-exports).
+
+It directly reminded me of my import issue…
+
+This new feature of TypeScript added the possibility to import an element only as a type, precisely for cases where a type is imported only to be used as a type and never as a value. And this was exactly what I needed; thanks to this I could finally tell the compiler precisely what I wanted to do.
+
+To fix the problem, I simply had to replace this
+
+```
+import { MyCustomExpressRequest } from "../../../shared";
+```
+
+By the following:
+
+```
+import type { DidowiExpressRequest } from "../../../shared";
+```
+
+Wonderful!
+
+But what does this change in practice?
+
+Well, as the [TS release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/#type-only-imports-exports) explain, by importing an element using “import type”, it tells the compiler that the element is only imported to be used as a type annotation/declaration. Thanks to this, the compiler knows that it can erase the import in the emitted code.
+
+With this single change done, Webpack was immediately happier: no more weird imports!
+
+Note that you can also use `export type` to indicate that some export will only ever be used as a type annotation/declaration.
+
+Finally, the behavior can be further configured through the `importsNotUsedAsValues` flag.
+
+## Conclusion
+
+TypeScript Type-Only imports/exports are a useful addition to the language, allowing us to have more fine-grained control over what TypeScript does for us, hence allowing us to handle some annoying “edge cases” like this one.
+
+A word of warning though: don’t go overboard with this ;-)
+
+PS: If you want to learn tons of other cool things about TypeScript, Angular, React, Vue and other cool subjects, then don’t hesitate to [grab a copy of my book](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding-ebook/dp/B081FB89BL) and to subscribe to [my newsletter](https://mailchi.mp/fb661753d54a/developassion-newsletter)!
+
+That’s it for today!
+
+<BlogPostSignature />
