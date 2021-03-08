@@ -1,0 +1,274 @@
+---
+title: 'Deploying TLS certificates for local development and production using Kubernetes, cert-manager, mkcert and Let’s Encrypt'
+summary: 'How to deploy TLS certificates for local development and production using Kubernetes, cert-manager, mkcert and Let’s Encrypt'
+publishedAt: '2020-01-08'
+slug: 'deploying-tls-certificates-for-local-development-and-production-using-kubernetes-cert-manager'
+categories: [tls, https, security, certificates, kubernetes, infrastructure]
+keywords: [kubernetes, security, certificates, tls, https, cert-manager]
+---
+
+Recently with my project, I’ve dived into how to enable TLS on our client-facing infrastructure in production, but also for the development environment.
+
+Here’s how I’ve taken care of this!
+
+<Image
+  alt={`Locks`}
+  src={`/static/images/blog/2020/locks.jpeg`}
+  width={800}
+  height={535}
+  priority
+/>
+
+## Mission statement
+
+As the first iteration for secure communications in my project, my main objective was simply to put TLS termination in place at the edge of our Kubernetes cluster (i.e., at the ingress level), and to present Let’s Encrypt certificates to clients in production.
+
+When I get more time I’ll certainly come back to this to implement full-blown end-to-end encryption but, as the saying goes: “you have to learn to walk before you run” :)
+
+I set two sub-goals to reach for this first iteration:
+
+- Enabling TLS for local development
+- Enabling TLS for all the production & production-like environments (e.g., staging & production).
+
+I wanted a similar solution for both cases in order to keep the development environment as realistic as possible, but really couldn’t afford to spend a whole month to implement something.
+
+Another requirement was to have full automation/reproductibility (i.e., capability to delete/recreate everything easily).
+
+## cert-manager
+
+After some initial research and, since we were already “neck-deep” into Kubernetes, my choice has settled on [cert-manager](https://cert-manager.io/) an open source solution created by the wonderful people over at [Jetstack](https://twitter.com/JetstackHQ) (kudos to them!).
+
+cert-manager automates the management and issuance of TLS certificates _from different sources_.
+
+Once [installed](https://cert-manager.io/docs/installation/) (which is super easy using helm or the [yaml file provided by the project](https://github.com/jetstack/cert-manager/releases/download/v0.12.0/cert-manager.yaml)), the controller of cert-manager watches for the Custom Resource Definitions (CRDs) that it supports such as the “[Issuer](https://cert-manager.io/docs/concepts/issuer/)” or “[Certificate](https://cert-manager.io/docs/concepts/certificate/)” resource types.
+
+## cert-manager deployment steps
+
+In practice the deployment process of cert-manager goes like this:
+
+1.  Create a namespace for cert-manager (e.g., kubectl create namespace cert-manager)
+2.  Install cert-manager
+3.  Create one or more Issuers (e.g., one per namespace, one global, etc)
+4.  Create Certificate resources
+5.  Let the magic flow
+
+By the way, take a look at the [official docs of cert-manager](https://cert-manager.io/docs/), they have done a wonderful wonderful job there!
+
+To install cert-manager, the simplest approach is to use kubectl:
+
+```bash
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.12.0/cert-manager.yaml
+```
+
+## cert-manager issuers
+
+[Issuers](https://cert-manager.io/docs/concepts/issuer/) are those elements of cert-manager that can issue certificates (hence the name) and multiple types are supported out of the box, such as:
+
+- [SelfSigned](https://cert-manager.io/docs/configuration/selfsigned/): Simply a self-signed issuer
+- [CA](https://cert-manager.io/docs/configuration/ca/): An issuer that represents a Certificate Authority (CA) and has access to the corresponding private/public keys to issue new certificates
+- [ACME](https://cert-manager.io/docs/configuration/acme/): The coolest type of all, supporting the ACME protocol and thus compatible with [Let’s Encrypt](https://letsencrypt.org/)!
+
+## Battle plan
+
+The plan was as follows:
+
+- Use a CA Issuer for local development with self-signed certificates generated using [mkcert](https://github.com/FiloSottile/mkcert), allowing us to have TLS enabled local development with trusted certificates (easily added to the local trust stores using mkcert)
+- Use an ACME issuer for production and production-like environments to get certificates using Let’s Encrypt
+- Store the certificates in K8S secrets
+- Use those secrets in my [NGINX Ingress](https://github.com/kubernetes/ingress-nginx) through [the tls configuration option](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls)
+
+## ACME in a jiffy
+
+ACME, which stands for “**A**utomatic **C**ertificate **M**anagement **E**nvironment” is a cool protocol that was (I suppose?) standardized thanks to Let’s Encrypt and that allows CAs and “applicants” (i.e., certificate requesters) to automate the process of ownership/control verification and certificate issuance. ACME is now defined in [RFC8555](https://tools.ietf.org/html/rfc8555).
+
+I don’t know all the details of the ACME protocol, but an important part is the verification of ownership, which can be done in two main ways: using the http01 or the dns01 challenge. Those challenges aim to verify the ownership/control of the DNS domains in the certificate request.
+
+The http01 challenge asks the applicants to prove ownership by exposing a file with specific contents (go check out the RFC for details) at a specific URL, reachable through port 80 by Let’s Encrypt.
+
+On the other hand, the dns01 challenge asks to prove ownership by adding a specific DNS record.
+
+I chose http01 because it seemed way more straightforward to implement and self-contained within the Kubernetes cluster, while the dns01 challenge would have required me to interact with the DNS zone, plus deal with DNS replication delays and other subtleties :)
+
+In practice, there was of course some trial and error involved to get the whole thing working, but everything went according to plan quite easily.
+
+## HTTPS for local development
+
+For local development, it was really a breeze, as mkcert makes it really simple to create a self-signed Root CA certificate on the fly and to add it to the different trust stores of the host:
+
+```bash
+echo "Creating self-signed CA certificates for TLS and installing them in the local trust stores"
+CA_CERTS_FOLDER=$(pwd)/.certs
+# This requires mkcert to be installed/available
+echo ${CA_CERTS_FOLDER}
+rm -rf ${CA_CERTS_FOLDER}
+mkdir -p ${CA_CERTS_FOLDER}
+mkdir -p ${CA_CERTS_FOLDER}/${ENVIRONMENT_DEV}
+# The CAROOT env variable is used by mkcert to determine where to read/write files
+# Reference: https://github.com/FiloSottile/mkcert
+CAROOT=${CA_CERTS_FOLDER}/${ENVIRONMENT_DEV} mkcert -install
+```
+
+Basically after this step executes, a separate fake Root CA certificate is available which is then added to the local trust stores through mkcert -install. Easy as that!
+
+The next step consists in creating a secret in the target namespace, containing the certificate & private key:
+
+```bash
+echo "Creating K8S secrets with the CA private keys (will be used by the cert-manager CA Issuer)"
+kubectl -n some-namespace create secret tls my-ca-tls-secret --key=${CA_CERTS_FOLDER}/${ENVIRONMENT_DEV}/rootCA-key.pem --cert=${CA_CERTS_FOLDER}/${ENVIRONMENT_DEV}/rootCA.pem
+```
+
+If you want different Root CA certificates per environment, then it’s quite simple to replicate this
+
+Next up is the CA Issuer definition:
+
+```bash
+# Certificate Issuer (CA)
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+name: tls-ca-issuer
+namespace: some-namespace
+labels: ...
+annotations: ...
+spec:
+  ca:
+    secretName: my-ca-tls-secret
+```
+
+In this case, I’ve chosen to defined one issuer per namespace, because in production I want to limit the DNS domains that each issuer serves, so as to avoid having a dev environment requesting a certificate for a production domain.
+
+As an alternative for simpler deployments, cert-manager also supports a ClusterIssuer resource type, which is nearly identical.
+
+This issuer definition can be deployed like any other Kubernetes resource, with our dear friend kubectl apply :)
+
+As you can see, the CA issuer needs to know where to find the CA keys, which is specified through the secretName.
+
+With that in place (and assuming that cert-manager is installed into the cluster), then everything is ready to deliver certificates!
+
+Here’s an example:
+
+```bash
+# Reference: https://cert-manager.io/docs/usage/certificate/
+apiVersion: cert-manager.io/v1alpha2
+kind: Certificate
+metadata:
+  name: my-tls-certificate
+  namespace: some-namespace
+labels: ...
+spec:
+  secretName: my-app-tls-secret
+  dnsNames:
+    - my-app.dev.local
+  issuerRef:
+    name: tsl-ca-issuer
+    # Alternative: ClusterIssuer if there is a cluster-wide issuer available
+    kind: Issuer
+```
+
+Once that is applied onto the cluster, cert-manager will detect it and will pass the Certificate (which is basically a CSR of sorts) object to the Issuer, which will in turn take care of the rest. There are quite some details to know behind “the rest”, but I won’t dive into those details here. At the end, if all goes well, then the Issuer will save the newly generated certificate in the my-app-tls-secret secret.
+
+Once that is available, then it’s all a matter of using it, which is also quite easy with ingress-nginx:
+
+```bash
+apiVersion: extensions/v1beta1
+kind: Ingress
+namespace: some-namespace
+metadata: ...
+labels: ...
+annotations: ...
+spec:
+  tls:
+    # Hosts list must match those in the certificate
+    - hosts:
+      - my-app.dev.local
+    secretName: my-app-tls-secret
+  ...
+```
+
+If the certificate is available, then NGINX will make use of it and will perform [TLS termination](https://kubernetes.github.io/ingress-nginx/examples/tls-termination/).
+
+As the last piece of the puzzle, I simply added entries to my hosts file so that the my-app.local DNS name worked, without having to fiddle with DNSmasq and the like.
+
+And voilà, HTTPS for local development, clean and simple.
+
+## Production setup
+
+For production, the setup is very similar. What changes is mainly the Issuer, which is an ACME issuer:
+
+```bash
+# Certificate Issuer (ACME)
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: tls-acme-issuer
+namespace: some-namespace
+labels: ...
+annotations: ...
+spec:
+  acme:
+    # Production URL: https://acme-v02.api.letsencrypt.org/directory
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: <valid mail for certificate expiry notifications, API changes, etc>
+    # Where to store the Let's Encrypt account key
+    privateKeySecretRef:
+      name: acme-tls-issuer-account-secret-key
+    # Use the HTTP01 challenge
+    # Reference: https://cert-manager.io/docs/configuration/acme/http01/
+    solvers:
+    - http01:
+      ingress:
+        class: nginx
+    # This issuer is configured to only provide certificates
+    # for these specific DNS names
+    # Reference: https://cert-manager.io/docs/configuration/acme/#adding-multiple-solver-types
+    selector:
+      dnsNames:
+      - my-app.dev.local
+```
+
+There’s not that much more to know here:
+
+- server is the ACME endpoint, in this case Let’s Encrypt’s staging environment
+- privateKeySecretRef is the name of the secret in which cert-manager will store the private key of the account it will create to interact with Let’s Encrypt ACME endpoint (worth backing up!)
+- solvers define how the ACME challenges will be handled; in this case using the http01 “approach”
+- selector allows to be more selective; in this case I’m limiting the DNS names that can be handled by this issuer. I see this as a quite neat mean to limit what can be done with each issuer
+
+The part that was more tricky to get working was the ACME challenges with the actual production infrastructure, currently hosted on [DigitalOcean](https://www.digitalocean.com/).
+
+Initially, I had enabled the PROXY protocol at the load balancer level as well as on the NGINX ingress, in order to get ahold of the real client IPs within the cluster, but I ended up disabling it because of the trouble that it caused with ACME on Digital Ocean.
+
+I’ve tried various workarounds (including some DO Load Balancer annotations), but none that seemed to be working for my case.
+
+Since I wanted to move forward I’ve accepted that drawback for now, but there are certainly solutions. Maybe I’ll write another post about the specifics of DigitalOcean load balancers another day.. ;-)
+
+Also, I’ve ended up staying with my initial choice of the http01 ACME solver because the alternative (dns01) seemed wayyyy more dangerous if not well implemented.
+
+During my troubleshooting, I was glad to discover that there are super friendly/helpful people in the #cert-manager channel of the Kubernetes Slack: [http://slack.kubernetes.io/](http://slack.kubernetes.io/). Thanks again to them for their precious help!
+
+There’s also a useful page about troubleshooting in the official docs: [https://cert-manager.io/docs/faq/acme/](https://cert-manager.io/docs/faq/acme/)
+
+## About Let’s Encrypt rate limits
+
+I didn’t insist on that point in the previous section, but it’s worth knowing that Let’s Encrypt has quite strict rate limits in production.
+
+It makes ton of sense as their goal is to deliver as many certificates to as many people/organizations as possible, but you have to be aware of those rate limits, otherwise you risk running into troublesome production issues when banned for a week :)
+
+Check out the following page for details: [https://letsencrypt.org/docs/rate-limits/](https://letsencrypt.org/docs/rate-limits/)
+
+The general advice is to perform all testing against the staging environment, which is much friendlier.
+
+## That’s all folks!
+
+There are a gazillion more details to discuss, but this should give you a good overview of the whole process.
+
+So far I’m really happy with the solution and with the simplicity/clarity of the whole solution.
+
+Let’s Encrypt is awesome, supports millions of Websites around the world and delivers A+ grade certificates.
+
+I also really like the fact that I can have a relatively realistic development environment, which enables usage of service workers and the like without too much hassle.
+
+I can of course improve many parts, for instance with things like [step-issuer](https://github.com/smallstep/step-issuer), but I just don’t have the luxury to get into that right now.
+
+That’s it for today!
+
+<BlogPostSignature />
