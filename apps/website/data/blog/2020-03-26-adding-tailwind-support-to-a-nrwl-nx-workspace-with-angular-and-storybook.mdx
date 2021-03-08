@@ -1,6 +1,6 @@
 ---
 title: 'Adding Tailwind support to a Nrwl NX workspace with Angular and Storybook'
-summary: "How to configure Tailwind in Angular and Storybook"
+summary: 'How to configure Tailwind in Angular and Storybook'
 publishedAt: '2020-03-26'
 image: '/static/images/blog/2020/tailwind.png'
 slug: 'adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook'
@@ -20,7 +20,7 @@ In this article, I’ll explain how to add [Tailwind](https://tailwindcss.com/) 
 
 This article will _not_ help you install Nx, Angular or Storybook. If you’re looking for that, then [go look](https://nx.dev/angular/getting-started/what-is-nx) [elsewhere](https://nx.dev/angular/guides/modernize-storybook-angular) :)
 
-### Installing Tailwind
+## Installing Tailwind
 
 [Installing Tailwind](https://tailwindcss.com/docs/installation/) is rather straightforward.
 
@@ -32,12 +32,12 @@ npm install tailwindcss --save-dev
 
 (BTW, the official documentation proposes to install Tailwind as a dependency rather than as a devDependency, but I’m not a big fan of [Adam’s rationale](https://github.com/tailwindcss/discuss/issues/358) even though there’s some truth in it :p).
 
-Then, assuming that you’re using SCSS files, edit your app’s main stylesheet (usually under apps/<app\_name>/src/styles.scss) and add the following on top:
+Then, assuming that you’re using SCSS files, edit your app’s main stylesheet (usually under apps/<app_name>/src/styles.scss) and add the following on top:
 
 ```scss
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 ```
 
 Note that those imports don’t start with the “~” character as you might have in your existing imports. I didn’t have time to dive into the details, but it works like this for me :)
@@ -56,7 +56,7 @@ Is that it? Not quite. If you try to use some Tailwind classes at this point, no
 
 So what’s missing? Well, Tailwind requires a build step, so we need to integrate it in our build system.
 
-### Adding Tailwind support to the Angular build
+## Adding Tailwind support to the Angular build
 
 Now that Tailwind is available in your Nx workspace, you need to modify the angular.json file in order to integrate Tailwind into the build pipeline.
 
@@ -118,7 +118,7 @@ Next, you need to create the Webpack configuration.
 
 Go ahead and create a “webpack.config.js” file at the root of your workspace, with the following contents:
 
-```javascript
+````javascript
 "use strict";
 
 /**
@@ -168,7 +168,7 @@ const tailwindWebpackRule = {
 };
 
 exports.tailwindWebpackRule = tailwindWebpackRule;
-```
+````
 
 In this JS module, we define and export a single Webpack rule (based on the official Tailwind documentation). That rule simply tells Webpack that all “.scss” files should be handled by the [postcss-loader](https://github.com/postcss/postcss-loader) Webpack loader. Finally, that loader is configured with a few plugins, including Tailwind!
 
@@ -179,19 +179,19 @@ Of course, you can go crazy(ier) with the PostCSS configuration, since it is rea
 To finish up this part, you need one more file: “helpers.js”, which is a simple module exporting a utility function that we make use of in webpack-common.config.js:
 
 ```javascript
-"use strict";
+'use strict';
 
 /**
   Helper functions.
   Mainly used for the build system
  **/
 
-const path = require("path");
+const path = require('path');
 
 /**
   Path to the root of the workspace
  **/
-const _root = path.resolve(process.cwd(), "."); // project root folder
+const _root = path.resolve(process.cwd(), '.'); // project root folder
 
 /**
   Function that returns the relative path to the given file, from the root of the workspace
@@ -206,7 +206,7 @@ This “root” function simply returns the root-relative path to any file that 
 
 At this point, you’re good to go, Tailwind should be available in your app and you can take advantage of it.
 
-### Adding Tailwind support to Nx’s Storybook build
+## Adding Tailwind support to Nx’s Storybook build
 
 Now that Tailwind is properly integrated in your Nx workspace, it’s really simple to add the same support to the Storybook build.
 
@@ -226,7 +226,6 @@ Inside of each of those “.storybook” folders, you’ll find multiple element
 0 directories, 4 files
 ```
 
-
 As you can see, there’s a “webpack.config.js” file in there. That’s cool, it means that Storybook is built using Webpack and we can customize it to include the Webpack rule that we’ve added earlier to the “webpack.config.js” file!
 
 The “webpack.config.js” file within the “.storybook” folder of each library loads the “webpack.config.js” file present in the workspace root folder’s “.storybook” folder (i.e., the library-local configuration loads/extends the workspace root configuration)
@@ -236,10 +235,10 @@ Knowing this, you can decide to place the customization that follows where you p
 If you want to add Tailwind support only for a specific library, then edit it’s “.storybook/webpack.config.js” file as follows:
 
 ```javascript
-"use strict";
+'use strict';
 
-const rootWebpackConfig = require("../../../.storybook/webpack.config");
-const webpackCommonConfig = require("../../../webpack-common.config");
+const rootWebpackConfig = require('../../../.storybook/webpack.config');
+const webpackCommonConfig = require('../../../webpack-common.config');
 
 // Export a function. Accept the base config as the only param.
 module.exports = async ({ config, mode }) => {
@@ -257,9 +256,9 @@ Above, we simply load the root configuration and push our rule into the rules ar
 Alternatively (and preferably!), you can simply adapt the Webpack configuration of Storybook once at the root of your workspace by modifying “./.storybook/webpack.config.js” as follows:
 
 ```javascript
-"use strict";
+'use strict';
 
-const webpackCommonConfig = require("../webpack-common.config");
+const webpackCommonConfig = require('../webpack-common.config');
 
 // Export a function. Accept the base config as the only param.
 module.exports = async ({ config, mode }) => {

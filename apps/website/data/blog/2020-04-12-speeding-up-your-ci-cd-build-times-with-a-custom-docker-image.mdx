@@ -28,7 +28,7 @@ In my project, that folder contains ~160K files, adding up to ~750MB (!).
 
 For this reason, it takes a really long time for the caching system to compress all the files, upload the archive and retrieve/unpack it for each subsequent pipeline job.
 
-### Initial situation
+## Initial situation
 
 Just to give you an idea, here’s what my pipeline looks like:
 
@@ -108,7 +108,7 @@ In addition, at the beginning of the whole pipeline, an init script pushed the f
 
 Note: I wondered about using a different cache key, but figured it wouldn’t help much since the a lot of wasted time goes into the archive compression/decompression…
 
-### Failed attempts
+## Failed attempts
 
 During my investigation, I’ve tried various combinations:
 
@@ -123,7 +123,7 @@ After all this, I’ve realized that there was no solution over there; the overa
 
 So I needed to try something else.
 
-### Using a custom Docker image
+## Using a custom Docker image
 
 By closely looking at the init script, I’ve realized that most of the time was wasted:
 
@@ -367,7 +367,7 @@ COPY --from=npm-install ${NPM_CACHE_FOLDER} ${NPM_CACHE_FOLDER}
 RUN echo "$(ls -ail ${NPM_CACHE_FOLDER})"
 ```
 
-### Creating and publishing the Docker image
+## Creating and publishing the Docker image
 
 To create the Docker image, I use a simple bash script:
 
@@ -436,7 +436,7 @@ Since this image can be public, it isn’t an issue though.
 
 And voilà, the image is now on the Docker hub,
 
-### Refactored CI/CD pipeline
+## Refactored CI/CD pipeline
 
 Let’s now go back to our pipeline configuration.
 
@@ -479,7 +479,7 @@ I did keep the npm packages installation since the base image only contains a pr
 
 That’s it!
 
-### Improvements
+## Improvements
 
 Now that the pipeline uses a custom Docker image, a lot of the tedious/repetitive job initialization work is simply _gone_.
 
@@ -489,7 +489,7 @@ This decreases the pipeline execution times by quite a lot, getting it down to ~
 
 The fact that we cache the Cypress binaries in the image is also beneficial, as we avoid the long and painful download during npm install.
 
-### Things to pay attention to
+## Things to pay attention to
 
 The Docker image is nice because, once cached, the Gitlab runners can start it right away, but it has its downsides too:
 
@@ -497,7 +497,7 @@ Whenever the project dependencies change, the npm cache contained in the image w
 
 Another case where the image needs to be reconstructed/republished is when the node, npm or Cypress versions used by the monorepo are changed. This isn’t too often, so that’s quite acceptable.
 
-### Next steps
+## Next steps
 
 In the future, I plan to come back to this again, certainly hoping to be able to benefit from improvements of the cache feature of Gitlab CI. I think that there’s hope as multiple PRs are being worked on, but we’ll see how it helps.
 

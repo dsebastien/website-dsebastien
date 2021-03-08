@@ -1,0 +1,174 @@
+---
+title: 'Why and how to use stable node and npm versions across your project & team'
+summary: 'Use stable versions of Node.js and npm to avoid surprises'
+publishedAt: '2020-04-12'
+image: '/static/images/blog/2020/stable.jpeg'
+slug: 'why-and-how-to-use-stable-node-and-npm-versions-across-your-project-and-team'
+categories: [javascript, node, npm, build, tools]
+keywords: [javascript, node, npm, build, tools]
+---
+
+<Image
+  alt={`Picture courtesy of @veverkolog: https://unsplash.com/@veverkolog`}
+  src={`/static/images/blog/2020/stable.jpeg`}
+  width={2400}
+  height={1600}
+  priority
+/>
+
+I’m a firm believer that development environments should be as stable as possible in order to eliminate discrepancies between environments and among developers. Configurations have a natural tendency to drift when left alone, so it’s best to automate and enforce as many things as possible.
+
+That’s why I consider that Node-based projects should be using a stable and known version of both NodeJS and npm everywhere: to develop locally, to execute the tests, to build the production binaries and to run the application in production.
+
+For project dependencies, this is easy to enforce, as you can list your dependencies in package.json and add the package-lock.json or yarn.lock file to the codebase.
+
+For the version of node itself and npm though, there’s a bit more work to do.
+
+In this article, I’ll explain what steps can be taken to ensure that you use the same/expected versions everywhere.
+
+## Project-wide versions for node and npm
+
+The first thing that you can do is to create files at the root of your project (or monorepo) to state the versions to use.
+
+In my monorepo, I have created:
+
+- .npm-version, which only contains 6.14.4
+- .nvmrc, which contains 12.15.0
+
+The “.npm-version” file name is arbitrary as there’s no convention that I know of for this particular need, but the “.nvmrc” file is the [name expected](https://github.com/nvm-sh/nvm#nvmrc) by [nvm](https://github.com/nvm-sh/nvm), a famous node version management tool.
+
+With these two files added, we now have a single source of truth for the node and npm versions to use.
+
+But this alone doesn’t do much.
+
+## Defining npm engines
+
+The second thing that we can do is to leverage a very useful (but not so well known) [feature of npm](https://docs.npmjs.com/files/package.json#engines)’s package.json files called the [engines](https://docs.npmjs.com/files/package.json#engines).
+
+In the package.json file, we can specify the versions that should be used for different “engines”, through the “engines” field.
+
+Here’s an example:
+
+```json
+"engines": {
+  "node": ">=12.15.0 <= 12.99.0",
+  "npm": ">=6.14.4 <= 6.99.99"
+}
+```
+
+This tells npm that it should expect the project to be used with a node version equal or above 12.15.0 and an npm version equal or above 6.14.4.
+
+We could of course be even stricter here, but let’s stick with this for this example.
+
+Note that if the engines field is specified, npm will expect to find at least “node” in the list of engines.
+
+Tip: you can also specify the version of yarn if you’re using that; Yarn [supports it as well](https://classic.yarnpkg.com/en/docs/package-json/#toc-engines).
+
+## Enforcing npm engines with npm
+
+By default with npm, the engines list is advisory only and will only produce warnings. Yarn is less lenient and will explode if the engines list is not respected.
+
+The good news is that we can configure npm to enforce the engines list, by setting the [**engine-strict**](https://docs.npmjs.com/misc/config#engine-strict) config flag.
+
+We could instruct all of the developers to adapt their npm config or put this in a developer guide, but the better approach is to add a .npmrc file to the project in order to enforce it automatically.
+
+Here’s an example:
+
+```
+# Make sure that we use the expected node and npm versions
+engine-strict=true
+```
+
+With this in place, npm will let us know if we’re trying to build/install using an unexpected version of node or npm.
+
+### Using an env file
+
+Another step that we can take to leverage our versions all across the build lifecycle is to use a “**.env”** file. [Env files](https://docs.docker.com/compose/env-file/) are simply lists of environment variables.
+
+In my project, I generate one whenever the project needs to be built, tested, executed or deployed. That file is derived from various config files and I won’t get into that just yet.
+
+What matters is that when I generate the .env file, I read my .npm-version and .nvmrc files in order to be able to define the NPM_VERSION and NODE_VERSION variables correctly.
+
+In my base variables file, I have the following:
+
+```bash
+export NODE_VERSION=$(cat ./.nvmrc)
+export NPM_VERSION=$(cat ./.npm-version)
+```
+
+Which I simply echo out to my .env file using:
+
+```bash
+echo NODE_VERSION=${NODE_VERSION} >> .env
+echo NPM_VERSION=${NPM_VERSION} >> .env
+```
+
+The .env file is useful because it can be loaded in various contexts (e.g., Docker build, Docker compose, Kubernetes configMaps/secrets, shell scripts, build scripts, etc).
+
+I’ll show some examples below.
+
+### Leveraging the env file in a Dockerfile
+
+As I’ve [demonstrated in my last article](https://medium.com/@dSebastien/speeding-up-your-ci-cd-build-times-with-a-custom-docker-image-3bfaac4e0479), we can pass arguments to Dockerfiles, which is exactly what I did for my CI Docker image.
+
+Since we want to enforce the node and npm versions, we need to pass those as arguments to the Dockerfile so that it uses the correct versions while building the image.
+
+Check out [the article](https://medium.com/@dSebastien/speeding-up-your-ci-cd-build-times-with-a-custom-docker-image-3bfaac4e0479) if you want to see the details for this.
+
+The same is indeed true for the scripts that take care of creating the Docker image; here’s an example:
+
+```bash
+#!/usr/bin/env bash
+
+# Reference: https://stackoverflow.com/questions/19331497/set-environment-variables-from-file-of-key-value-pairs
+# Import env vars
+set -o allexport
+source ./.env
+set +o allexport
+
+echo "-----------------------------------"
+echo "Create some Docker image           "
+echo "-----------------------------------"
+
+echo "Building the Docker image for whatever"
+
+# Build arg values are passed automatically because they have the same name in the Dockerfile
+# Reference: https://vsupalov.com/docker-build-pass-environment-variables/#using-host-environment-variable-values-to-set-args
+docker ${DOCKER_EXTRA_OPTIONS} build \
+       ${DOCKER_BUILD_EXTRA_OPTIONS} \
+       --build-arg DOCKER_BASE_IMAGE \
+       --build-arg NODE_VERSION \
+       --build-arg NPM_VERSION \
+       --build-arg NODE_OPTIONS \
+       ...
+       --target ${DOCKER_BUILD_TARGET} \
+       --file Dockerfile \
+       --tag ${DOCKER_IMAGE_NAME}:latest \
+       --tag ${DOCKER_IMAGE_NAME}:${PROJECT_COMMIT_HASH} \
+       --tag ${DOCKER_IMAGE_NAME}:${PROJECT_VERSION} \
+       .
+```
+
+By passing the correct arguments to the Dockerfile, we can make sure to use the correct base NodeJS Docker image.
+
+Also, once the Dockerfile has an environment variable with the npm and node versions, it can use those to install the expected versions; for instance:
+
+```
+npm install --global npm@${NPM_VERSION}
+```
+
+Thanks to this, we can be sure that the correct versions will be used.
+
+Moreover, if you’re using the Docker images for development as well like I do, then you can also be sure that the Docker/docker-compose/Kubernetes development environments embarks the expected versions.
+
+Thanks to the fact that there’s a single source of truth for the versions, it’s rather easy to adapt: change the files, rebuild/publish and that’s it.
+
+### Conclusions
+
+This article has covered a few useful tips to reduce the discrepancies between developers in a project team, but also to keep development and production environments aligned.
+
+These are small and easy steps to take, but they can greatly help decrease the number of occurrences of the “it works on my machine” syndrome.
+
+That’s it for today!
+
+<BlogPostSignature />
