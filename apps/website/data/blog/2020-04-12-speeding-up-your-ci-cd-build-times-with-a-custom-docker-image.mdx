@@ -1,0 +1,510 @@
+---
+title: 'Speeding up your CI/CD build times with a custom Docker image'
+summary: 'How to drastically reduce CI/CD build times for Node.js projects using a custom Docker image'
+publishedAt: '2020-04-12'
+image: '/static/images/blog/2020/node-mass.jpeg'
+slug: 'speeding-up-your-ci-cd-build-times-with-a-custom-docker-image'
+categories: [gitlab, ci/cd, docker, node, nodejs, infrastructure, build, tools]
+keywords: [gitlab, ci/cd, docker, node, nodejs, infrastructure, build, tools]
+---
+
+<Image
+  alt={`Node mass`}
+  src={`/static/images/blog/2020/node-mass.jpeg`}
+  width={800}
+  height={575}
+  priority
+/>
+
+In this article, I’ll explain how I’ve drastically reduced the execution time of the CI/CD pipeline of my monorepo. The examples of the article are geared towards Gitlab CI, but the ideas are applicable to other systems as well.
+
+We’ve been using Gitlab for quite some time now. Unfortunately for us, the install/build times for NodeJS based projects are quite disappointing. There’s a [long standing open issue](https://gitlab.com/gitlab-org/gitlab-runner/issues/1797) regarding that problem and no solution is available as of yet.
+
+For npm projects, the [official guidelines of Gitlab](https://docs.gitlab.com/ee/ci/caching/#caching-nodejs-dependencies) propose to add the npm cache folder to the CI cache, but this approach is too slow for many projects. It’s even worse with monorepos where the number of dependencies can be quite large.
+
+The problem is that the [caching mechanism offered by Gitlab CI](https://docs.gitlab.com/ee/ci/caching/) is not that fast for dealing with the node_modules or npm cache folders. As we all know, node_modules folders are among the heaviest objects in the universe…
+
+In my project, that folder contains ~160K files, adding up to ~750MB (!).
+
+For this reason, it takes a really long time for the caching system to compress all the files, upload the archive and retrieve/unpack it for each subsequent pipeline job.
+
+### Initial situation
+
+Just to give you an idea, here’s what my pipeline looks like:
+
+<Image
+  alt={`Initial CI/CD pipeline`}
+  src={`/static/images/blog/2020/cicd-initial.png`}
+  width={1222}
+  height={189}
+  priority
+/>
+
+Here’s a breakdown of what each job does:
+
+- Codegen generates shared code based on static assets
+- Compile
+- Lint: performs so basic code quality checks
+- Unit tests
+- End-to-end tests: optional/manual step that uses Cypress against Storybook to test pages/components/scenarios
+- Build the affected apps (anything that was changed or that needs to be rebuilt because a dependency has changed)
+- Static security audit: basic security checks (dependency versions, known vulnerabilities, etc)
+- Create Docker images (first step for the CD pipeline)
+
+As you can see on the image above, some of the steps run in parallel to fasten the process a little bit. They race against each other to try and fail the build. BTW, thinking about it, I should probably move the security audit step along with the tests :)
+
+Most of these steps require the project dependencies to be installed. Also, the end-to-end tests require Cypress, which has [its own caching specificities](https://docs.cypress.io/guides/guides/continuous-integration.html#Caching).
+
+This pipeline is [using a Docker image](https://docs.gitlab.com/ee/ci/docker/using_docker_images.html). Here’s what the .gitlab-ci.yml file looked like initially:
+
+```docker
+image: node:12.15.0-slim
+
+stages:
+  - init
+  - test
+  - security audit
+  - build
+  - ...
+before_script:
+  - echo "Pipeline ID = $CI_PIPELINE_ID"
+  - echo "Project name = $CI_PROJECT_NAME"
+  - echo "Build ref = $CI_BUILD_REF_NAME"
+  - pwd
+  - ls -ail
+  - ...
+  - apt-get install -y --no-install-recommends node-gyp python make g++ bash git libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+  - export NODE_VERSION=$(cat ./.nvmrc)
+  - export NPM_VERSION=$(cat ./.npm-version)
+  - export NODE_ENV=development
+  - echo "Enforcing npm version = ${NPM_VERSION}"
+  - npm install --global npm@${NPM_VERSION}
+  - echo "Default environment:"
+  - env
+  - echo "Installing dependencies"
+  - "[ -d node_modules ] || npm ci --no-progress --quiet"
+  - date
+
+cache:
+  key: ${CI_COMMIT_SHA}
+  paths: ['node_modules/']
+
+Init:
+  stage: init
+  script: ['']
+  cache:
+    policy: push
+    key: ${CI_COMMIT_SHA}
+    paths: ['node_modules/']
+```
+
+As you can see above, this pipeline config did a lot of work before each job:
+
+- Installed a number of system level packages like node-gyp (I still hate you node-gyp!)
+- Installed the expected version of npm globally
+- Installed the dependencies of the project (including Cypress)
+
+In addition, at the beginning of the whole pipeline, an init script pushed the files in node_modules to the cache.
+
+Note: I wondered about using a different cache key, but figured it wouldn’t help much since the a lot of wasted time goes into the archive compression/decompression…
+
+### Failed attempts
+
+During my investigation, I’ve tried various combinations:
+
+- Not caching anything
+- Caching only the npm cache
+- Caching only the node_modules folder
+- Using the [job artifacts](https://docs.gitlab.com/ee/ci/pipelines/job_artifacts.html) feature of Gitlab instead of the caching mechanism
+- Combining both the caching mechanism and artifacts
+- …
+
+After all this, I’ve realized that there was no solution over there; the overall pipeline build times remained really way too high (> 40 minutes in total).
+
+So I needed to try something else.
+
+### Using a custom Docker image
+
+By closely looking at the init script, I’ve realized that most of the time was wasted:
+
+- Installing the same system packages over and over, before each job of the pipeline
+- Installing npm and the project dependencies with a cold cache the first time
+- Packing/Uploading the node_modules contents the first time
+- Downloading/unpacking the node_modules contents on subsequent jobs
+
+Based on this, I’ve decided to create a custom Docker image, extending the official NodeJS image to do all the stuff I needed, once and for all.
+
+My goals with the image were to:
+
+- Install the system packages once, so that each pipeline job does not have to do that anymore
+- Define the global npm cache location using the `NPM_CACHE_FOLDER`environment variable
+- Install npm once, so that each pipeline job does not have to do that anymore
+- Install the project dependencies once so that the npm cache is “hot” when each pipeline job starts
+- Define the global [Cypress cache location](https://docs.cypress.io/guides/getting-started/installing-cypress.html#Binary-cache) using the environment `CYPRESS_CACHE_FOLDER` variable
+- Install Cypress once so that each pipeline job does not have to do that anymore, as recommended by the [caching guidelines of Cypress](https://docs.cypress.io/guides/guides/continuous-integration.html#Caching)
+
+So that’s exactly what I did.
+
+Here’s the Dockerfile that I’ve ended up with for now:
+
+```docker
+# ---------------------------------------------------------------
+# CI image
+# - Used for Gitlab (see .gitlab-ci.yml)
+# - MUST be updated whenever the CI installation requirements (i.e., packages/versions) change
+# ---------------------------------------------------------------
+# ARGS are declared before any FROM so that they are globally available
+# Reference: https://github.com/docker/for-mac/issues/2155#issuecomment-372639972
+ARG BASE_DOCKER_IMAGE
+# ---------------------------------------------------------------
+# Base image
+# - Configure cache folders for npm and cypress
+# - Install npm and cypress
+# ---------------------------------------------------------------
+FROM ${BASE_DOCKER_IMAGE} as base
+# Args
+ARG NODE_VERSION
+ARG NPM_VERSION
+ARG CYPRESS_VERSION
+# Env
+ENV NODE_VERSION="${NODE_VERSION}"
+ENV NPM_VERSION="${NPM_VERSION}"
+ENV NODE_ENV=development
+ENV CYPRESS_VERSION="${CYPRESS_VERSION}"
+# good colors for most applications
+ENV TERM xterm
+# avoid million NPM install messages
+ENV npm_config_loglevel warn
+# allow installing when the main user is root
+ENV npm_config_unsafe_perm true
+# avoid too many progress messages
+ENV CI=1
+# For cypress
+# disable shared memory X11 affecting Cypress v4 and Chrome
+# References:
+# https://github.com/cypress-io/cypress-docker-images/blob/master/included/4.3.0/Dockerfile
+# https://github.com/cypress-io/cypress-docker-images/issues/270
+ENV QT_X11_NO_MITSHM=1
+ENV _X11_NO_MITSHM=1
+ENV _MITSHM=0
+# Define the npm cache folder
+ENV NPM_CACHE_FOLDER=/root/.cache/npm
+# point Cypress at the /root/cache no matter what user account is used
+# see https://on.cypress.io/caching
+ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress
+RUN mkdir -p ~/.gnupg && \
+  echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf && \
+  # General packages
+  apt-get update && \
+  apt-get install -y --no-install-recommends bash curl gnupg dirmngr ca-certificates gnupg-agent software-properties-common apt-transport-https node-gyp python make g++ git && \
+  # Cypress packages
+  apt-get install -y --no-install-recommends libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb && \
+  # Docker packages
+  curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
+  add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+  apt-get update && \
+  apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io && \
+  apt-get purge --auto-remove -y dirmngr gnupg ca-certificates && \
+  rm -rf /var/lib/apt/lists/*
+# Install npm & Cypress
+RUN npm install --global npm@${NPM_VERSION} && \
+  npm install -g "cypress@${CYPRESS_VERSION}" && \
+  echo "Cypress configuration:" && \
+  cypress cache path && \
+  cypress cache list && \
+  cypress info && \
+  cypress verify
+# Useful to inspect the image
+#ENTRYPOINT ["/bin/bash"]
+#CMD []
+# ---------------------------------------------------------------
+# Prefill npm cache image
+# - Installs our dependencies so that the npm cache is "hot" in the image
+# - We do not keep this image! It is only used to help construct the final image
+# ---------------------------------------------------------------
+FROM base as npm-install
+RUN mkdir /temp
+WORKDIR /temp
+RUN echo "Work dir: $(pwd)"
+COPY --chown=root:root package.json package-lock*.json ./
+# Install npm dependencies
+RUN npm ci --cache ${NPM_CACHE_FOLDER} --no-audit --no-optional
+RUN echo "$(ls -ail ${NPM_CACHE_FOLDER})"
+# Useful to inspect the image
+#ENTRYPOINT ["/bin/bash"]
+#CMD []
+# ---------------------------------------------------------------
+# Final CI image
+# - Take the base image and add the npm cache to it (not the node modules of the project)
+# ---------------------------------------------------------------
+FROM base as ci
+COPY --from=npm-install ${NPM_CACHE_FOLDER} ${NPM_CACHE_FOLDER}
+RUN echo "$(ls -ail ${NPM_CACHE_FOLDER})"
+# Useful to inspect the image
+#ENTRYPOINT ["/bin/bash"]
+#CMD []
+```
+
+Let’s go through it step by step.
+
+First of all, the image requires a few arguments to be defined:
+
+- **BASE_DOCKER_IMAGE**: The base image to use; in this case, this is replaced by a specific version of the [official base Node.js Docker image](https://hub.docker.com/_/node/) (e.g., node-12.15.0-slim)
+- **NODE_VERSION**: A reference to the version of node used by the project
+- **NPM_VERSION**: The npm version to use
+- **CYPRESS_VERSION**: The Cypress version to use
+
+The reason why I pass those arguments in is to be able to easily create new versions of this image, depending on how the monorepo dependencies evolve. You can find more information about Dockerfile args [here](https://docs.docker.com/engine/reference/builder/#understand-how-arg-and-from-interact).
+
+Once those arguments are received, I turn them into environment variables using the ENV instruction, so that I can make use of them in the image.
+
+I then define a few other useful environment variables for npm and Cypress:
+
+```docker
+# Env
+ENV NODE_VERSION="${NODE_VERSION}"
+ENV NPM_VERSION="${NPM_VERSION}"
+ENV NODE_ENV=development
+ENV CYPRESS_VERSION="${CYPRESS_VERSION}"
+# good colors for most applications
+ENV TERM xterm
+# avoid million NPM install messages
+ENV npm_config_loglevel warn
+# allow installing when the main user is root
+ENV npm_config_unsafe_perm true
+# avoid too many progress messages
+ENV CI=1
+# For cypress
+# disable shared memory X11 affecting Cypress v4 and Chrome
+# References:
+# https://github.com/cypress-io/cypress-docker-images/blob/master/included/4.3.0/Dockerfile
+# https://github.com/cypress-io/cypress-docker-images/issues/270
+ENV QT_X11_NO_MITSHM=1
+ENV _X11_NO_MITSHM=1
+ENV _MITSHM=0
+# Define the npm cache folder
+ENV NPM_CACHE_FOLDER=/root/.cache/npm
+# point Cypress at the /root/cache no matter what user account is used
+# see https://on.cypress.io/caching
+ENV CYPRESS_CACHE_FOLDER=/root/.cache/Cypress
+```
+
+Next up, I install all of the system level packages that I need, following the best practice that consists in avoiding to create too many layers and balance that with the parts that could vary more often.
+
+For now I’ve just regrouped all of those in a single RUN statement (so all this ends up in a single layer, but I could split those up a bit later on if it helps:
+
+```docker
+RUN mkdir -p ~/.gnupg && \
+  echo "disable-ipv6" >> ~/.gnupg/dirmngr.conf && \
+  # General packages
+  apt-get update && \
+  apt-get install -y --no-install-recommends bash curl gnupg dirmngr ca-certificates gnupg-agent software-properties-common apt-transport-https node-gyp python make g++ git && \
+  # Cypress packages
+  apt-get install -y --no-install-recommends libgtk2.0-0 libgtk-3-0 libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb && \
+  # Docker packages
+  curl -fsSL https://download.docker.com/linux/debian/gpg | apt-key add - && \
+  add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+  apt-get update && \
+  apt-get install -y --no-install-recommends docker-ce docker-ce-cli containerd.io && \
+  apt-get purge --auto-remove -y dirmngr gnupg ca-certificates && \
+  rm -rf /var/lib/apt/lists/*
+```
+
+Once the system packages are there, I install the versions of npm and Cypress specified through the args. That way the image contains the expected versions:
+
+```docker
+# Install npm & Cypress
+RUN npm install --global npm@${NPM_VERSION} && \
+  npm install -g "cypress@${CYPRESS_VERSION}" && \
+  echo "Cypress configuration:" && \
+  cypress cache path && \
+  cypress cache list && \
+  cypress info && \
+  cypress verify
+```
+
+All of the above represents the “base” image of my CI Dockerfile, as shown below:
+
+```docker
+FROM ${BASE_DOCKER_IMAGE} as base
+```
+
+“base” is the name that I associate with that “sub”-image.
+
+I actually define a [multi-stage Dockerfile](https://docs.docker.com/develop/develop-images/multistage-build/), and the “base” image is the first stage.
+
+In the next stage of the image, I install the dependencies of my monorepo. I do this in a separate stage because I actually don’t care about the installed dependencies. What I do care about is the npm cache that is created as part of that installation.
+
+So in this stage, I add the package.json & package-lock.json files, run npm ci, specifying the cache folder location to use:
+
+```docker
+# ---------------------------------------------------------------
+# Prefill npm cache image
+# - Installs our dependencies so that the npm cache is "hot" in the image
+# - We do not keep this image! It is only used to help construct the final image
+# ---------------------------------------------------------------
+FROM base as npm-install
+RUN mkdir /temp
+WORKDIR /temp
+RUN echo "Work dir: $(pwd)"
+COPY --chown=root:root package.json package-lock*.json ./
+# Install npm dependencies
+RUN npm ci --cache ${NPM_CACHE_FOLDER} --no-audit --no-optional
+RUN echo "$(ls -ail ${NPM_CACHE_FOLDER})"
+```
+
+An improvement that I could do above is to directly remove the created node_modules folder as it isn’t useful and just ends up wasting my disk space.
+
+In the final stage of the image (the one that actually matters), I simply extend from the “base” stage and copy over the npm cache folder contents:
+
+```docker
+# ---------------------------------------------------------------
+# Final CI image
+# - Take the base image and add the npm cache to it (not the node modules of the project)
+# ---------------------------------------------------------------
+FROM base as ci
+COPY --from=npm-install ${NPM_CACHE_FOLDER} ${NPM_CACHE_FOLDER}
+RUN echo "$(ls -ail ${NPM_CACHE_FOLDER})"
+```
+
+### Creating and publishing the Docker image
+
+To create the Docker image, I use a simple bash script:
+
+```bash
+#!/usr/bin/env bash
+
+# Reference: https://stackoverflow.com/questions/19331497/set-environment-variables-from-file-of-key-value-pairs
+# Import env vars
+set -o allexport
+source ./.env
+set +o allexport
+
+echo "-----------------------------------"
+echo "Create CI image                    "
+echo "-----------------------------------"
+
+# Identify the version of Cypress used by the project
+export CYPRESS_VERSION="$(cat package.json | jq '.devDependencies.cypress' -r)"
+
+echo "Building the Docker image for CI: ${CI_DOCKER_IMAGE_NAME}"
+
+# Build arg values are passed automatically because they have the same name in the Dockerfile
+# Reference: https://vsupalov.com/docker-build-pass-environment-variables/#using-host-environment-variable-values-to-set-args
+docker ${DOCKER_EXTRA_OPTIONS} build \
+       ${DOCKER_BUILD_EXTRA_OPTIONS} \
+       --build-arg DOCKER_BASE_IMAGE \
+       --build-arg NODE_VERSION \
+       --build-arg NPM_VERSION \
+       --build-arg CYPRESS_VERSION \
+       --file Dockerfile \
+       --tag ${CI_DOCKER_IMAGE_NAME}:latest \
+       --tag ${CI_DOCKER_IMAGE_NAME}:${PROJECT_COMMIT_HASH} \
+       --tag ${CI_DOCKER_IMAGE_NAME}:${PROJECT_VERSION} \
+       .
+```
+
+As you can see, it extracts the version of Cypress to use from the package.json file using the [jq](https://stedolan.github.io/jq/) utility, then calls docker build, passing it the different arguments.
+
+Finally, the image is tagged appropriately.
+
+Note that the first lines load an env file containing all of the variables of the project, but this is out of the scope of this article.
+
+Publishing the image is really simple:
+
+```
+#!/usr/bin/env bash
+
+source .env
+
+echo "----------------------------------------------------"
+echo "Pushing the CI Docker image to Docker Hub"
+echo "----------------------------------------------------"
+
+cat ~/.docker-hub-access-token | docker login --username ${DOCKER_USER} --password-stdin
+
+docker push ${CI_DOCKER_IMAGE_NAME}:latest
+docker push ${CI_DOCKER_IMAGE_NAME}:${PROJECT_COMMIT_HASH}
+docker push ${CI_DOCKER_IMAGE_NAME}:${PROJECT_VERSION}
+```
+
+For this to work, you need to have a file around (or environment variable) containing your access key for Docker hub. You can refer to [this article](https://ropenscilabs.github.io/r-docker-tutorial/04-Dockerhub.html) to know how to publish images to Docker hub.
+
+Initially, I wanted to publish my image on our own Docker Registry, but by default, Gitlab runners can only pull images from Docker hub; which makes sense for public use.
+
+Since this image can be public, it isn’t an issue though.
+
+And voilà, the image is now on the Docker hub,
+
+### Refactored CI/CD pipeline
+
+Let’s now go back to our pipeline configuration.
+
+Now that we have a base Dockerfile containing most of what we need, we can clean things up a bit:
+
+```
+image: developassion/didowi-ci:latest
+
+...
+before_script:
+  - date
+  - echo "Pipeline ID = $CI_PIPELINE_ID"
+  - echo "Project name = $CI_PROJECT_NAME"
+  - echo "Build ref = $CI_BUILD_REF_NAME"
+  - whoami
+  - pwd
+  - ls -ail
+  - echo "Default environment:"
+  - env
+  - date
+  # FIXME track the following issue for performance improvements https://gitlab.com/gitlab-org/gitlab-runner/issues/1797
+  # Current approach: install everything based on cache for each job
+  - echo "Installing dependencies (if needed)"
+  # The NPM_CACHE_FOLDER env variable is defined in the Didowi CI dockerfile
+  - if [[ ! -d node_modules ]] || [[ -n `git diff --name-only origin/master HEAD | grep "\package-lock.json\b"` ]]; then npm ci --cache ${NPM_CACHE_FOLDER} --prefer-offline --no-audit --no-optional; fi
+  - date
+
+...
+```
+
+So what’s changed?
+
+- I’ve replaced the base Node.js image with my own image
+- I’ve removed the “cache” directive
+- I’ve removed the Init script
+- I’ve removed the system packages installation
+- I’ve removed the npm installation
+
+I did keep the npm packages installation since the base image only contains a pre-filled npm cache, but since the cache is hot, the installation is much faster.
+
+That’s it!
+
+### Improvements
+
+Now that the pipeline uses a custom Docker image, a lot of the tedious/repetitive job initialization work is simply _gone_.
+
+Each job still needs to install the npm dependencies, but since the cache is hot (most of the time), the installation time is pretty fast (~2 minutes)
+
+This decreases the pipeline execution times by quite a lot, getting it down to ~20 minutes in our case. I’m sure that things can be further improved, but I’m already satisfied with the new status quo.
+
+The fact that we cache the Cypress binaries in the image is also beneficial, as we avoid the long and painful download during npm install.
+
+### Things to pay attention to
+
+The Docker image is nice because, once cached, the Gitlab runners can start it right away, but it has its downsides too:
+
+Whenever the project dependencies change, the npm cache contained in the image will be outdated / incomplete. For a while, we can accept that as “most” of the dependencies will be cached and only a few will need to be downloaded at the start of each pipeline job. To work around this, we simply need to think about updating the image often enough so that the cache remains relevant.
+
+Another case where the image needs to be reconstructed/republished is when the node, npm or Cypress versions used by the monorepo are changed. This isn’t too often, so that’s quite acceptable.
+
+### Next steps
+
+In the future, I plan to come back to this again, certainly hoping to be able to benefit from improvements of the cache feature of Gitlab CI. I think that there’s hope as multiple PRs are being worked on, but we’ll see how it helps.
+
+For the time being, I’ll stick with my solution.. ;-)
+
+If you have ideas/remarks about this article, don’t hesitate to chime in.
+
+That’s it for today!
+
+<BlogPostSignature />
