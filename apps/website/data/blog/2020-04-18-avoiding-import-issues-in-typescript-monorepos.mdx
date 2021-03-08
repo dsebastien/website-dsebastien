@@ -1,0 +1,76 @@
+---
+title: 'Avoiding Import Issues in TypeScript Monorepos'
+summary: 'Leverage TypeScript paths to avoid problems with your imports'
+publishedAt: '2020-04-18'
+slug: 'avoiding-import-issues-in-typescript-monorepos'
+categories: [typescript]
+keywords: [typescript, path mappings, imports, modules]
+---
+
+When you’re working with a TypeScript monorepo, for instance using the awesome [Nrwl NX](https://nx.dev/) (whether with Angular, React, Nest, etc), you should create many small/reusable libraries and keep your applications as light as possible, simply composing the libraries as needed.
+
+From a TypeScript point of view, those libraries are usually consumed through their public API, which are made easily importable through [TypeScript path mappings](https://www.typescriptlang.org/docs/handbook/module-resolution.html#path-mapping) such as the following:
+
+```json
+"paths": {
+  "@didowi/common-gate-api": ["libs/common-gate-api/src/index.ts"],
+  "@didowi/common-utils": ["libs/common-utils/src/index.ts"],
+  "@didowi/common-testing": ["libs/common-testing/src/index.ts"],
+  "@didowi/web-core": ["libs/web-core/src/index.ts"],
+  "@didowi/web-ui": ["libs/web-ui/src/index.ts"],
+  "@didowi/web-env/": ["libs/web-core/src/lib/environments/"],
+  ...
+},
+```
+
+Thanks to those path mappings, we can easily import things from an easy to remember/easy to type name, instead of using long relative paths.
+
+Moreover, when combined with some linting rules, you can enforce clean boundaries between your libraries/apps and ensure that elements only import/use what they should and nothing else. For instance, using Nx, you can ensure that libraries/apps only rely on the public API of what they use, and that they never directly use the internal elements that shouldn’t be accessed.
+
+This is trivial in some mainstream platforms & programming languages, but not so much in the modern Web :)
+
+With path mappings in place, imports from one of the libraries become as simple:
+
+```typescript
+import { whatever } from '@didowi/common-api';
+```
+
+BTW, if you’re wondering, Didowi is the name of the product I’m currently developing. Hopefully I should be able to write more about that one soon ;-)
+
+Path mappings are also great because they allow to easily re-organize library internals while limiting the impact on API clients.
+
+Another advantage on the “importing” side is that you can regroup multiple imports instead of having one line per file from which you import. Neat.
+
+So far so good, path mappings are _awesome_…
+
+## The problem with path mappings and IDE imports
+
+Unfortunately, nothing is perfect. While path mappings are really cool, they can also introduce problems.
+
+As I’ve stated in [my last article](https://medium.com/@dSebastien/fixing-the-cant-resolve-all-parameters-exception-with-angular-di-1091af1b080), elements within a library should never import elements that are part of the same library through the public API barrel, through the library path mapping or even through barrels (because barrels are evil, m’kay?). I’ll write an article about why I now consider TS barrel files evil another day…
+
+**Importing elements from the same library through the library’s path mapping/through a barrel will cause issues for sure**, whether that is circular dependencies (which Webpack and others will yell about) or sneaky issues such as the one I wrote about in [my last article](https://medium.com/@dSebastien/fixing-the-cant-resolve-all-parameters-exception-with-angular-di-1091af1b080).
+
+So what can we do to avoid such mistakes?
+
+First of all, you can easily search & identify such invalid imports by limiting the scope of your search to a library and ensuring that you can’t find any usage of that path mapping in imports. That will let you quickly fix any issue already present, but won’t prevent the issue from appearing.
+
+## IntelliJ / WebStorm configuration
+
+While writing this article, I’ve stumbled upon this issue in the issue tracker of Jetbrains: [https://youtrack.jetbrains.com/issue/WEB-44482](https://youtrack.jetbrains.com/issue/WEB-44482)
+
+According to it, setting the “ **Use path mappings from tsconfig.json**” option under “**Settings | Editor | Code Style | TypeScript, Imports”** to **Only files outside specified paths”** should help.
+
+This instructs IntelliJ/WebStorm to ONLY use path mappings in imports for files _outside of the corresponding paths_. This means that importing an element in a library from an element in the same library will be done using a relative import, which is precisely what we need for monorepo libraries. Neat!
+
+Based on my tests, this works great with one caveat; it seems that IJ/WebStorm only considers the current file to be “inside” of the path specified for the path mapping if the file is part of the entry point (barrel) file associated with it. If not (e.g., library internal), then IJ/WebStorm will use a barrel import.
+
+## Conclusion
+
+In this article, we’ve seen why TS path mappings are awesome for monorepos/libraries, but also that they can introduce issues when misused.
+
+IDEs often make mistakes with imports but I can’t blame them as the JS/TS ecosystem is really complex. Thankfully, we’ve also discovered a cool little setting hidden in IntelliJ/WebStorm to make the IDE smarter for monorepo libraries imports. I imagine that the same should be possible using VSCode, but I haven’t looked into that.
+
+That’s it for today!
+
+<BlogPostSignature />
