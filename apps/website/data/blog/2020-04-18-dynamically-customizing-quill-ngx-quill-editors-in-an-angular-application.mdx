@@ -1,0 +1,210 @@
+---
+title: 'Dynamically customizing Quill/ngx-quill editors in an Angular application'
+summary: 'How to customize Quill editors through ngx-quill in an Angular application'
+publishedAt: '2020-04-18'
+slug: 'dynamically-customizing-quill-ngx-quill-editors-in-an-angular-application'
+categories: [typescript, rich text, angular]
+keywords: [typescript, quill, rich text editors, ngx-quill, angular]
+---
+
+In this article, I’ll share the first iteration of a technical design I’m working on for the application I’m developing.
+
+## The problem
+
+In my current project (an Angular application), I’m using the [Quill](https://quilljs.com/) rich text editor, with the help of the [ngx-quill](https://www.npmjs.com/package/ngx-quill) utility library (which provides an easy way to use Quill in Angular projects.
+
+Unfortunatly, as it stands, Quill isn’t really i18n/l10n friendly: [https://github.com/quilljs/quill/issues/2922](https://github.com/quilljs/quill/issues/2922). Out of the box it isn’t possible to customize the labels shown by Quill, for instance those shown when adding a like, an embedded video or when changing font sizes.
+
+If you check out the issue linked above, you’ll see that the recommended workaround is to manipulate the editor’s DOM directly. Other solutions include modifying the text using CSS. I don’t know about you, but dealing with i18n/l10n through CSS isn’t really something I want to be doing…
+
+Since internationalization and localization are important requirements for my project, I needed to find a solution.
+
+In addition, I know that rich text editors will have quite some importance in my application, hence it’ll be useful for me to have a uniform way of handling the customization of those editors across the whole system.
+
+## Solution design
+
+As usual with software development, there were many options to choose from, but I set a few constraints:
+
+- I did not want to clutter my pages/components with utility code noise just to be able to translate the Quill editors
+- I did not want to repeat the customization logic all around the application either
+- I wanted to have a single source of truth for my Quill configuration, so solutions like this one were not appealing either: [https://github.com/KillerCodeMonkey/ng-quill/issues/80](https://github.com/KillerCodeMonkey/ng-quill/issues/80)
+- I wanted to leave the door open for later additional customizations (in case other needs arise)
+- I wanted to be able to decide when to apply the customizations and when not to
+- I wanted to handle translations using [ngx-translate](https://github.com/ngx-translate/core), which is already part of my project.
+
+To respect those constraints, I set out to define an Angular directive, accompanied by a service. By using a directive, my idea was to make it really simple and clean to customize the quill editors, while still being able to easily opt out of the customization if needed.
+
+So the goal of the directive was to mark a Quill editor so that it would be customized; not placing the directive leaves the Quill editor in its normal state.
+
+The service on the other hand would be responsible for applying the customizations and to adapt anything that needed to be adapted based on events in the application. For instance, a first “event” type that this service reacts to is the language changes. We’ll see later how this is done using ngx-translate.
+
+So the directive is applied to a quill editor component, the directive then interacts with a service which takes care of the customization.
+
+Once the component is destroyed, the directive is also destroyed and can tell the service to stop taking care of customization for that Quill editor.
+
+This last point is important, as it pertains to memory usage. Since the behavior is “stateful” (the service needs to keep track of the Quill editor instances to be able to adapt those when needed), it is important to clean up. If the user goes to a different page, then any Quill editors that were tracked so far should be forgotten since they don’t exist anymore.
+
+Why both a service and a directive? Because that way I can have a cake and eat it. Using the directive, I can declaratively control how my editors look. On the other hand, by injecting and using the service, I can programmatically go further.
+
+Here’s the interface API of my service:
+
+<Gist gistLink="dsebastien/5ed4a83f62d54efdf0b45b3e465de39f" />
+
+As you can see, an instance of the Quill editor can be registered/unregistered. Implementations of this service can do whatever they want, but what they’ll have in common is the fact that they keep track of 1-n editors. In the future and, if needed, this interface could also allow clients to easily retrieve editor instances.
+
+The “QuillEditorReference” type is a simple type that allows me to keep track of an editor instance by assigning it a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier):
+
+<Gist gistLink="dsebastien/e52747fbde59d250b4ae0a0365e47b70" />
+
+Finally, the QuillEditor type is one that I’ve introduced in my project because neither Quill or ngx-quill seemed to provide types out of the box. Since then, ngx-quill has added some typings of its own:
+
+- [https://github.com/KillerCodeMonkey/ngx-quill/issues/849](https://github.com/KillerCodeMonkey/ngx-quill/issues/849)
+- [https://github.com/KillerCodeMonkey/ngx-quill/pull/851/files](https://github.com/KillerCodeMonkey/ngx-quill/pull/851/files)
+
+I’ll add my own typings as reference at the end of the post, although they’ll probably become bogus in a little while.
+
+With this design implemented, adding a Quill editor in a template is as simple as:
+
+```html
+<quill-editor customizeQuillEditorConfiguration></quill-editor>
+```
+
+Simple, isn’t it? Let’s see how it works!
+
+## Service implementation
+
+We’ll start with the service. You saw the interface earlier; now let’s look at the implementation.
+
+In the code below, I’ve leaved out logging and some other details which are not really useful for our discussion. The implementation below takes care of the following customizations for any registered Quill editor instance:
+
+- If the “link” format is enabled in the Quill editor configuration, then the add link placeholder text is translated
+- if the “video” format is enabled, then the embed video placeholder text is translated
+- If the active language changes, then the translations are updated
+
+<Gist gistLink="dsebastien/5eec6e7fd837d91524b53fd168208ab8" />
+
+Let’s go through it step by step.
+
+<Gist gistLink="dsebastien/d330f56ba2a4321d7a42ab332bf466cd" />
+
+First of all, the service defines a map that’ll be used to keep track of the registered editors. Each editor that is registered is associated with a unique key, being the UUID we talked about ea
+
+Having a map is very useful to be able to quickly/easily retrieve an instance by its unique identifier (which is useful when an element in unregistered.
+
+<Gist gistLink="dsebastien/782034ae1dca2d502ca437d0b1589944" />
+
+To register/unregister elements in the map, we simply use the set/delete methods of the map interface.
+
+<Gist gistLink="dsebastien/39d183ce9bf33bde3671b2bb44794bf7" />
+
+When the service is destroyed, we clean up behind ourselves.
+
+<Gist gistLink="dsebastien/acc4d12402f8d940d3b3d979a58f0667" />
+
+In the constructor, we inject the TranslateService provided by ngx-translate and we subscribe to language change events.
+
+Whenever the language changes, we call the “updateEditor” method for each registered editor.
+
+This method looks as follows:
+
+<Gist gistLink="dsebastien/704b8cdeb1ec140fd0c18dfb4691fef2" />
+
+It simply determines, based on the editor configuration, whether some customizations are required or not. For instance, if the “link” [Quill format](https://quilljs.com/docs/formats/) is not enabled, then there’s no need to try and change that placeholder label.
+
+This method then delegates the relevant customizations to dedicated methods. Here’s how they look:
+
+<Gist gistLink="dsebastien/5bd2206d9ce0bcd703dc7108ee6fcd77" />
+
+That code is really saddening, but it does the job. I’ve leveraged my custom typings in all of the code above (again, I’ll share the types at the end) in order to gain some safety from silly mistakes, but this code remains really fragile, unfortunately.
+
+Anyhow, the code uses the editor object, which holds a reference to its root in the DOM tree to find the input having a “data-link” attribute and then uses ngx-translate to set the correct value in.
+
+## Registering/Injecting the service
+
+If you’ve noticed in the previous section, I didn’t use the “providedIn: root” approach. I prefer to separate interfaces/implementations, rely in the interfaces where I need and leverage Angular’s [InjectionToken](https://angular.io/api/core/InjectionToken).
+
+This is a bit out of the scope of this article, but still remains interesting for anyone using Angular.
+
+The reason why I like this approach is that I can define a clear/clean API layer, relying on that wherever I use the interface, while allowing me to use public methods, which are easier for testing in my service implementations. As an (important) added benefit, it allows me to easily/cleanly mock the dependencies of my components for unit tests.
+
+So how is the service registered / injected?
+
+First of all, an injection token is defined:
+
+<Gist gistLink="dsebastien/b15b208743745ca9228b27b2f607c4ee" />
+
+That token makes the link between an arbitrary name (in this case `CORE_QUILL_EDITOR_CONFIGURATION_SERVICE`) and a type (in this case, the `QuillEditorConfigurationService`).
+
+Next, in the module, I define a provider manually like this in a static forRoot method, returning a `ModuleWithProviders`:
+
+<Gist gistLink="dsebastien/da714673ed1e6a8ca93038576ab2d2e7" />
+
+So why did I define the provider in a static forRoot method? To be able to only load it _once_ in the application. I don’t want every module importing this “CoreModule” to be receiving a separate instance of the service. What I want instead is a singleton created at the root of the application’s injection tree.
+
+To load the service, I simply need to add “CoreModule.forRoot()” in the imports of my main app module.
+
+Finally, to inject the dependency, I simply need to use the Inject decorator of Angular:
+
+<Gist gistLink="dsebastien/bba7eada5cea7737c26f948957a8031c" />
+
+Again, notice that I’m using the service interface in the type annotation, not the implementation!
+
+This is a pattern that you’ll often have seen with different libraries. You can find more details about this pattern here: [https://alligator.io/angular/providers-shared-modules/](https://alligator.io/angular/providers-shared-modules/), which always has great quality content :)
+
+## The directive
+
+The other important piece of the puzzle is the directive, which makes the link between an editor added on a page (decorated with the directive) and our service.
+
+Here’s how it looks:
+
+<Gist gistLink="dsebastien/31d84f7be51891e93f55a04ddef0cc26" />
+
+As you can see, the directive is really just making the connection between the host component holding the Quill editor instance and the service.
+
+The “QuillEditorComponent” type is the one provided by ngx-quill. It provides a “onEditorCreated” event emitter that we subscribe to, in order to be notified when the editor has been… created.
+
+At that point, we call our service to register the editor instance. When doing so, we also keep the reference (again, associating a UUID that we generate, with the editor instance).
+
+When the directive is destroyed (e.g., when leaving the page), we make sure to call the unregisterEditor method of our service and to unsubscribe, to clean up behind ourselves.
+
+## Types
+
+As promised, here are the custom types I’m currently using. Again, please keep in mind that those only exist because of a gap in the official typings, which I’m hoping will soon change.
+
+Quill editor formats:
+
+<Gist gistLink="dsebastien/46c9cb0c16ad4a2ff4cd50504f2ca9a4" />
+
+I don’t want to make one-off mistakes while typing out strings, so I’ve created an enum listing everything.
+
+To leverage this, I’ve modified the QuillOptionsStatic provided by Quill in order to customize the type so that I could use it in my own configuration:
+
+<Gist gistLink="dsebastien/d21e41be227efbd3d4cd5a94934a06a6" />
+
+I went on and did the same for the QuillConfig type provided by ngx-quill:
+
+<Gist gistLink="dsebastien/4e12d36b606d147cfa94f796228a18cc" />
+
+I’ve typed the “theme” propery present in the Quill editor type:
+
+<Gist gistLink="dsebastien/1c7ea6b31bfffc5cc7656854f34139b6" />
+
+Did the same for the editor tooltip:
+
+<Gist gistLink="dsebastien/64c1868b558aba83711bfa4668c819de" />
+
+And finally for the Quill type itself:
+
+<Gist gistLink="dsebastien/8166c1212e6f7776e8be8f2b8997a791" />
+
+## Conclusion
+
+Voilà! With the above in place service & directive in place, I can now easily adapt the configuration of my Quill rich text editors dynamically at runtime.
+
+Fow now, this solves a basic internationalization issue, but, later on, this will allow me to push the editor further and to customize it at will at runtime, depending on whatever I want (e.g., user preferences).
+
+PS: If you want to learn tons of other cool things about TypeScript, Angular, React, Vue and other cool subjects, then don’t hesitate to [grab a copy of my book](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding-ebook/dp/B081FB89BL) and to subscribe to [my newsletter](https://mailchi.mp/fb661753d54a/developassion-newsletter)!
+
+That’s it for today!
+
+<BlogPostSignature />
