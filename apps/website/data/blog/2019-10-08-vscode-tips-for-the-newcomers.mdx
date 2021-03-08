@@ -1,0 +1,365 @@
+---
+title: 'VSCode tips for the newcomers'
+summary: 'Tips to use VSCode like a pro'
+publishedAt: '2019-10-08'
+slug: 'vscode-tips-for-the-newcomers'
+categories: [ide, vscode, plugins]
+keywords: [productivity, ide, vscode]
+---
+
+<Image
+  alt={`A unicorn picture so that my daughter can also enjoy this article`}
+  src={`/static/images/blog/2019/unicorn.jpeg`}
+  width={400}
+  height={400}
+  priority
+/>
+
+During the last three years, I’ve had the chance of getting a free IntelliJ license thanks to Jetbrain’s awesome open source program: [https://www.jetbrains.com/community/opensource/](https://www.jetbrains.com/community/opensource/)
+
+Unfortunately, my license has now expired and my open source contributions don’t qualify anymore for me to get a renewal. I’m of course a bit disappointed, but I just feel thankful for having the opportunity to use this great IDE for free for so long.
+
+It took me quite a while to get used to IntelliJ after having spend years and years using Eclipse. Switching from an IDE to another is never an easy task (unless you’re sticking to the mouse and using the basic features).
+
+I usually err more on the side of power users, trying out many extensions, tweaking memory settings and all the config files I can put my hands on, so switching can only be painful :)
+
+I’ve had VSCode on my radar for quite some time and have already tried it at some occasions with positive results, which is why I’ve chosen it as my potential new IDE. Sorry for the Eclipse folks but I’m not ready to go back to eclipse.ini, workspaces, plugins, migration nightmares and all of that
+
+In this post, I don’t want to compare IntelliJ/WebStorm to VSCode as it would be unfair and not especially useful. Instead, I want to share the things that I’ve discovered and how I’ve configured/tweaked VSCode so far.
+
+I will probably write a few follow-up articles later on…
+
+So there we go!
+
+## Installing extensions and synchronizing settings across different machines
+
+The very first thing that I did after installing VSCode on both of my machines (Windows desktop and Ubuntu laptop) was to try and figure out a way to synchronize my settings between those.
+
+So I started looking and quickly found Settings Sync ([https://marketplace.visualstudio.com/items?itemName=Shan.code-settings-sync](https://marketplace.visualstudio.com/items?itemName=Shan.code-settings-sync)), an extension doing precisely what I needed.
+
+> Installing extensions for VSCode is really straightforward: either go the the VSCode Marketplace ([https://marketplace.visualstudio.com/vscode](https://marketplace.visualstudio.com/vscode)) and go from there, or use the Marketplace browser within VSCode, which you can display using CTRL + Shift + X (or whatever else on your OS). Alternatively, you can copy the extension installation command from the Marketplace and execute it in VSCode through the Quick Open panel (CTRL + P). For example to install Settings Sync, you can hit the shortcut, paste “ext install Shan.code-settings-sync” into the popup and hit enter to trigger the installation. Neat!
+
+Once installed and configured, this extension can push/pull the list of extensions, settings, custom bindings, themes, etc to/from a Github gist.
+
+This is great as I can now install an extension on my desktop, push my settings to Github, open VSCode on my laptop and get the same installation installed automatically for me.
+
+> To trigger a push of the settings, you can use Shift + Alt + U.
+
+First problem solved!
+
+## Basic VSCode shortcuts
+
+Next, I wanted to know a bit more about the keymap of VSCode, so I spent a bit of time reading and testing the various shortcuts listed here: [https://code.visualstudio.com/docs/getstarted/keybindings](https://code.visualstudio.com/docs/getstarted/keybindings)
+
+Through VSCode, I also found out about this cool cheatsheet: [https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf](https://code.visualstudio.com/shortcuts/keyboard-shortcuts-linux.pdf)
+
+I will mention a few shortcuts here and there, but I don’t plan on giving you a long, boring and soon outdated list; go check out those docs to learn some cool tricks!
+
+> To any juniors out there: forget about the mouse, just let it go and learn your damn shortcuts! :)
+
+For now, my favorite ones are:
+
+- CTRL + P (quick open): to quickly find/open files and navigate around my project
+- CTRL + SHIFT + P (command palette): to trigger a gazillion actions per minute
+- CTRL + B: to toggle the sidebar
+- F5: Hello beloved debugger!
+
+## Customization through settings.json
+
+The second thing I needed was to get my beloved FiraCode font back: [https://github.com/tonsky/FiraCode](https://github.com/tonsky/FiraCode)
+
+So I looked for a way to customize font settings. I quickly skimmed throughthe settings documentation ([https://code.visualstudio.com/docs/getstarted/settings](https://code.visualstudio.com/docs/getstarted/settings)) and found more than I hoped.
+
+> TIP: to open the settings, just hit CTRL + ,
+
+The UI to edit VSCode settings felt familiar, as it provides a useful search field like IntelliJ does (how I long for all apps to provide me that!).
+
+So through the UI I quickly found the “Text Editor > Font” settings and enabled FiraCode, font ligatures, adapted the font size, etc.
+
+Then, I discovered the holy grail of VSCode: settings.json, the main configuration file. In that file, which can be quickly opened through the quick open window, I found that my settings changes were persisted there.
+
+Great, now I knew where to go to fiddle with everything.
+
+Thanks to that I could enable automatic push/pull of my VSCode settings:
+
+```json
+// Settings sync
+"sync.autoUpload": true,
+"sync.autoDownload": true,
+```
+
+And my font settings are now as follows:
+
+```json
+"editor.fontFamily": "Fira Code Retina, Hack",
+"editor.fontLigatures": true,
+"editor.fontSize": 16,
+"editor.letterSpacing": 0.2,
+"editor.lineHeight": 22,
+```
+
+Phew, I directly felt better!
+
+## Disable telemetry (don’t try this at home)
+
+Being from Europe, I have a tendency to look at what data organizations collect about me (sounds like a cliché). Truth be told I’m not against all data collection and in the case of VSCode, I’m pretty sure that Microsoft uses telemetry for the greater good.
+
+Still, I chose to disable telemetry through VSCode settings (don’t ask me why):
+
+```json
+"telemetry.enableCrashReporter": false,
+"telemetry.enableTelemetry": false,
+```
+
+The most privacy concerned among you will probably be glad to hear that there’s an alternative open source version called VSCodium which is free from all that stuff: [https://vscodium.com/](https://vscodium.com/). I haven’t tested it personally so I can’t give an opinion about it.
+
+## Zoom in and out with the mouse wheel
+
+Next I tried to zoom in/out and was frustrated that it didn’t work with the mouse wheel right away…
+
+> It puzzles me why both VSCode and IntelliJ don’t have this enabled by default. Am I the only one who likes to do that??
+
+Fortunately it was easy to fix through the settings:
+
+```json
+"editor.mouseWheelZoom": true,
+```
+
+Neat!
+
+## Sudo make me some icons!
+
+I also saw a lack of icons all around, which is why I’ve installed
+
+Luckily, there’s an excellent extension for that: [https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)
+
+And another one too: [https://marketplace.visualstudio.com/items?itemName=vscode-icons-team.vscode-icons](https://marketplace.visualstudio.com/items?itemName=vscode-icons-team.vscode-icons)
+
+> To switch the icon set, you can again use the awesome command palette: hit CTRL + P then type “file icon theme”
+
+## A theme to rule them all
+
+Next up was the theme. I’ve been using a Material theme for quite some time so I first tried this one: [https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme](https://marketplace.visualstudio.com/items?itemName=Equinusocio.vsc-material-theme)
+
+But I was willing to try something new, thus I’m now testing this one: [https://marketplace.visualstudio.com/items?itemName=johnpapa.winteriscoming](https://marketplace.visualstudio.com/items?itemName=johnpapa.winteriscoming)
+
+Anyways, not really worth discussing since you probably have different tastes; pick your own: [https://marketplace.visualstudio.com/search?target=VSCode&category=Themes&sortBy=Installs](https://marketplace.visualstudio.com/search?target=VSCode&category=Themes&sortBy=Installs)
+
+## Customize how code is displayed
+
+While we’re still on the visual customizations, I’ve also made functions appear in bold:
+
+```json
+"editor.tokenColorCustomizations": {
+  "textMateRules": [{
+    "scope": [
+      "entity.name.function",
+      "support.function"
+    ],
+    "settings": {
+      "fontStyle": "bold"
+    }
+  }
+]},
+```
+
+This shows how malleable VSCode is; this is quite cool!
+
+At this point you might think that I only care about the visuals, but the thing is that if I’m going to spend hours each day looking at something, I need it to look good! :)
+
+## Cool settings for a better developer experience
+
+I’ve then read a few interesting articles/sites about VSCode customization, like the following:
+
+- [https://vscodecandothat.com/](https://vscodecandothat.com/)
+- [https://dev.to/selrond/tips-to-use-vscode-more-efficiently-3h6p](https://dev.to/selrond/tips-to-use-vscode-more-efficiently-3h6p)
+- [https://dev.to/thegeoffstevens/vs-code-settings-you-should-customize-5e75](https://dev.to/thegeoffstevens/vs-code-settings-you-should-customize-5e75)
+- [https://github.com/microsoft/vscode-tips-and-tricks](https://github.com/microsoft/vscode-tips-and-tricks)
+
+Thanks to those, I continued tweaking my settings. Here are some of the things that I’ve customized:
+
+```json
+// Let the editor take care of indentation automatically
+"editor.autoIndent": true,
+// No automatic imports organization
+"editor.codeActionsOnSave": { "source.organizeImports": false },
+// Cursor blinking smoothy feels good
+"editor.cursorBlinking": "smooth",
+"editor.cursorSmoothCaretAnimation": true,
+"editor.cursorStyle": "line",
+// Wrap it up
+"editor.wordWrap": "on",
+// Don't display the whitespace (I avoid those issues through auto formatting)
+"editor.renderWhitespace": "none",
+// Make the minimap more awesome
+"editor.minimap.renderCharacters": false,
+"editor.minimap.maxColumn": 200,
+"editor.minimap.showSlider": "always",
+// Scroll smoothly
+"editor.smoothScrolling": true,
+// Enable tab completion
+"editor.tabCompletion": "on",
+// Hide the open editors list
+"explorer.openEditors.visible": 0,
+// Files handling: auto save and exclusions
+"files.autoSave": "afterDelay",
+"files.autoSaveDelay": 1000,
+"files.exclude": {
+  "**/.git": true,
+  "**/.svn": true,
+  "**/.DS_Store": true,
+  "**/*.js": {
+    "when": "$(basename).ts"
+  },
+  "**/*.js.map": {
+    "when": "$(basename)"
+    }
+},
+// Typescripttttttttttttttt
+"files.defaultLanguage": "typescript",
+// Customize the window title
+"window.title": "${dirty} ${activeEditorMedium}${separator}${rootName}",
+// Show npm scripts on the sidebar
+"npm.enableScriptExplorer": true,
+// Use Prettier by default for TypeScript code
+"[typescript]": {
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+},
+```
+
+> By the way, did you notice the comments? This ain’t JSON but an alternative mode that VSCode supports, JSON with comments: [https://code.visualstudio.com/docs/languages/json#\_json-with-comments](https://code.visualstudio.com/docs/languages/json#_json-with-comments)
+
+> And that feels quite good. I don’t know how many times I’ve used cursed words because of the impossibility to use comments in all those damn JSON configuration files ;-)
+
+I’ve also looked at how to automate formatting, because I hate wasting time doing it manually:
+
+```json
+// Formatting: let me forget about it
+"editor.formatOnPaste": true,
+"editor.formatOnType": false,
+"editor.formatOnSave": true,
+// Add the new line at the end
+"files.insertFinalNewline": true,
+// Get rid of the useless whitespace
+"files.trimTrailingWhitespace": true,
+```
+
+Another important change that I’ve made is to disable the default “Preview” mode for files. I haven’t read much about it, but it really felt alien to me because I opened files then expected those to stay there when I opened other ones, but they got replaced directly.
+
+I’m sure there are good ideas behind this, but it was too annoying to me:
+
+```json
+// Disable file preview!
+"workbench.editor.enablePreview": false,
+```
+
+Also, I’ve moved the sidebar and side icons to the right of the screen, as recommended in one of the articles. It feels much nicer now because I like showing/hiding the sidebar very often and thus, having it on the left is disrupting becomes it moves the code around:
+
+```json
+// Stable editor view, I don't like characters jumping around
+"workbench.sideBar.location": "right",
+```
+
+## Toggle the sidebar using the multi-command extension and customize key bindings
+
+To toggle the visibility of the sidebar, the default shortcut is CTRL + B.
+
+I’ve installed and used the multi-command extension ([https://marketplace.visualstudio.com/items?itemName=ryuta46.multi-command](https://marketplace.visualstudio.com/items?itemName=ryuta46.multi-command)) to make this shortcut more powerful by also toggling the activity bar:
+
+```json
+"multiCommand.commands": [{
+  "command": "multiCommand.makeRoom",
+  "sequence": [
+    "workbench.action.toggleSidebarVisibility",
+    "workbench.action.toggleActivityBarVisibility"
+  ]
+}],
+```
+
+The above setting defines a custom command, but that isn’t enough, it needs to be mapped in the key bindings, which you can open using CTRL + K then CTRL + S:
+
+<Image
+  alt={`VSCode custom commands`}
+  src={`/static/images/blog/2019/vscode01.png`}
+  width={800}
+  height={200}
+  priority
+/>
+
+Then clicking on the second icon on the top right:
+
+<Image
+  alt={`Click on the second icon from the left to show the JSON`}
+  src={`/static/images/blog/2019/vscode02.png`}
+  width={285}
+  height={113}
+  priority
+/>
+
+Or if you’re anything like me then just hit CTRL + P then “keybindings.json” and Enter to open it directly.
+
+Here are my current key bindings:
+
+```json
+[
+  {
+    "key": "ctrl+shift+down",
+    "command": "editor.emmet.action.balanceIn"
+  },
+  {
+    "key": "ctrl+shift+up",
+    "command": "editor.emmet.action.balanceOut"
+  },
+  {
+    "key": "ctrl+b",
+    "command": "multiCommand.makeRoom"
+  },
+  {
+    "key": "ctrl+b",
+    "command": "-workbench.action.toggleSidebarVisibility"
+  },
+  {
+    "key": "ctrl+b",
+    "command": "-markdown.extension.editing.toggleBold",
+    "when": "editorTextFocus && !editorReadonly && editorLangId == 'markdown'"
+  },
+  {
+    "key": "shift+cmd+c",
+    "command": "copyRelativeFilePath"
+  },
+  {
+    "key": "shift+alt+cmd+c",
+    "command": "copyFilePath"
+  }
+]
+```
+
+As you can see above, I have removed the default key binding for CTRL + B and have replaced it with the custom “multi-command”.
+
+I also have a few other useful shortcuts, but haven’t had time yet to dive more into this…
+
+## Change file associations to get proper highlighting
+
+One issue that I encountered (quite logically) is that VSCode didn’t highlight my Docker related files correctly, simply because in my current project I have files with specific names matching the environments they correspond to.
+
+To fix the highlighting, I needed to adapt the file associations through the settings:
+
+```json
+// Proper highlighting please!
+“files.associations”: {
+“[Dd]ockerfile*”: “dockerfile”,
+“docker-compose*”: “yaml”
+},
+```
+
+## Conclusion
+
+Well that’s it for today.
+
+I’ll share my thoughts about the migration process in a later post since it’s just been a few days so far. There are some important frustrations which I’ll mention another day, but all in all VSCode is quite nice and easy to use.
+
+I’ll write a follow-up post soon to tell you about all the nice extensions that I’ve found and am now using/testing!
+
+Stay tuned!
+
+<BlogPostSignature />
