@@ -9,7 +9,7 @@ keywords: [angular, typescript, dependency injection]
 
 In this article I’ll explain what it is and how to solve it…
 
-### The problem
+## The problem
 
 Creating Angular services is something that I do often enough not to forget how. As I’ve [explained in my last article](https://medium.com/@dSebastien/dynamically-customizing-quill-ngx-quill-editors-in-an-angular-application-b81c75bc4a6), I usually prefer to define both an interface and an implementation for my services.
 
@@ -49,7 +49,7 @@ So what could it be??!
 
 Well obviously the error lied in the above code examples.
 
-### A quick (bug ugly) workaround
+## A quick (bug ugly) workaround
 
 After losing a bit of time trying to understand what the root cause was, I decided to try something else.
 
@@ -59,7 +59,7 @@ But this was no solution, just a workaround.
 
 Although, it gave me a hint: the problem really was at the level of the `InjectionToken`, whether on the “declaration” side, or on the injection side.
 
-### The root cause and correct solution
+## The root cause and correct solution
 
 After googling a bit, I stumbled upon the following [SO question](https://stackoverflow.com/questions/37997824/exception-cant-resolve-all-parameters), which (as usual) gave me the solution: it was an issue with the imports!
 
@@ -87,7 +87,7 @@ From that point on, no more injection issue! Phew.
 
 Note that this solution might not work in all cases. If you have a circular dependency between two elements, then the solution might instead by to use a [forwardRef](https://angular.io/api/core/forwardRef).
 
-### Conclusion
+## Conclusion
 
 In this article, we’ve seen how insidious import problems can be, creating difficult to understand issues like this one.
 

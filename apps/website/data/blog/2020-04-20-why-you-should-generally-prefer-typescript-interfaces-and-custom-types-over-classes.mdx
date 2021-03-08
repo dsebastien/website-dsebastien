@@ -1,0 +1,232 @@
+---
+title: 'Why you should generally prefer TypeScript interfaces and custom types over classes'
+summary: "TypeScript interfaces and custom types are great. Use them as much as you can; here's why"
+publishedAt: '2020-04-20'
+slug: 'why-you-should-generally-prefer-typescript-interfaces-and-custom-types-over-classes'
+categories:
+  [
+    typescript,
+    interfaces,
+    custom types,
+    classes,
+    software,
+    design,
+    code quality,
+  ]
+keywords: [typescript, interfaces, custom types, classes, code quality]
+---
+
+One of the first things that you’ll work on in any new project is the domain model, which is at the very core of all applications. Whatever you do, you’ll create and manipulate tons of objects that are part of the _domain model_.
+
+One big design decision to take while doing so is whether you’ll represent that domain model using classes, interfaces/custom types (or a mix of those).
+
+Having a Java/C# background, when I first dived into TypeScript, in 2016, my initial hunch was to make heavy use of classes. Four years later though, I’ve changed my mind.
+
+In my current project, the whole domain model is defined using only interfaces and types / mapped types and I really don’t regret this choice whatsoever.
+
+Now don’t misinterpret this article; I’m not stating that classes should be banned entirely. What I’m arguing about is the fact that we can actually avoid using classes in many cases without losing much.
+
+Let’s discuss the pros and cons of this (really impactful) choice by looking at a few dimensions.
+
+## OOP(s)
+
+The first point that I want to make against using classes for your domain model is to try and avoid the Object Oriented Programming (OOP) complexity nonsense that seems to often crop up in Java-like projects (at least those I’ve witnessed firsthand).
+
+People who have a strong object-oriented background tend to go crazy from time to time with OOP constructs. They like to create complex inheritance chains, override methods and do all sorts of funky stuff.
+
+This is nice and can be really beneficial, but more often than not this ends up being the root of bad design and gives birth to many scary monsters, all while bragging about all the nice GoF patterns that are being used; as if it was some sort of checklist “gotta use them all!”.
+
+As the saying goes: prefer composition over inheritance. If you limit the usage of classes, then you’re getting rid of a whole class of design problems.
+
+On the other hand, one thing that you’ll miss when not using classes is encapsulation. This idea of keeping internal/private state is nice and you’ll probably miss it if you entirely get rid of classes; even more so now that the EcmaScript private members have landed, albeit with a “#” instead of something nicer).
+
+## Serialization/Deserialization
+
+When you’re building a multi-tier application interacting with some back-end exposing REST, GraphQL (or any other type of API), you perform the usual Create/Retrieve/Update/Delete (i.e., CRUD) operations.
+
+For instance, when you want to retrieve a list of elements, you have to call the back-end API to get a hold of the data. When you do so, you’ll get a back a representation of the data you were after, usually in JSON:
+
+```typescript
+fetch("/api/v1/users").then((users: ???) => {
+  ...
+});
+```
+
+Then comes the question of how to represent that data on the client side (i.e., what do you set as the “???” in the example above — *any* being a big no-no).
+
+If you decide to use classes to represent your data model, then you’ll have to deserialize (i.e., convert) the received JSON data into instances of your classes; that is:
+
+- parse the returned raw JSON data
+- convert the resulting objects into class instances, either _new-ing_ those manually or using something else
+
+This is something that you can do in various way. For instance, you _could_ go “Rambo-like” and [manually convert using home-made utility functions](https://stackoverflow.com/questions/29758765/json-to-typescript-class-instance) (please don’t). Or you could use more elegant/reliable libraries like [cerialize](https://github.com/weichx/cerialize) or [class-transformer](https://github.com/typestack/class-transformer).
+
+Those libraries are quite similar; you can usually decorate your classes/fields (if you wish to) and then use utility methods to either convert from class instances to JSON or the other way around.
+
+For example, in the case of class-transformer, you could do something like this:
+
+```typescript
+fetch('users.json').then((users: Object[]) => {
+  const realUsers = plainToClass(User, users);
+  // now each user in realUsers is instance of User class
+});
+```
+
+In this case, the `plainToClass` utility function would return class instances. In [my book about TypeScript](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding-ebook/dp/B081FB89BL), I’ve dedicated quite a few pages to explaining how to use those libraries.
+
+NestJS for example seems to favor classes, as multiple features it offers relies on classes: [https://docs.nestjs.com/techniques/serialization](https://docs.nestjs.com/techniques/serialization).
+
+The downside is that you have to spend time and energy decorating your classes and thinking about those conversions all the time. And things do get hairy there from time to time. For instance if you make use of generics in your data model or want to use specific constructors, private fields with accessors, inheritance & polymorphism, then those libraries tend to require specific knowledge and lots of fiddling around.
+
+For example, imagine that you want to use immutable data structures (kudos to you!), then you’d want to only allow initializing the data through the constructor and never allow any modifications; how do you deal with that with libraries like cerialize and class-transformer? Hint: you don’t.
+
+Suffice to say: there are countless edge cases and traps to fall into. And if you’re unlucky enough to still need to target ES5, then it’s even worse…
+
+On the contrary, if you’re simply defining interfaces/custom types, then you can simply parse the received JSON (e.g., using JSON.parse(…)) and get on with your life; no conversions needed, no dark wizardry. The same is true when sending data to the back-end.
+
+Note that whether you use classes or simple interfaces/types, you’d better make sure that you properly validate that the data you receive really has the “shape” that you expect it to. For that, you can make use of libraries such as [io-ts](https://github.com/gcanti/io-ts) (also covered in my book), which makes it simple to validate/ensure that what you receive is really has the expected _shape_. This is really powerful and I’ll probably write an article to demonstrate this.
+
+There are of course pros and cons, since you could benefit from having classes to only serialize parts of the data structures you use on the client-side. Although, that is also possible and doable in a typesafe way using interfaces and custom types. For instance, you can easily define and use derived types using [mapped types](https://mariusschulz.com/blog/mapped-types-in-typescript) for such needs.
+
+The message that I want to convey here is that classes are more “costly” and “complex” (all things being relative) than simply parsing/stringifying JSON data/JavaScript objects.
+
+[Domain-driven design (DDD)](https://dddcommunity.org/learning-ddd/what_is_ddd/) aficionados might not like my way of seeing things here, but I really prefer to avoid needless transformations. The modern Web tech stack is already complex enough as it is not to add new layers of indirection.
+
+## Validation
+
+One cool thing about using TS classes is that you can decorate things using libraries like [class-validator](https://github.com/typestack/class-validator). This is for instance what NestJS [supports out of the box](https://docs.nestjs.com/techniques/validation).
+
+In the case of serialization, as I’ve stated above, I believe that it adds complexity more than anything. In the case of validation though, it can be nice, as it allows to co-locate the definition of your data structures and their validation rules.
+
+On the other hand, when working with interfaces and custom types, you have no way but to store those validation rules elsewhere, in some form or another.
+
+First of all though, you can rely on the compiler to help you ensure that you’re not misusing the types. The compiler won’t let you do stupid things if you’re strict enough while typing things in your project. This alone almost eliminates issues. Although, this only covers the basic validations such as “is this field present and does it have the correct type”.
+
+For more complex validation rules (e.g., start date before end date), you’re on your own. For those, you can imagine different approaches though.
+
+A first one is functional programming, where you define simple validation routines that you can reuse where needed. This usually works great and is really not hard to put in place. One benefit is that it is type safe, easy to test and maintain. To implement validation this way, you can leverage libraries like [fp-ts](https://github.com/gcanti/fp-ts).
+
+Another approach is to still leverage class-validator, which provides the “ValidationSchema” type, allowing you to define [a validation schema](https://github.com/typestack/class-validator#defining-validation-schema-without-decorators) (heh) in code or in JSON files and to later use the schema to validate objects using the “validate” method.
+
+Here’s an example taken from their documentation:
+
+<Gist gistLink="dsebastien/f1384316852db6085cd7b28624189e99" />
+
+As you can see above, this is pretty straightforward but has one _major_ downside: it is totally disconnected from your domain model interfaces/custom types. To me this is really problematic as it is hard to maintain.
+
+A last approach, which I tend to prefer is the one presented in [this article](https://spin.atomicobject.com/2018/03/26/typescript-data-validation/): defining JSON schemas and strongly tying those to TypeScript types using [ajv](https://github.com/epoberezkin/ajv), [json-schema-to-typescript](https://github.com/bcherny/json-schema-to-typescript) and type guards. Another candidate which I haven’t tried yet is [ts-json-validator](https://github.com/ostrowr/ts-json-validator).
+
+## Immutability
+
+Way before even starting to use TypeScriptFor, I’ve favored immutability in my designs. I won’t go over the many advantages of using immutable objects and immutable data structures, but suffice to say that there are _plenty_.
+
+In TypeScript, defining immutable classes is quite rather straightforward; you can use the [_readonly_](https://www.typescriptlang.org/docs/handbook/classes.html#readonly-modifier) modifier on your fields, only expose get accessors. The cool thing with the readonly modifier is that you can use it for fields, for index signatures, etc.
+
+You can also leverage data structures such as ReadonlyArray, ReadonlyMap and the like. The last two being supertypes of their non read-only variants; providing a subset of the methods and throwing errors if you try to modify the data.
+
+Those are not bulletproof though; for one, `readonly`, `Readonly<T, [ReadonlyArray<T>`, `ReadonlyMap<K,T>` and the like are **compile-time only restrictions**. Nothing will prevent runtime modifications from happening. This is usual not an important issue though as it isn’t so frequent to also need runtime immutability..
+
+When using interfaces and custom types and tagging objects with the relevant types, you can’t do all that much to protect your data from mutations. But there are solutions though.
+
+The first that comes to mind is the [Object.freeze](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/freeze) API, which can _partly_ freeze an object. I emphasized partly because, unfortunately, it only freezes the top level properties, leaving nested objects/properties mutable.
+
+There are libraries like [ImmutableJS](https://immutable-js.github.io/immutable-js/), but I’m really not a fan of that, as they’re not nice to use with TypeScript.
+
+But there are other ways you can use and combine to push immutability forward in your system. For one, you can use the spread syntax to extract data and create new & “isolated” references.
+
+Another cool feature that you can use is [const assertions](https://mariusschulz.com/blog/const-assertions-in-literal-expressions-in-typescript), introduced in TS 3.4, which effectively allow to create the most read-only type possible.
+
+Here’s an example:
+
+```
+const example = {  name: 'JohnDoe',  isHereToStay: true,  mother: {    name: 'JaneDoe',  },} as const;
+```
+
+The above basically gets transformed into this type:
+
+```
+{  readonly name: 'JohnDoe';  readonly isHereToStay: true;  readonly mother: {    readonly name: 'JaneDoe';  };}
+```
+
+So what does “as const” do in TypeScript?
+
+- It narrows the primitives like strings to exact literal types (e.g., the “JohnDoe” string gets changed into a type that can only have “JohnDoe” as value).
+- It applies the readonly modifier to everything (including nested data structures)
+- It transforms array literals into readonly tuples
+- (and probably more I’m not aware of)
+
+Basically, using “as const” creates read-only types that won’t allow any mutation to happen to the object. Isn’t that cool?
+
+Since TS 3.7 and it’s newly added support for [recursive type aliases](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#more-recursive-type-aliases), it’s also possible to define and leverage types such as this one to ensure immutability:
+
+```
+type Immutable<T> = {  readonly [K in keyof T]: Immutable<T[K]>;};
+```
+
+This type allows to effectively make a whole data structure (including nested ones) read-only.
+
+Well as you can see, whether you’re using classes or “simple” interfaces/custom types, you can create immutable data structures.
+
+## Composition
+
+One major advantage that I see with interfaces & custom types is the fact that you can really easily create variants of your types depending on your needs.
+
+I’ll soon publish another article to explain the following ideas in more detail, with some examples, but I’ll give you the gist of it already.
+
+Let’s say that you start with the very core of your domain model. You have some entity types, which are the types of elements you’ll be saving in your data store. That is the canonical representation of the data your system handles.
+
+First of all, if you create a back-end that exposes a RESTful API, then you’ll need to create representations of that data model. Depending on the capabilities of your API, you may decide to expose only a subset of the information (e.g., not expose the password hashes of your users, their birth date, etc). To do that, you can derive types, let’s call those \*Data Transfer Objects (DTOs)\*\*.
+
+If you’re using classes only, then you’ll probably end up duplicating type information through disjoint structures, meaning that whenever one type changes you’ll have to _think_ about the impact on other types, adapt those and handle conversions/transformations (we’ve now gone full circle).
+
+If you’re interfaces/custom types, then your data types are much more malleable. For instance, you can create a canonical type representing the “base” properties that will be exposed and reused in your system. Then, you can create variants by using built-in [mapped types](https://www.typescriptlang.org/docs/handbook/advanced-types.html#mapped-types) such as:
+
+- `Partial<T>`: make types in T optional
+- `Readonly<T>`: makes types in T read-only
+- `Pick<T,K>`: pick only what you need from a type
+- `Exclude<T,U>`: exclude types from T that are assignable to U
+- `Omit<T,K>`: omit only what you don’t need from a type
+- `Extract<T,U>`: extract types from T that are assignable to U
+- `NonNullable<T>`: make types in T non-nullable (removes null)
+- `Required<T>`: makes types in T mandatory
+- …
+
+You can even combine those and create your own, allowing you to push the type system to its limits.
+
+You can also use libaries like [utility-types](https://github.com/piotrwitek/utility-types), which provides a ton of utility types (heh) such as Primitive, SetIntersection, SetDifference, NonUndefined, etc etc etc.
+
+You might say that classes can also be used as interfaces in TypeScript and achieve the same things, but please [just don’t](https://www.stevefenton.co.uk/2017/11/typescript-using-classes-interfaces/).
+
+## Angular
+
+In Angular projects, I’m using classes almost solely for my Angular component controllers, as this is the recommended approach.
+
+And in that context, classes really do make sense. You can benefit from encapsulation because you can keep some things private to the controller itself (not everything needs to be exposed to the templates).
+
+This allows for a nice separation of concerns and, since we need to put logic in our controllers, it has to go somewhere.
+
+So no worries there, classes are just fine.
+
+## React
+
+In React projects, I feel like classes are now old school. They were more powerful in the past, but now that React has hooks, classes aren’t useful anymore.
+
+If I start a new React project, I probably won’t be using classes all that much.
+
+## Vue
+
+AFAIK, the next major version of Vue will be written entirely in TypeScript and won’t be using classes either.
+
+## Conclusion
+
+In this article, I’ve tried to convince you that you _might not_ need to use classes all over the place in your TypeScript projects.
+
+While classes are cool, powerful and provide means to encapsulate data and logic (and even protect data at runtime), they’re also subject to many problems (some human, some technical) that tend to increase the complexity of your codebases and to limit the expressiveness of your data models. As I’ve explained, creating variants of your canonical model is not much fun using classes while mapped types are incredibly powerful.
+
+Classes remain really relevant and super useful for specific needs, but they don’t have to be at the center of your systems.
+
+Of course, you can (should) combine classes and interfaces/custom types in order to make the best use you can of TypeScript’s awesome type system.
+
+That’s it for today!
+
+<BlogPostSignature />
