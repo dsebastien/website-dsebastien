@@ -1,0 +1,210 @@
+---
+title: 'Why you shouldn’t implement authorization “around” your application and what to do instead'
+summary: "Here's how to writer more secure applications"
+publishedAt: '2020-03-18'
+slug: 'why-you-shouldnt-implement-authorization-around-your-application-and-what-to-do-instead'
+categories: [security, authorization]
+keywords: [security, authorization]
+---
+
+**Update 2020–03–31**: The post might leave you with the impression that misinterpretation of HTTP verbs and such issues are related only to Apache CXF, but they’re in fact more widespread, as [described in the following article.](https://about.gitlab.com/blog/2020/03/30/how-to-exploit-parser-differentials/) Please don’t assume that you’re safe(r) just because you’re using something else / are on a different software platform/stack. And anyway
+
+If you are in charge of defining how to implement authorization for your application, then be very careful about _how_ and _where_ you implement it.
+
+In this post, I’ll just concentrate on the “where”, even though the “how” is also very important. Authentication will not be discussed here either.
+
+This is just an introductory post, so don’t expect in-depth advice. In any case, take this article with a grain of salt. Security is a deep and complex matter and a single article can’t cover all of its facets ;-)
+
+## Imaginary system
+
+Let’s assume that your information system is split in two main blocks: a back-end exposing data and functionality on one side and a front-end consuming the services and exposing the features through a nice Web user interface on the other side.
+
+Imagine that this fictional system has the following characteristics:
+
+- Front-end application: SPA (e.g., React)
+- Back-end application: exposes a RESTful API
+
+This back-end system is layered as follows:
+
+- The Web server (e.g., servlet container or whatever) handles requests/responses and their associated lifecycle
+- A set of filters processes requests/responses and can block/transform/etc those if needed
+- A REST layer mapping URIs / methods / etc to classes/functions
+- A business layer used by the REST layer, other APIs (e.g., a SOAP API) and other services of the application (e.g., batch jobs)
+- A domain layer containing your domain model, DTOs and the like
+- A repository layer used _exclusively_ by the business layer of your application and handling interactions with an underlying database (whatever type you fancy)
+- A database system
+
+Let’s suppose that both the front-end and back-end are deployed separately (even though it isn’t that important for our discussion) and that multiple infrastructure pieces are placed in front of those:
+
+- A Web application firewall
+- A load balancer
+- An API gateway
+- …
+
+## Possibilities…
+
+You are tasked with implementing authorization for this system: what do you do?
+
+In theory, you have of course countless options. As IT systems are products of the mind, creativity plays a big role in everything that we do. So there is a world of possibilities in front of you.
+
+You _could_ (not to say that you should!):
+
+- Ignore the problems entirely and go on with your life (oops)
+- Add logic within the front-end application to enforce authorization
+- Ask the infrastructure teams to inject the relevant LDAP group memberships that authenticated users are members of into the HTTP headers of requests forwarded to your back-end server so that your application can make use of those
+- Ask the infrastructure teams to generate and sign tokens (JWT/SAML) containing everything your back-end needs to check authorization at some layer (e.g., the group memberships as described in the previous point)
+- Ask the infrastructure teams to enforce access control rules on certain URIs based on authenticated users LDAP group memberships
+- Add a security filter _around_ your application in which you check authorization rules to allow/deny the request to pass to lower layers of your application. Basically, this is very similar to the previous point, since request URIs are what you are dealing with here.
+- Tackle authorization concerns at the REST layer only, ensuring that you don’t let unauthorized requests be accepted/handled and passed to your business layer
+- Tackle authorization concerns in the business service layer
+- Tackle authorization concerns in the repository layer
+- Tackle authorization concerns in the database itself
+
+This is only a small subset of what you could imagine here. You could indeed also combine different approaches.
+
+Although, since I’m not about to write a book on this subject anytime soon, let’s just explore some of the options listed above to see which ones are better/worse.
+
+## Front-end === User Experience
+
+First of all, let’s eliminate the dead obvious: **authorization checks may be useful on the front-end side for user experience, but have absolutely no added value for security**.
+
+When the front-end application executes on the client’s machine, the code running in there is completely outside of your control. As a matter of fact, attackers will look at the front-end to see how they can interact with your back-end, but they won’t even bother using it (apart to explore other vulnerabilities).
+
+What attackers are after is your back-end system and especially your database and sensitive files. To get to that, they’ll focus on attacking whatever is exposed by the back-end side. So basically, they’ll make direct requests to your back-end infrastructure.
+
+So please never think that you can put any meaningful security controls in place _only_ on the front-end.
+
+If you do implement authorization checks on the front-end, it’ll only be to improve the experience of your users (and you should indeed do it if you can).
+
+That isn’t to say that there’s nothing to do for security on the front-end, far from it! If you’re interested in that topic, then go learn some things about CSRF, XSS and things like CORS, Content Security Policy, cookie security, etc.
+
+## Handling everything at the infrastructure level
+
+A second idea that might get you into trouble is this one.
+
+Handling authentication at the infrastructure level (at least partly) makes sense as it is a generic concern that infrastructure might solve cleanly for many different systems with a consistent UI/UX.
+
+Handling authorization is something else entirely.
+
+First of all, your authorization model might be quite complex and you’ll quickly make the infrastructure teams angry about the maintenance burden it creates.
+
+Second, the granularity of your checks will be quite limited. Applying different rule sets to the same users based on specific context is not something you can easily do at this level.
+
+More importantly, if you only implement checks against URLs at the infrastructure level, what happens if an attacker can somehow bypass the infrastructure and reach your back-end server directly?
+
+If you implement authorization completely outside of your application and it still gets exposed, then your data is gone, your integrity is gone. Of course, your reputation will probably follow course.
+
+So no, not such a great idea. Of course there are ways to make that better. For example, you could deploy mutual authentication between your back-end and those infrastructure pieces, or ensure on your back-end that you only accept requests coming from those infrastructure pieces. But it gets hairy really quickly. Not to say that these are not good things to implement, but be conscious that this has a cost (I’ll come back to this in the conclusion).
+
+Still, it doesn’t provide a good enough level of security because it lies completely outside of your system. If an attacker gets in, then you’re dead in the water.
+
+Don’t misinterpret what I’m saying though. It doesn’t mean that you can’t check anything at the infrastructure level. In fact, there are high level checks that you could implement there that would improve your security stance. For example, it does make sense to allow/block access to your application based on high level roles that are stable in your system. For instance if you have a “/admin” endpoint only accessible to administrators, then you could check for a role membership at the infrastructure level. What is critical to understand is that this check alone is not enough. Your application itself should still validate the authorization afterwards.
+
+## Handling authorization through security filters
+
+A third option that you might consider is to handle authorization at the most external layer of your application: filters.
+
+Basically, this is still “outside” of your application, as the requests won’t even hit the highest level of your application (in this example the REST API layer).
+
+This might sound good and it does make sense for some high level checks (same rationale as for high level authorization checks at the infrastructure level).
+
+But, once again, this leaves too many possibilities for attackers. If they are able to bypass the filters somehow or if they’re simply misconfigured, then your system is doomed. For instance, imagine that your filter is case sensitive and you don’t realize it? I’ve seen this happen! If you think that Get VS GET is always handled the same way, then think again!
+
+Also, it is really easy to forget updating the filters when features are added or modified, potentially leaving new endpoints unprotected. Without proper code reviews and testing, this might go unnoticed until it’s too late.
+
+Also, it is also very difficult to implement fine-grained & contextual controls at this level.
+
+## Handling authorization at the outermost API layer (e.g., REST)
+
+The next level down the architecture is the REST API layer.
+
+You could decide to enforce authorization controls in your API layer, ensuring that only authorized calls make it further on towards the business layer.
+
+This time, you’re in your back-end code, so you have access to more context and you can even interact with your service/repository/database to fetch additional information to weigh into your access control decisions.
+
+Like the other solutions, this works, but isn’t the best of ideas. If you _only_ do this, then what happens when you implement another API (e.g., SOAP) in your system? Do you create additional authorization rules? Do you duplicate the existing ones?
+
+Moreover, just like with filters, what happens if someone finds a way around those restrictions?
+
+Here I have a concrete example in the Java ecosystem. Up until recently, Apache CXF allowed clients to override the HTTP method in their requests, through different means (e.g., X-HTTP-Method-Override HTTP header, \_method query parameter). Thanks to this (kind of) cool feature, anyone could make a GET request, but have it be treated like a POST, or anything else.
+
+If your security is set at the REST API layer or above, then you might think that a request can be allowed through because it looks like a GET, while it will in fact be handled as a POST. This feature of Apache CXF is now disabled by default. It exists to work around some infrastructure issues (e.g., proxies that don’t support the PATCH HTTP verb). You can find more information about it here: [https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=24190906#JAX-RS-OverridingHTTPmethod](https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=24190906#JAX-RS-OverridingHTTPmethod)
+
+Once a workaround/weakness is found, then it’s once again game over for your whole system.
+
+## Handling concerns at the business service layer layer
+
+Now we get into more interesting solutions.
+
+To me, the business service layer is the first layer in which you need to seriously consider putting your authorization checks.
+
+If all your external-facing access points rely on this business service layer to perform anything that they need, then you can gain a lot of confidence that your authorization checks will be effective and won’t be bypassed easily.
+
+Here, you normally have all the context you might need to take good security decisions. You’re in your castle, with access to your database, to other services, etc, so you can take decisions based on fine-grained information.
+
+Also, you can implement these checks once and won’t need to duplicate those in other layers needlessly.
+
+If these checks are bypassed, then you’re still doomed, but it probably means that you implemented features elsewhere or directly used a lower layer in an upper one, which is most probably a mistake that your code reviews should highlight quickly. You could prevent such architecture shortcuts/breakages by creating separate modules and enforcing rules through dependency management.
+
+I’m not saying that this is THE only solution, but you should definitely start here.
+
+## Handling concerns at the repository layer
+
+Implementing authorization at this layer is not as good as the previous option, because you’ll start mixing separate concerns quite badly. This layer should only care about data access/persistence/consistency/integrity.
+
+Transaction demarcation and authorization (among other things) are matters that belong to the layer above.
+
+One issue with implementing authorization checks at this layer is that you cannot make use of the business services to make decisions, as you would introduce circular dependencies that should be there in the first place, so you have less context at your disposal.
+
+Moreover, the repository layer might expose specific functionality used in different business scenarios, and, without sufficient context, you might not be able to determine whether access A or B should be authorized or not (maybe it should be in one case and not in another). This usually leads to a “least common denominator” situation, where the most permissive rule is always applied, weakening your system’s security stance.
+
+## Handling concerns in the database
+
+The final place where you can enforce authorization is in your database.
+
+This is the closest to your data, so it is in fact ideal from a security point of view.
+
+Unfortunately, at this level, you usually have much less context at your disposal to make access control decisions. You can enforce very granular access control, but it can prove very difficult to make relevant business-context-aware decisions.
+
+A user with a role X performing using business feature Y might be authorized to do A, B or C, while he shouldn’t be allowed to do so while using feature Z.
+
+Still, you should clearly enforce proper authentication and authorization in your database system itself.
+
+## So… Where should authorization be handled?
+
+Well, sorry to disappoint, but there’s no single answer here!
+
+You should in fact apply the defense in depth approach (not only for authorization). **Securing a system is all about securing each layer of the “onion”**.
+
+When a request hits the security infrastructure in front of your application, it should perform some (probably coarse-grained) authorization checks, as a first barrier.
+
+Once your back-end system receives a request, maybe a filter could perform the same checks again (e.g., verify the presence of a token, the validity of its signature, the presence of specific roles, etc), just to be on the safe side. If those checks are coarse-grained, then the maintenance burden will be quite limited.
+
+If you have the capacity to do so, then deploying mutual authentication between infrastructure and back-end systems is certainly beneficial (one more protection in place), but don’t be fooled, this is both complex and costly to implement/maintain.
+
+Personally, I wouldn’t put much effort into putting authorization checks in my external API layers. To me, this is sub-optimal and mistake-prone. Also, as we’ve seen, if that protection is bypassed, then your system’s security is broken.
+
+I don’t want to make bad jokes with the current situation in the world, but it’s like saying “we’re safe, we’ve closed the border, nothing can happen to us now”.
+
+It’s the old view of the world: trust the environment, trust the boundaries. **In our current world, the zero-trust security model should be your default choice**. Don’t trust the infrastructure blindly, don’t trust the network blindly, don’t believe you’re safe behind closed doors.
+
+The place where I’d put the most effort is the business service layer. I would make my best to enforce every flow to go through that layer and make sure to harden, secure and test the whole API, whether it is used by a REST, SOAP, batch or whatever else.
+
+On top of that, I would spend time of properly protecting the database system itself, for instance to encrypt the data at rest, in transit and to properly implement authentication and (at least high level) authorization controls on the data itself.
+
+Last but not least, porting the user context up to the database might be great to go further and have more fine-grained access controls in place (and clearer audit logs) at the database level.
+
+There are of course tons of other things to say about this subject, but since I had a discussion about this recently, I thought it might be useful input to others. This article should give you a good starting point for your own research and thinking.
+
+So please, repeat after me:
+
+- We need to adopt a zero-trust security model
+- We need to apply defense in depth
+- We love onions and each layer should have security measures in place, even if only coarse-grained
+- We can’t rely only on infrastructure alone
+- We can’t rely only on security measures put “around” our core system
+- We can’t rely only on external-facing API level controls
+
+That’s it for today!
+
+<BlogPostSignature />
