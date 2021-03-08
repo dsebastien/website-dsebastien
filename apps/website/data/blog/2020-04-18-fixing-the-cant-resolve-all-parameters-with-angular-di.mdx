@@ -1,0 +1,98 @@
+---
+title: 'Fixing the “can’t resolve all parameters” exception with Angular DI'
+summary: 'How to fix the “can’t resolve all parameters” exception with Angular'
+publishedAt: '2020-04-18'
+slug: 'fixing-the-cant-resolve-all-parameters-with-angular-di'
+categories: [angular, typescript, dependency injection]
+keywords: [angular, typescript, dependency injection]
+---
+
+In this article I’ll explain what it is and how to solve it…
+
+### The problem
+
+Creating Angular services is something that I do often enough not to forget how. As I’ve [explained in my last article](https://medium.com/@dSebastien/dynamically-customizing-quill-ngx-quill-editors-in-an-angular-application-b81c75bc4a6), I usually prefer to define both an interface and an implementation for my services.
+
+That allows me to inject the interface, thanks to an [InjectionToken](https://angular.io/api/core/InjectionToken), but more importantly, to easily mock out the dependencies in my tests. I’m not saying that it’s impossible otherwise, but I find this approach much cleaner and simpler.
+
+And this is exactly what I did, only to realize that there was a dependency injection error during application startup. Apparently, Angular couldn’t find my newly defined service. Weird since I just used the same usual approach.
+
+Here’s what the error looked like:
+
+> Can’t resolve all parameters for QuillConfigurationDirective: [object Object], (?).
+
+The (?) indicates that Angular couldn’t resolve the second parameter of the constructor:
+
+<Gist gistLink="dsebastien/defdce4947a28c2f753a062b93919b6d" />
+
+As usual, I was using the injection token with the [Inject](https://angular.io/api/core/inject) decorator of Angular. Nothing out of the ordinary thus…
+
+So I checked everything. Multiple times… But couldn’t find the cause.
+
+My injection token was defined correctly, mapping a string to the type:
+
+<Gist gistLink="dsebastien/bc7ba2e410cdbbdc52052b07ae25f5cb" />
+
+My service had the [Injectable](https://angular.io/api/core/Injectable) decorator set correctly:
+
+<Gist gistLink="dsebastien/d108fbf8f1ff39752adf2614b0f90c31" />
+
+A provider was correctly declared in my module’s `forRoot` static method:
+
+<Gist gistLink="dsebastien/268d812805a7074daaa29d3a5257caf0" />
+
+And the `forRoot` method was correctly called in my app’s root module:
+
+<Gist gistLink="dsebastien/52bbf60fae5501ddb9e7cba81d57eaf3" />
+
+So what could it be??!
+
+Well obviously the error lied in the above code examples.
+
+### A quick (bug ugly) workaround
+
+After losing a bit of time trying to understand what the root cause was, I decided to try something else.
+
+By removing the `InjectionToken` and simply using `providedIn: root`, the problem was indeed fixed.
+
+But this was no solution, just a workaround.
+
+Although, it gave me a hint: the problem really was at the level of the `InjectionToken`, whether on the “declaration” side, or on the injection side.
+
+### The root cause and correct solution
+
+After googling a bit, I stumbled upon the following [SO question](https://stackoverflow.com/questions/37997824/exception-cant-resolve-all-parameters), which (as usual) gave me the solution: it was an issue with the imports!
+
+The error was indeed caused by the following imports in my core module:
+
+```typescript
+import { CORE_QUILL_EDITOR_CONFIGURATION_SERVICE } from '@app/core';
+import { QuillEditorConfigurationServiceImpl } from '@app/core';
+```
+
+The thing is that **elements within a module should use relative imports for elements that are part of the same module; they should never import through the module’s public API barrel (or barrels in general btw)**.
+
+The problem with that import is that if something that depends on the service is loaded first in the barrel (directly or not), then the DI system will fail since the service has not been declared yet and thus can’t be resolved…
+
+I’ve been bitten quite a few times with incorrect auto imports and, more generally, barrels. It’s no wonder that the Angular team is not so fond of barrels anymore (afaik).
+
+So in the end, the fixed imports were simply relative ones:
+
+```typescript
+import { CORE_QUILL_EDITOR_CONFIGURATION_SERVICE } from './services/quill-editor-configuration.service.constants';
+import { QuillEditorConfigurationServiceImpl } from './services/quill-editor-configuration.service';
+```
+
+From that point on, no more injection issue! Phew.
+
+Note that this solution might not work in all cases. If you have a circular dependency between two elements, then the solution might instead by to use a [forwardRef](https://angular.io/api/core/forwardRef).
+
+### Conclusion
+
+In this article, we’ve seen how insidious import problems can be, creating difficult to understand issues like this one.
+
+My general advice is to be very careful with imports and barrels in general. Don’t blindly trust your IDE; unfortunately sometimes it creates issues by importing elements from barrels when it shouldn’t.
+
+That’s it for today!
+
+<BlogPostSignature />
