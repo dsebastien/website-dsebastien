@@ -1,0 +1,38 @@
+import React from 'react';
+import tw from 'twin.macro';
+import { TwitterFollowButton } from 'mdx-embed';
+
+const StyledDiv = tw.div``;
+
+/**
+ * Signature for my blog posts
+ * @constructor
+ */
+const BlogPostSignature = () => {
+  return (
+    <>
+      <StyledDiv className="mb-2">
+        PS: If you want to learn tons of other cool things about
+        product/software/Web development, then{' '}
+        <a href="https://dev-concepts.dev" rel="noopener">
+          check out my upcoming book
+        </a>
+        ,{' '}
+        <a
+          href="https://mailchi.mp/fb661753d54a/developassion-newsletter"
+          rel="noopener"
+        >
+          subscribe to my newsletter
+        </a>
+        , and come{' '}
+        <a href="https://twitter.com/dSebastien" rel="noopener">
+          say hi on Twitter!
+        </a>
+      </StyledDiv>
+
+      <TwitterFollowButton username="dSebastien" size="large" />
+    </>
+  );
+};
+
+export default BlogPostSignature;

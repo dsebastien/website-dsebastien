@@ -13,6 +13,7 @@ import {
   TwitterFollowButton,
   YouTube,
 } from 'mdx-embed';
+import BlogPostSignature from './blog-post-signature';
 
 type CustomLinkProps = { href: string } & any;
 
@@ -42,6 +43,7 @@ const MDXComponents = {
   Tweet,
   YouTube,
   TwitterFollowButton,
+  BlogPostSignature,
 };
 
 export default MDXComponents;
