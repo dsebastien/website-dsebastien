@@ -1,0 +1,343 @@
+---
+title: "TypeScript 3 Projects: What's next?"
+summary: 'An appendix to my TypeScript book'
+publishedAt: '2019-11-12'
+slug: 'typescript-3-projects-whats-next'
+categories: [typescript, books, programming]
+keywords: [typescript, programming, javascript, angular, vue.js]
+---
+
+In my upcoming book about TypeScript, the last chapter is called “What’s next?”. This blog post should be considered as an appendix to the text of the book. It’s going to be quite long, so be prepared! ;-)
+
+I’ll soon publish another article to tell you more about what you can expect in the book and why you should definitely get your own copy!
+
+The thing is that our editor has requested us to get rid of 50 (!) pages in the very last days of the project. This was really hard for us (especially so late in the process), but there was no alternative.
+
+So we ended up removing the resources that I’ll be listing in this blog post; that is a list of pointers and resources about interesting things to learn about TypeScript, modern Web development and software development in general.
+
+The list is long, but to be honest I feel like it’s really just an appetizer! There are soooo so many things to learn or _at least_ be aware of.
+
+So without further ado, let’s dive in!
+
+## TypeScript
+
+Believe it or not, but we have covered maybe fifty percent of TypeScript’s complete feature set (and that’s an optimistic guess). There is just so much to say and so many details to cover, that we couldn’t possibly go through everything.
+
+At the start of the project, our goal was to create a practical book, not a
+comprehensive reference. We also didn’t want to introduce tons of features without putting them in perspective and showing them with actual use cases.
+Another factor is that TypeScript evolves incredibly fast. Between the start and the end of this project, many versions of TypeScript have been released and, by the time you read this, some more will have come out.
+
+The first thing that you can do next is to take a look at the release notes of TypeScript every once in a while to stay aware of the changes made to the language. You can find those here: [https://github.com/microsoft/TypeScript/releases](https://github.com/microsoft/TypeScript/releases). Usually, these come along with great examples.
+
+Apart from that, you can also keep an eye on the roadmap of the language over at [https://github.com/Microsoft/TypeScript/wiki/Roadmap](https://github.com/Microsoft/TypeScript/wiki/Roadmap).
+
+Also, here is a list of features/tools that we would’ve liked to cover in this book.
+
+- There are general features such as the following:
+  Tuples: [https://www.typescriptlang.org/docs/handbook/basic-types.html#tuple](https://www.typescriptlang.org/docs/handbook/basic-types.html#tuple)
+- Advanced types: [https://www.typescriptlang.org/docs/handbook/advanced-types.html](https://www.typescriptlang.org/docs/handbook/advanced-types.html)
+- Index signatures: [https://basarat.gitbooks.io/typescript/docs/types/index-signatures.html](https://basarat.gitbooks.io/typescript/docs/types/index-signatures.html)
+- Nominal typing: [https://github.com/Microsoft/TypeScript/issues/202](https://github.com/Microsoft/TypeScript/issues/202)
+- Tiny types: This is a very useful BDD concept applicable to
+  TypeScript and many other languages: [https://janmolak.com/tiny-types-in-typescript-4680177f026e](https://janmolak.com/tiny-types-in-typescript-4680177f026e) and [https://medium.com/@mail_67225/type-safe-value-objects-in-typescript-d1b119c4f5cd](https://medium.com/@mail_67225/type-safe-value-objects-in-typescript-d1b119c4f5cd)
+- Functional TypeScript: [https://spin.atomicobject.com/2018/02/05/purely-functional-typescript](https://spin.atomicobject.com/2018/02/05/purely-functional-typescript)
+- Non-null assertion operator: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#non-null-assertion-operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-0.html#non-null-assertion-operator)
+
+TypeScript 2.1:
+
+- Rest and spread: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#object-spread-and-rest](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#object-spread-and-rest)
+- tslib: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#support-for-external-helpers-library-tslib](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html#support-for-external-helpers-library-tslib)
+
+TypeScript 2.4:
+
+- Dynamic import expressions: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-4.html#dynamic-import-expressions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-4.html#dynamic-import-expressions)
+
+TypeScript 2.6:
+
+- Suppressing errors in TS files: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-6.html#suppress-errors-in-ts-files-using--ts-ignore-comments](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-6.html#suppress-errors-in-ts-files-using--ts-ignore-comments)
+
+TypeScript 2.7:
+
+- Type guards inferred from the _in_ operator: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#type-guards-inferred-from--in-operator](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#type-guards-inferred-from--in-operator)
+- Numeric separators: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#numeric-separators](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#numeric-separators)
+
+TypeScript 2.8:
+
+- Conditional types: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#conditional-types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-8.html#conditional-types), [https://koerbitz.me/posts/a-look-at-typescripts-conditional-types.html](https://koerbitz.me/posts/a-look-at-typescripts-conditional-types.html), [http://artsy.github.io/blog/2018/11/21/conditional-types-in-typescript](http://artsy.github.io/blog/2018/11/21/conditional-types-in-typescript) and [https://medium.com/@bterlson/strongly-typed-event-emitters-2c2345801de8](https://medium.com/@bterlson/strongly-typed-event-emitters-2c2345801de8)
+
+TypeScript 2.9:
+
+- Support for _import.meta_: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-9.html#support-for-importmeta](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-9.html#support-for-importmeta)
+
+TypeScript 3.0:
+
+- Project references: [https://www.typescriptlang.org/docs/handbook/project-references.html](https://www.typescriptlang.org/docs/handbook/project-references.html)
+- Tuples in rest parameters and spread expressions: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html#rest-elements-in-tuple-types](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-0.html#rest-elements-in-tuple-types)
+
+TypeScript 3.1:
+
+- Mapped types on tuples and arrays: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-1.html#mapped-types-on-tuples-and-arrays](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-1.html#mapped-types-on-tuples-and-arrays)
+- Properties declarations on functions: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-1.html#properties-declarations-on-functions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-1.html#properties-declarations-on-functions)
+- Version selection using _typesVersions_: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-1.html#version-selection-with-typesversions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-1.html#version-selection-with-typesversions)
+
+TypeScript 3.2:
+
+- _strictBindCallApply_: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html#strictbindcallapply](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html#strictbindcallapply)
+- _BigInt_: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html#bigint](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html#bigint)
+- Generic object rest variables and parameters: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html#generic-object-rest-variables-and-parameters](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html#generic-object-rest-variables-and-parameters)
+- _tsconfig.json_ inheritance through npm modules: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html#tsconfigjson-inheritance-via-nodejs-packages](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-2.html#tsconfigjson-inheritance-via-nodejs-packages)
+- The _showConfig_ option: [https://mariusschulz.com/blog/the-showconfig-compiler-option-in-typescript](https://mariusschulz.com/blog/the-showconfig-compiler-option-in-typescript)
+
+TypeScript 3.4:
+
+- const assertions: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions)
+- Incremental compilation: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#faster-subsequent-builds-with-the---incremental-flag](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#faster-subsequent-builds-with-the---incremental-flag)
+- Higher-order type inference from generic functions: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#higher-order-type-inference-from-generic-functions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#higher-order-type-inference-from-generic-functions)
+- Type-checking for _globalThis_: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#type-checking-for-globalthis](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#type-checking-for-globalthis)
+
+TypeScript 3.5:
+
+- _Omit_ type helper: [https://devblogs.microsoft.com/typescript/announcing-typescript-3-5#the-omit-helper-type](https://devblogs.microsoft.com/typescript/announcing-typescript-3-5#the-omit-helper-type)
+
+TypeScript 3.6:
+
+- Stricter generators: [https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#stricter-generators](https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#stricter-generators)
+- Improved UX for promises: [https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#improved-ux-around-promises](https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#improved-ux-around-promises)
+- Unicode support for identifiers: [https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#better-unicode-support-for-identifiers](https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#better-unicode-support-for-identifiers)
+- Ambient classes and functions merging: [https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#ambient-classes-and-functions-can-merge](https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#ambient-classes-and-functions-can-merge)
+- Smarter automatic imports: [https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#smarter-auto-imports](https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#smarter-auto-imports)
+- New TypeScript playground (and it keeps improving!): [https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#new-typescript-playground](https://devblogs.microsoft.com/typescript/announcing-typescript-3-6/#new-typescript-playground)
+
+TypeScript 3.7:
+
+- E-v-e-r-y-t-h-i-n-g about it: [https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html)
+
+Of course you don’t have to learn all of this right away. Nevertheless, it is useful to at least be _aware_ of the existence of some features. Oftentimes though, you can simply learn things as you go and keep improving your code over time.
+
+Throughout this book, we have tried to introduce and use features that we needed when we saw an added value to their usage and you should probably do the same with your own applications. **Never let the new and shiny drive your technical choices.**
+
+## Angular
+
+Angular is difficult to master and we certainly haven’t covered all that much about it in the book.
+
+Here are some resources that you might find useful:
+
+- Angular checklist: [https://angular-checklist.io](https://angular-checklist.io)
+- Angular testing: [https://angular.io/guide/testing](https://angular.io/guide/testing)
+- Performance improvements: [https://speakerdeck.com/mgechev/tools-for-fast-angular-applications](https://speakerdeck.com/mgechev/tools-for-fast-angular-applications)
+- Production readiness: [https://itnext.io/how-production-friendly-and-ready-is-your-angular-app-7496d4e89a69](https://itnext.io/how-production-friendly-and-ready-is-your-angular-app-7496d4e89a69) and [https://medium.com/@rikdevos/5-tips-before-deploying-your-angular-apps-to-production-8313d87600ce](https://medium.com/@rikdevos/5-tips-before-deploying-your-angular-apps-to-production-8313d87600ce)
+- Lazy loading: [https://blog.bitsrc.io/boost-angulars-performance-by-lazy-loading-your-modules-ca7abd1e2304](https://blog.bitsrc.io/boost-angulars-performance-by-lazy-loading-your-modules-ca7abd1e2304) and [https://www.npmjs.com/package/@herodevs/lazy-af](https://www.npmjs.com/package/@herodevs/lazy-af)
+- Quicklink prefetching strategy: [https://github.com/mgechev/ngx-quicklink](https://github.com/mgechev/ngx-quicklink)
+- NGRX for state management: [https://ngrx.io](https://ngrx.io)
+- Best practices: [https://www.zeptobook.com/angular-best-practices-for-building-single-page-application](https://www.zeptobook.com/angular-best-practices-for-building-single-page-application)
+- Error handling: [https://medium.com/swlh/error-handling-944681f2e11c](https://medium.com/swlh/error-handling-944681f2e11c)
+- PWA support: [https://blog.angularindepth.com/build-a-progressive-web-app-with-angular-bf7d66744020](https://blog.angularindepth.com/build-a-progressive-web-app-with-angular-bf7d66744020)
+- Budgets: [https://medium.com/dailyjs/how-did-angular-cli-budgets-save-my-day-and-how-they-can-save-yours-300d534aae7a](https://medium.com/dailyjs/how-did-angular-cli-budgets-save-my-day-and-how-they-can-save-yours-300d534aae7a)
+
+## Vue.js
+
+One thing that was proposed near the end of the writing process of this book is a new function-based component API: [https://github.com/vuejs/rfcs/blob/function-apis/active-rfcs/0000-function-api.md](https://github.com/vuejs/rfcs/blob/function-apis/active-rfcs/0000-function-api.md)
+
+As it turns out, the Vue.js maintainers are willing to introduce a more React-like approach with functional components in Vue. This is really interesting as it shows that the benefits of the functional approach are also appealing to Vue developers. This should become clearer in the coming months, but might have a big impact on how Vue applications are written!
+
+Also, Vue 3 will be written in TypeScript and should come out in 2020. At that point, things will change quite a lot! Evan You and his team are making great progress towards Vue 3 and it looks really interesting: [https://twitter.com/youyuxi/status/1192096909957193728](https://twitter.com/youyuxi/status/1192096909957193728)
+
+In the meantime, a great library (or actually framework?) that you can use on top of Vue.js is called Nuxt.js ([https://nuxtjs.org](https://nuxtjs.org) ). We can’t say much about it here, but make sure to explore it on your own if you like Vue, as it makes it even greater!
+
+Here are some additional resources to go further with Vue:
+
+- Testing guide: [https://vuejs.org/v2/guide/unit-testing.html](https://vuejs.org/v2/guide/unit-testing.html) and [https://lmiller1990.github.io/vue-testing-handbook/](https://lmiller1990.github.io/vue-testing-handbook/)
+- Error handling: [https://www.raymondcamden.com/2019/05/01/handling-errors-in-vuejs](https://www.raymondcamden.com/2019/05/01/handling-errors-in-vuejs)
+- Production readiness: [https://vuejs.org/v2/guide/deployment.html](https://vuejs.org/v2/guide/deployment.html)
+- Server-side rendering (SSR): [https://vuejs.org/v2/guide/ssr.html](https://vuejs.org/v2/guide/ssr.html) and [https://github.com/vuejs/vue/tree/master/packages/vue-server-renderer](https://github.com/vuejs/vue/tree/master/packages/vue-server-renderer)
+- Route pre-fetching: [https://github.com/egoist/vue-router-prefetch](https://github.com/egoist/vue-router-prefetch)
+- State model for Redux/MobX/VueX: [https://github.com/unadlib/usm](https://github.com/unadlib/usm)
+
+## React
+
+React also deserves way more than two chapters to go over all of the nitty-gritty details. Library or not, there is really a lot more to know to become proficient with it. Although we have shown that with a short introduction, we could quickly get started with it.
+
+As time goes on, it is also obvious that React is becoming more and more opinionated, as the ecosystem matures and as better solutions start to stand out.
+
+Here are some links that you might find useful:
+
+- React and composition: [https://medium.com/leanjs/react-is-all-about-composition-f9f49dec183c](https://medium.com/leanjs/react-is-all-about-composition-f9f49dec183c)
+- Higher-order components (HOCs): [https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb](https://medium.com/@jrwebdev/react-higher-order-component-patterns-in-typescript-42278f7590fb) and [https://medium.com/@rossbulat/how-to-use-react-higher-order-components-c0be6821eb6c](https://medium.com/@rossbulat/how-to-use-react-higher-order-components-c0be6821eb6c)
+- Forms: [https://flaviocopes.com/react-forms](https://flaviocopes.com/react-forms), [https://medium.com/@agoiabeladeyemi/the-complete-guide-to-forms-in-react-d2ba93f32825](https://medium.com/@agoiabeladeyemi/the-complete-guide-to-forms-in-react-d2ba93f32825) and [https://itnext.io/keep-calm-and-handle-forms-in-react-js-52c67eea340e](https://itnext.io/keep-calm-and-handle-forms-in-react-js-52c67eea340e)
+- Error handling with error boundaries: [https://reactjs.org/blog/2017/07/26/error-handling-in-react-16.html](https://reactjs.org/blog/2017/07/26/error-handling-in-react-16.html), [https://hackernoon.com/error-boundaries-in-react-16-32fb8e185a3](https://hackernoon.com/error-boundaries-in-react-16-32fb8e185a3) and [https://dev.to/sarah_chima/error-boundaries-in-react-3eib](https://dev.to/sarah_chima/error-boundaries-in-react-3eib)
+- Testing: [https://reactjs.org/community/testing.html](https://reactjs.org/community/testing.html), [https://www.valentinog.com/blog/testing-react](https://www.valentinog.com/blog/testing-react) and [https://github.com/airbnb/enzyme](https://github.com/airbnb/enzyme)
+- TSLint plugin for accessibility: [https://github.com/joaovieira/tslint-react-a11y](https://github.com/joaovieira/tslint-react-a11y)
+- ESLint plugin for accessibility: [https://github.com/evcohen/eslint-plugin-jsx-a11y](https://github.com/evcohen/eslint-plugin-jsx-a11y)
+- Relay: [https://facebook.github.io/relay](https://facebook.github.io/relay), [https://code.fb.com/web/relay-modern-simpler-faster-more-extensible](https://code.fb.com/web/relay-modern-simpler-faster-more-extensible) and [https://facebook.github.io/relay/docs/en/new-in-relay-modern.html](https://facebook.github.io/relay/docs/en/new-in-relay-modern.html)
+- React lazy and suspense: [https://medium.com/@baphemot/understanding-react-suspense-1c73b4b0b1e6](https://medium.com/@baphemot/understanding-react-suspense-1c73b4b0b1e6), [https://hackernoon.com/magic-of-react-suspense-with-concurrent-react-and-react-lazy-api-e32dc5f30ed1](https://hackernoon.com/magic-of-react-suspense-with-concurrent-react-and-react-lazy-api-e32dc5f30ed1) and [https://web.dev/code-splitting-suspense](https://web.dev/code-splitting-suspense)
+- Performance: [https://blog.opendigerati.com/taking-control-of-react-performance-4f21a15a19b5](https://blog.opendigerati.com/taking-control-of-react-performance-4f21a15a19b5) and [https://web.dev/virtualize-long-lists-react-window](https://web.dev/virtualize-long-lists-react-window)
+- Dependency injection using InversifyJS, just like with Vue: [https://marmelab.com/blog/2019/03/13/react-dependency-injection.html](https://marmelab.com/blog/2019/03/13/react-dependency-injection.html) and [https://itnext.io/dependency-injection-in-react-using-inversifyjs-a38ff0c6601](https://itnext.io/dependency-injection-in-react-using-inversifyjs-a38ff0c6601)
+- Pre-rendering: [https://web.dev/prerender-with-react-snap](https://web.dev/prerender-with-react-snap)
+- Pre-cache: [https://web.dev/precache-with-workbox-react](https://web.dev/precache-with-workbox-react)
+- Environment variables: [https://medium.com/@robertsavian/my-awesome-custom-react-environment-variables-setup-8ebb0797d8ac](https://medium.com/@robertsavian/my-awesome-custom-react-environment-variables-setup-8ebb0797d8ac)
+- PWA: [https://web.dev/add-manifest-react](https://web.dev/add-manifest-react)
+
+## Other Web frameworks/libraries
+
+Our choice of frameworks was rather arbitrary and based on current trends, but there are many alternative solutions out there.
+
+Here are some alternatives that you might want to take a look at:
+
+- Svelte: [https://svelte.dev](https://svelte.dev)
+- Aurelia: [https://aurelia.io](https://aurelia.io)
+- Mithril: [https://mithril.js.org](https://mithril.js.org)
+- Dojo: [https://dojo.io](https://dojo.io)
+- Marko: [https://github.com/marko-js/marko](https://github.com/marko-js/marko)
+
+## Web components
+
+One area that you might want to invest some time in is web components.
+
+The basic idea behind web components is to extend the set of standard HTML
+elements with custom ones through the custom elements ([https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements)) standard
+API. Web components also rely on other web standards such as the Shadow DOM ([https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM)).
+
+Each web component encapsulates functionality and can be used as a black box, a bit like the standard video tag. Web components can be created using vanilla JavaScript, but also using many different frameworks and libraries, including Angular, Vue, and React.
+
+If you read between the lines, this actually means that you can make an Angular web application that uses web components created using React or vice versa. There are ongoing experiments in the community around this idea to create so-called Micro frontends. You can find a nice explanation about the ideas behind this concept here: [https://micro-frontends.org/](https://micro-frontends.org/)
+
+Web components are appealing and interesting because they provide a way to create truly reusable components. Here is an interesting article to dive into the subject: [https://medium.com/javascript-in-plain-english/could-web-components-actually-compliment-javascript-frameworks-5-reasons-why-i-think-so-971eee82ee85](https://medium.com/javascript-in-plain-english/could-web-components-actually-compliment-javascript-frameworks-5-reasons-why-i-think-so-971eee82ee85)
+
+At the same time, there are also important drawbacks to consider, including a lack of support in some modern web browsers and issues for accessibility, as explained in Martin Hochel’s recent presentation: [https://speakerdeck.com/martin_hotell/the-real-state-of-web-components](https://speakerdeck.com/martin_hotell/the-real-state-of-web-components)
+
+Here are some useful links about Web components:
+
+- [https://www.webcomponents.org](https://www.webcomponents.org)
+- [https://developer.mozilla.org/fr/docs/Web/Web_Components](https://developer.mozilla.org/fr/docs/Web/Web_Components)
+- [https://www.robinwieruch.de/web-components-tutorial](https://www.robinwieruch.de/web-components-tutorial)
+- Angular elements: [https://angular.io/guide/elements](https://angular.io/guide/elements)
+- React and Web components: [https://github.com/Polymer/lit-html](https://github.com/Polymer/lit-html)
+- Vue and Web components: [https://github.com/skatejs/skatejs](https://github.com/skatejs/skatejs)
+- lit-html: [https://github.com/Polymer/lit-html](https://github.com/Polymer/lit-html)
+- StencilJS: [https://stenciljs.com](https://stenciljs.com)
+- Storybook: [https://storybook.js.org](https://storybook.js.org)
+
+## ES modules and Pika
+
+In the book, we have spent quite some time discussing the different module types and what module loaders/bundlers do for us. But, of course, technology moves forward all the time, at light speed, really.
+
+In the past, when you wanted to add a library to a web application, you would
+simply add script tags in your page. During the last few years, we have transitioned to using module loaders, bundlers, and other tools to assist us.
+
+We needed those partly because we wanted to be able to use modern ES2015+ features even if the client web browsers only supported good old ES5 syntax. Also, because there was no native module system, meaning that managing dependencies was overly complicated.
+
+But we aren’t in 2015 anymore. Many modern web browsers already support ES2019 syntax natively (in other words, without requiring polyfills!). Also, as we’ve explained in the book, ES modules are now officially part of ECMAScript. As a matter of fact, they’re natively supported in all modern web browsers and can be loaded using the type=”module” attribute of the script tag.
+
+Because of this rapid evolution, it is hard to give good advice, but one thing is for sure: the landscape is morphing as we write these lines and what was true yesterday might not be tomorrow. We have moved from the simplicity of the web toward a rather complex ecosystem in which tools such as Webpack are heavily used. Although, we might (hopefully) come back to simpler solutions in the future. If we don’t, then we might end up creating a higher barrier to entry for junior developers or aspiring ones and this is not good!
+
+At this point in time, most packages published on the official npm registry use
+CommonJS, with require calls and module.exports , but things will probably
+change.
+
+One thing that you could look into is Pika ([https://www.pika.dev](https://www.pika.dev) ), a project that attempts to move the JavaScript ecosystem forward. As stated on their
+About page ([https://www.pika.dev/about](https://www.pika.dev/about) ), Pika aims to put standard ECMAScript Modules (ESM) forward.
+
+Pika offers a CDN that exposes ES modules for thousands of npm packages, making it really easy to get access to them in your applications without requiring a module bundler.
+
+Here’s how the Preact library can be loaded using the Pika CDN:
+
+```
+import {Component, render} from '[https://cdn.pika.dev/preact/v8'](https://cdn.pika.dev/preact/v8%27);
+```
+
+How cool is that?
+
+Being part of ECMAScript, we believe that ES modules will rapidly gain popularity and tooling will certainly evolve to make it easier for us to leverage those.
+
+Here are some links about ES modules and Pika:
+
+- ESM cartoon introduction: [https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive](https://hacks.mozilla.org/2018/03/es-modules-a-cartoon-deep-dive)
+- ES modules in Web browsers: [https://jakearchibald.com/2017/es-modules-in-browsers](https://jakearchibald.com/2017/es-modules-in-browsers)
+- Using ES modules: [https://www.sitepoint.com/using-es-modules](https://www.sitepoint.com/using-es-modules)
+- Pika CDN: [https://www.pika.dev](https://www.pika.dev)
+
+## The standard JavaScript library and built-in
+
+web modules
+
+Quite recently, a TC39 proposal made a lot of noise: JavaScript might be getting its very own standard library.
+
+Historically, an _issue_ in JavaScript has been the lack of a (large enough) standard library, which partly explains why there was such an explosion of the number of packages on npm . By integrating more and more features in a standard library, the JavaScript community could probably get rid of a really large number of small utility packages and start reusing code more elegantly.
+
+Standard libraries are quite common and much denser in some programming
+languages, so it would be great for ECMAScript to also provide more out of the box. For instance, some functions that are currently part of the awesome Lodash library ([https://lodash.com](https://lodash.com)) might be added to JavaScript’s standard library.
+
+You can find that proposal here: [https://github.com/tc39/proposal-javascript-standard-library](https://github.com/tc39/proposal-javascript-standard-library) and should definitely keep an eye on how it evolves, as it will most certainly impact us all over time.
+
+Aside from that, modern web browsers have started integrating built-in modules, allowing web applications to reuse functionality without having to bundle it along with their own code. A first notable example is the Key Value storage API integrated into Google Chrome: [https://developers.google.com/web/updates/2019/03/kv-storage](https://developers.google.com/web/updates/2019/03/kv-storage)
+
+Once again, in the future, this might have a big impact on how we create our
+applications and how we think about our dependencies and “weight”.
+
+## Full-stack applications with Nrwl NX
+
+A tool that we could have used in the the last application of the book (a React frontend + a Nest.js backend) is **Nrwl NX** ([https://nx.dev](https://nx.dev) ). We did not want to introduce it because it would simply have been too much for a single chapter, but it is definitely a tool that you should take a look at if you develop a multi-tier JS/TS application in a **monorepo** (that is, a source code repository containing both backend and frontend code, or even different projects and libraries).
+
+Nrwl NX is interesting because it makes it a breeze to reuse code between
+applications and libraries part of the same NX workspace. Also, NX helps to optimize builds, tests, and other operations thanks to its knowledge about the dependencies between the different elements. For example, if a project depends on a library and that library changes, then NX will know that it needs to rebuild it.
+
+The advantages of NX are not limited to facilitating the development of full-stack applications, but we cannot cover any more details here.
+
+Check out these links to resources on full-stack applications with Nrwl NX:
+
+- Official Nrwl NX website: [https://nx.dev](https://nx.dev)
+- Nrwl blog: [https://blog.nrwl.io/nx/home](https://blog.nrwl.io/nx/home)
+
+## Testing
+
+Even if we did dedicate an entire chapter to it, testing is one of the subjects that we would have loved to go a lot more in-depth about.
+
+Here are some resources to go further on that front:
+
+- Cypress: [https://www.cypress.io](https://www.cypress.io), [https://basarat.gitbooks.io/typescript/content/docs/testing/cypress.html](https://basarat.gitbooks.io/typescript/content/docs/testing/cypress.html) and [https://medium.freecodecamp.org/how-to-test-your-frontend-with-the-cypress-io-framework-f048070f4330](https://medium.freecodecamp.org/how-to-test-your-frontend-with-the-cypress-io-framework-f048070f4330)
+- Jest snapshot testing: [https://jestjs.io/docs/en/snapshot-testing](https://jestjs.io/docs/en/snapshot-testing)
+
+There are also many great books about testing and code quality.
+
+## Style guide, formatting and linting
+
+Code quality is not only a question of correctness but also one of homogeneity.
+Conventions, style guides, and tools can help with these aspects. For this, Nrwl NX can also help as it provides support for linting and code formatting
+(using Prettier) out of the box!
+
+Throughout the book, to be honest, we could’ve made an effort on that front, but we had to choose our battles!
+
+Here are some useful links:
+
+- Google’s TypeScript style guide: [https://github.com/google/ts-style](https://github.com/google/ts-style)
+- Prettier: [https://prettier.io](https://prettier.io)
+- ESLint: [https://github.com/typescript-eslint/typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
+- ESLint plugin to avoid conflicts with Prettier: [https://github.com/prettier/eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)
+- Codelyzer: [https://github.com/mgechev/codelyzer](https://github.com/mgechev/codelyzer)
+- RxJS TSLint rules: [https://github.com/ReactiveX/rxjs-tslint](https://github.com/ReactiveX/rxjs-tslint)
+
+If you don’t know about it already, please note that TSLint (currently the standard for linting?) is going to be abandoned/merged into ESLint, which will become the de facto standard in the coming months/years.
+
+## Documentation
+
+Documenting code is very important to help other developers to find their way inside of your code base. This is especially true for shared libraries, but it is also relevant for all kinds of projects.
+
+Here are some tools that you can use to document your APIs:
+
+- TypeDoc: [https://typedoc.org](https://typedoc.org) and [https://medium.freecodecamp.org/a-deep-dive-into-typedocs-workflow-and-extensibility-d464683e092c](https://medium.freecodecamp.org/a-deep-dive-into-typedocs-workflow-and-extensibility-d464683e092c)
+- Compodoc: [https://github.com/compodoc/compodoc](https://github.com/compodoc/compodoc)
+- Docz: [https://github.com/pedronauck/docz](https://github.com/pedronauck/docz)
+
+Good documentation is certainly not only about tooling. The seminal book, Clean Code, by Robert Martin (ISBN: 978–0132350884) shares great advice about how to properly document code.
+
+## And more…
+
+Voilà, that was the main part of the content that we had to leave out of the book. We hope that you’ll find at least some interesting things in there!
+
+In any case, whatever you do, just keep learning and sharing!
+
+But there’s more to come. In the coming days/weeks, we’ll publish another part of the content that we had to remove at the very end of the process.
+
+Stay tuned!
+
+<BlogPostSignature />

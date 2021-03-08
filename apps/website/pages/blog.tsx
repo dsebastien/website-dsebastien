@@ -22,6 +22,9 @@ export default function Blog(input: { posts: FrontMatter[] }) {
         Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt))
     )
     .filter((post) => {
+      if (!post.title) {
+        throw new Error(`Invalid post title: ${JSON.stringify(post, null, 2)}`);
+      }
       return post.title.toLowerCase().includes(searchValue.toLowerCase());
     });
 
