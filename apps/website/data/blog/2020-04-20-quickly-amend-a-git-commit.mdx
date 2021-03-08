@@ -1,0 +1,28 @@
+---
+title: 'Quickly amend a git commit'
+summary: 'Here is the quickest way to amend a git commit'
+publishedAt: '2020-04-20'
+slug: 'quickly-amend-a-git-commit'
+categories: [git, scm]
+keywords: [git, amend, source control, source control management]
+---
+
+Here’s a useful thing I’ve learned today: you can skip editing the commit text when you amend a commit with git:
+
+```bash
+git commit --amend --no-edit
+```
+
+I wish I knew this earlier! ;-)
+
+As an added bonus, you can also [define an alias for this in your bash profile](https://twitter.com/ThomasBurleson/status/1251499888979906560) (only if you’re lazy like me):
+
+```bash
+alias amend='git commit --amend --no-edit'
+```
+
+If you like living “dangerously”, you can even put a git add -A in there, but personally I prefer not to.
+
+That’s it for today!
+
+<BlogPostSignature />
