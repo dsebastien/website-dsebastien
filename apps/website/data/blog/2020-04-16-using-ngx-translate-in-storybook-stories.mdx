@@ -1,0 +1,46 @@
+---
+title: 'Why and how to use stable node and npm versions across your project & team'
+summary: 'Use stable versions of Node.js and npm to avoid surprises'
+publishedAt: '2020-04-16'
+slug: 'using-ngx-translate-in-storybook-stories'
+categories: [javascript, angular, storybook]
+keywords: [javascript, angular, storybook]
+---
+
+If you’re using [NGX Translate](https://github.com/ngx-translate/core) in your Angular application, you may realize that some additional setup is required to test components relying on the translate pipe, since simply importing the TranslateModule won’t cut it.
+
+When using NGX translate, you not only need to import the TranslateModule module, but also define the default language to use.
+
+Here’s how to do it with Storybook.
+
+## StorybookTranslateModule
+
+The thing to keep in mind with Storybook and Angular, is that Storybook creates an Angular module to host your component. And that module, needs to be able to inject whatever your component depends on (i.e., as usual).
+
+Since you don’t want to modify your component’s constructor to set the default language (which doesn’t make sense outside of Storybook), you can instead create a translation module, specifically for Storybook.
+
+Here’s an example:
+
+<Gist gistLink="dsebastien/20f1ca125857c7361d673f9e650dbd51" />
+
+As you can see, this module uses the .forRoot(…) method in order to define the NGX Translate configuration. I’ve left the configuration out, as it really depends how you prefer to work with ngx-translate, which can vary from application to application.
+
+Note that you still need to load the TranslateModule (not only call TranslateModule.forRoot(…)). You can do that either in the imports of the StorybookTranslateModule (right after the TranslateModule.forRoot line), or in your Storybook module.
+
+In the constructor of the module, the default language is set.
+
+Using this module in a Storybook story is then as simple as importing it:
+
+<Gist gistLink="dsebastien/7fdc33a5d00741747ad7a36a7c647713" />
+
+From then on, your translations will be working also in Storybook.
+
+## Conclusions
+
+In this post, I’ve explained a little trick to be able to use NGX Translate in a the context of Storybook, which requires a bit of help to be working.
+
+One thing that I’m still wondering about is how I could integrate language switching in Storybook, without having to touch my components. I imagine that it could be done with a Storybook add-on…
+
+That’s it for today!
+
+<BlogPostSignature />
