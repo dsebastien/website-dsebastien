@@ -1,0 +1,46 @@
+---
+title: 'Adding missing GPG keys for apt-get on WSL'
+summary: 'How to add missing GPG keys when using WSL'
+publishedAt: '2020-01-01'
+slug: 'adding-missing-gpg-keys-for-apt-get-on-wsl'
+categories: [wsl, windows, ubuntu, gpg]
+keywords: [wsl, windows, ubuntu, gpg]
+---
+
+TL;DR: Retrieve the keys manually using:
+
+```bash
+curl -sL “https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xKEY_HASH_GOES_HERE" | sudo apt-key add
+```
+
+Recently, I’ve stumbled upon an issue where some GPG keys were not available. Usually the solution to that is to directly use apt-key to retrieve those keys.
+
+For example:
+
+```bash
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 112695A0E562B32A
+```
+
+Unfortunately (at least on my version of WSL), there seems to be an issue with it; the command fails with:
+
+```bash
+...
+gpg: connecting dirmngr at ‘/tmp/apt-key-gpghome.H755AH9Xn5/S.dirmngr’ failed: IPC connect call failed
+gpg: keyserver receive failed: No dirmngr
+```
+
+Obviously, installing `dirmngr` should fix it but it doesn’t work once installed.
+
+Since I don’t really have time to get into this further (I’m pretty sure that there are known solutions to this under WSL: [https://github.com/sbt/sbt/issues/4261](https://github.com/sbt/sbt/issues/4261)), I looked for alternatives.
+
+I found the following:
+
+```bash
+curl -sL “https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xKEY_HASH_GOES_HERE" | sudo apt-key add
+```
+
+Basically we’re just downloading the key ourselves using curl and passing it to apt-key so that it can add it.
+
+Time to get back to what I was trying to do in the first place.. What was it already? ;-)
+
+<BlogPostSignature />
