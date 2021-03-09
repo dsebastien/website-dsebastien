@@ -6,6 +6,7 @@ import { ThemeProvider } from 'next-themes';
 import GlobalStylesComponent from '@/components/global-styles';
 import { MDXProvider } from '@mdx-js/react';
 import MDXComponents from '@/components/mdx-components';
+import useRouterScroll from '../utils/use-router-scroll';
 
 /**
  * Wrapper around all pages
@@ -14,6 +15,11 @@ import MDXComponents from '@/components/mdx-components';
  * @constructor
  */
 const App = ({ Component, pageProps }: AppProps) => {
+  useRouterScroll({
+    behavior: 'smooth',
+    idOfElementToScroll: '__next',
+  });
+
   return (
     <>
       <GlobalStylesComponent />
