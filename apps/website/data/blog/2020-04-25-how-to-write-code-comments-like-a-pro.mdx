@@ -1,0 +1,118 @@
+---
+title: 'How to write code comments like a pro'
+summary: 'In this article, I’ll explain how my commenting practice (yes, that’s a thing :p) has evolved as well as what I currently recommend, whether you’re a junior fresh out of school, a seasoned developer…'
+publishedAt: '2020-04-25'
+image: '/static/images/logos/storybook.svg'
+slug: 'how-to-write-code-comments-like-a-pro'
+categories: [programming, code, comments, best practices]
+keywords: [programming, code, comments, best practices, software development]
+---
+
+Over the years I’ve changed my mind multiple times about code comments.
+
+In this article, I’ll explain how my commenting practice (yes, that’s a thing :p) has evolved as well as what I currently recommend, whether you’re a junior fresh out of school, a seasoned developer or a team lead.
+
+<Image
+  alt={`Code comments`}
+  src={`/static/images/blog/2020/code-comments.png`}
+  width={800}
+  height={266}
+  priority
+/>
+
+
+## Evolution
+
+At the beginning of my career as a software developer, I used to write tons and tons of comments to remind me of _why_ and _how_ things worked.
+
+As I grew more accustomed to the recurring patterns and got used to the weird (read: _horrendous_) APIs of some libraries, I progressively wrote less and less comments.
+
+The reason behind this evolution is that as your experience grows, you need less and less explanations about the _how._
+
+What remains pretty much constant, independently of your experience level, is the need to **have an understanding of the rationale/reasoning behind certain implementation details**.
+
+Having a strong understanding of the language/technology being used is key, but doesn’t tell you the whole story. Without hints about the intent of the code, things can get blurry real quick.
+
+I once joined a really large project where nobody on the team even knew why some areas of the system were there. And that means trouble…
+
+Nowadays, I tend to write comments mostly to explain why some sub-systems exist, why they’re structured the way they are or why a certain data structure has been chosen over another (e.g., for performance reasons).
+
+UML schemas and wiki documentation can also be useful for higher level explanations, but I tend to avoid creating too many of those as they’re far away from the code and really hard to maintain.
+
+I still like to use comments to highlight the “danger zones”. That is: critical pieces of the code that should only ever be touched with _care_. Those are useful, as the most sensitive code paths in a system have usually been battle tested and _just work_. This is not to say that we can’t refactor such code, but it has to be done with care (even if automated tests are in place). Sometimes there’s a subtle bug fix; sometimes it’s a matter of performance.
+
+What I also often do is add references as comments; for instance towards the documentation of specific APIs or features that are being used, or pointers to relevant StackOverflow questions.
+
+## Why writing too many comments is not a good thing
+
+As a junior developer, when a codebase is littered with comments, you might feel safe, as you see tons of helpful messages to guide/reassure you and clear out any doubts.
+
+Although, as time goes by, you’ll realize that, often times, those comments are out of sync with the code. When you’ll have noticed this multiple times, you’ll start paying less and less attention to those comments; until you just ignore them. At least that’s one possible reaction; it’s related to the [theory of broken windows](https://en.wikipedia.org/wiki/Broken_windows_theory); the same is true of bad/ugly code and a lack of attention to technical debt. The alternative is to systematically try to fix the comments, which is better but also has an associated _cost_.
+
+The main issue with having too many comments is that those not “safe” / “type safe” / “compiled”. Nothing apart us, humans reading/writing them, can make sure that they’re still correct/relevant. In a sense we’re the comment parsers; it’s up to us to keep them relevant.
+
+Comments are _metadata_; they live in another “dimension”, independent of the code itself. More importantly, comments have an associated maintenance cost. Each and every comment line is actually something more to maintain in the project. To me, code comments _decay_ is also technical debt of sorts.
+
+The more comments you have in your codebase, the more costly it becomes to maintain. This fact alone is a good reason to write _less_ comments.
+
+Although, writing too few comments is not good either; it’s always a question of balance. You should at least document the rationale behind important design choices, the reason for which elements exist in your system.
+
+Things such as who the author of something is, what the filename is, when it was modified, etc doesn’t make any sense. Source control takes care of that.
+
+Copyright headers also don’t make any sense; if you need those, then take that out of your code and move that into your build. Create a template and let your build system insert whatever notice you need in the generated artifacts.
+
+## Sidenote about commented-out code
+
+As surprising as it is (to me at least), many experienced software engineers tend to comment out sections of code, thinking that they _might_ need to recover those or “re-enable” that code later on.
+
+I’m certainly not the only one to say this, but don’t. Just _don’t_. Commented-out code is [pure noise](https://en.wikipedia.org/wiki/Signal-to-noise_ratio). Not only that, but it is even _dangerous_.
+
+In addition, **commented-out code is still code that has to be maintained**. But in most cases, it isn’t. The more commented-out code you see, the less you pay attention to it. Unfortunately, if you really decide to uncomment lines of code after some time has passed, then if that code hasn’t been maintained along with the rest, then it might end up introducing bugs (or worse).
+
+Whenever you think about commenting out some code, just forget it. Don’t. Delete it. Right there.
+
+If that code was never committed, then it doesn’t matter; it was just an idea; forget about it.
+
+If that code was previously in the codebase, then removing it altogether now doesn’t mean that it is gone forever. Your source control management system is there exactly for that purpose. If you end up needing that code ever again, then you’ll dive into the history of your project and you’ll find it back, safe and sound.
+
+Whenever I notice commented-out code, I don’t hesitate one bit: I delete it right away. And you should do that too. Less is _more_.
+
+## Prefer log statements to explain what is going on
+
+Code comments are relevant for maintenance; they help your teammates, your successors and even your future self to know _why_ things are there and what is the rationale behind the architecture/design choices.
+
+On the other hand, as I’ve explained above, comments detailing _what_ the code is doing are mostly useless, misleading and costly to maintain. On the contrary, log statements that explain what the code is doing are incredibly valuable for any production system. When things go awry in production, you’ll be happy to find log files filled with useful troubleshooting information.
+
+If you think about writing a comment to explain what the code is doing, then you should instead add a log statement, with the correct granularity (I’ll soon write an article about that!).
+
+Nowadays, what I tend to do when I notice that there are too many comments is to immediately remove those that are useless/outdated. If I notice that there’s no or not enough logging, then I add some log statements.
+
+## Prefer writing automated tests to explain how things work
+
+[Behavior-Driven Development (BDD)](https://en.wikipedia.org/wiki/Behavior-driven_development) is all about creating a shared understanding of how the system works. By applying BDD, you’ll create tests that double as specifications for the code it covers.
+
+This is awesome because since tests are strongly tied with the code that is being tested, it is much harder to let it fall behind. Tests can be statically checked along with the rest of your code. Moreover, if a test fails, then you know that you either need to adapt the specs/tests or fix the broken code. Isn’t that great? To me it is, and certainly much more helpful than bogus comments!
+
+Do yourself a favor; whenever you feel like writing a comment explaining the “how”, write tests instead.
+
+By the way, BDD is awesome for many other reasons, so if you’re not familiar with that, make sure to read a few articles about it and give it a try in your next projects.
+
+## Conclusion
+
+In this article, I’ve shared some of my ideas about code comments.
+
+It can sound boring, but those represent an important part of your project. They can be helpful if they’re relevant and up to date, but they can also be distracting, misleading or downright dangerous when outdated.
+
+Useful comments are all mostly about the why, not about the how.
+
+TLDR;
+
+* Don’t write too many comments. When you do, focus on explaining the rationale/intent, or add important warnings, external references
+* Maintain comments along with the rest of the code; they’re also part of the “technical debt”, so don’t ignore it. Remove bogus comments, adapt comments when you change the code
+* To explain what is going on, prefer log statements; those will also be useful for production troubleshooting
+* To explain why things and are there and how they work, prefer writing automated BDD tests
+* Don’t comment-out code; delete it. If you see commented-out code, don’t hesitate and delete it.
+
+That’s it for today!
+
+<BlogPostSignature />
