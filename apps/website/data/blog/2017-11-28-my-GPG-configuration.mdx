@@ -11,7 +11,7 @@ Some notes about my current setup for GPG/PGP.
 
 I’m currently using [GnuPG](https://www.gnupg.org/) and in particular [GPG4Win](https://www.gpg4win.org/).
 
-### Portable mode
+## Portable mode
 
 As usual, I like portable installs and GPG is no exception. I’ve uncompressed it in my tools folder (synchronized across my machines). By itself, the tool is portable, maybe Kleopatra isn’t but I don’t care too much.
 
@@ -20,13 +20,13 @@ By default, Gpg4win installs in two locations:
 - Gpg4win: C:\\Program Files (x86)\\Gpg4win
 - GnuPG: C:\\Program Files (x86)\\GnuPG
 
-### Bash profile
+## Bash profile
 
 Here’s how my bash profile is configured to have GPG tools available:
 
 <Gist gistLink="dsebastien/08d87d6174764c602c11ee657b600fa2" />
 
-### GPG configuration
+## GPG configuration
 
 Here’s my current GPG configuration (~/.gnupg/gpg.conf). I’ve removed comments for stuff I don’t use for clarity, although I like to keep those in my actual configs):
 
@@ -37,7 +37,7 @@ The most important with this configuration it that I’ve…
 - set preferences towards the usage of stronger secure hash algorithms by default
 - disabled key ids (short & long) since those are insecure. There’s nothing much to it.
 
-### How I’ve generated my keys
+## How I’ve generated my keys
 
 First of all, I didn’t reinvent the wheel, I’ve mostly applied [what Alex Cabal has described here](https://alexcabal.com/creating-the-perfect-gpg-keypair/), so thanks to him!
 
@@ -47,7 +47,7 @@ Also, without this setup, if the keys I use on a daily bases were to be compromi
 
 Here’s the whole shabang.
 
-### Create the keypair
+## Create the keypair
 
 First of all, create the key:
 
@@ -64,7 +64,7 @@ Settings to use:
 
 When selecting the passphrase, use a tool like Keepass, don’t choose the passphrase yourself, you’re not smart enough ;-)
 
-### Set strong hash preferences on the keypair
+## Set strong hash preferences on the keypair
 
 Just to make sure:
 
@@ -75,7 +75,7 @@ gpg> setpref SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAMELLIA256 CAMELLIA1
 gpg> save
 ```
 
-### Add a signing sub-key
+## Add a signing sub-key
 
 Next, create a signing sub-key for code signing:
 
@@ -94,7 +94,7 @@ Settings:
 - Valid for: 0 (never expires)
 - mail: ...
 
-### Add an authentication sub-key
+## Add an authentication sub-key
 
 Next, create an authentication sub-key for SSH authentication:
 
@@ -116,7 +116,7 @@ Settings:
 - Key size: 4096
 - Expires: today + 365 days
 
-### Create a revocation certificate
+## Create a revocation certificate
 
 Generating a revocation certificate will allow me to later revoke this keypair if it is compromised. It must be kept safe because it can render my keys useless ;-)
 
@@ -124,7 +124,7 @@ Generating a revocation certificate will allow me to later revoke this keypair i
 gpg --output ./<mail>.gpg-revocation-certificate --gen-revoke <mail>
 ```
 
-### Export the keypair/subkeys to a safe location and make the key safe to use
+## Export the keypair/subkeys to a safe location and make the key safe to use
 
 First export the private key:
 
@@ -187,7 +187,7 @@ gpg: Key generation failed: No secret key
 
 That’s it!
 
-### How I can revoke a sub-key
+## How I can revoke a sub-key
 
 Using Google! Err I mean like this: [https://wiki.debian.org/Subkeys](https://wiki.debian.org/Subkeys).
 
@@ -209,7 +209,7 @@ gpg> save
 
 Once done, export/back-up the result and finally make sure to send the updated key to the key servers! (send-keys).
 
-### Where I’ve published my key
+## Where I’ve published my key
 
 Once my key was ready, I’ve published it at various locations.
 
@@ -243,7 +243,7 @@ Next up, I’ve uploaded the public key manually on [Ubuntu’s key server](http
 
 Finally, I’ve updated my GitHub profile to add my PGP key.
 
-### Git client configuration
+## Git client configuration
 
 I’ve also updated my git client configuration in order to make my life easier.
 
@@ -255,7 +255,7 @@ This tells git which key to use. BTW, [don’t enable automatic commit signing](
 
 Verifying signatures is a breeze with git.
 
-### Later
+## Later
 
 In a later post, I’ll explain how I use my PGP keys with SSH, git and my Yubikey.
 

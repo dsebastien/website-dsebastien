@@ -1,0 +1,68 @@
+---
+title: 'Creating a Storybook instance including stories from multiple libraries in a Nrwl Nx workspace'
+summary: 'Learn how to create a Storybook including stories from multiple libraries in a Nrwl Nx workspace'
+publishedAt: '2020-04-23'
+image: '/static/images/logos/storybook.svg'
+slug: 'creating-a-storybook-instance-including-stories-from-multiple-libraries-in-a-nrwl-nx-workspace'
+categories: [front-end, storybook, nrwl nx]
+keywords: [storybook, nrwl nx, libraries, stories]
+---
+
+Here’s a really short article about a cool trick that I’ve learned by reading a discussion on the [Nx support slack channel](https://github.com/nrwl/nx/issues/1739).
+
+<Image
+  alt={`Storybook`}
+  src={`/static/images/logos/storybook.svg`}
+  width={256}
+  height={319}
+  priority
+/>
+
+In a [Nrwl N](https://nx.dev/)x workspace, when you add [Storybook support](https://nx.dev/angular/plugins_storybook/overview), what you get by default is a separate instance of [Storybook](https://storybook.js.org/) for each feature library.
+
+This is nice as it allows to quickly spin up a Storybook instance, loaded with only a subset of the stories related to a specific feature/group of features. Main benefit: focus, startup time → perfect for development and [e2e testing](https://www.youtube.com/watch?v=C88th0SbepE).
+
+In some cases though, you might also want to be able to see stories from multiple or even all of your libraries, together in a single Storybook instance.
+
+[Juri Strumpflohner](https://twitter.com/juristr) has [shared the simple recipe on Github](https://github.com/juristr/nx-shared-storybook); here’s how it works!
+
+### TLDR;
+
+If you know how all of this works, then simply follow these steps:
+
+- Create a shared library with normal Nx Storybook support (i.e., library with a .storybook folder, angular.json configuration with a “storybook” and “build-storybook” target
+- Modify the config.js file under `libs/<your new library>/.storybook)` to replace the `configure(...)` line with `configure(require.context(“../../”, true, /\.stories\.tsx?$/), module);`
+
+Run storybook against your library and enjoy.
+
+### The (slightly) longer version
+
+As I’ve explained in [one of my previous articles](https://medium.com/@dSebastien/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e), when Storybook is added in n Nx workspace through the Nx CLI, Nx adds a “.storybook” folder at the root of the workspace, but also within each library that is configured for Storybook.
+
+Inside of the .storybook folder of each library, there’s a config.js file which can be used to customize the configuration of Storybook for a specific library.
+
+The default configuration instructs Storybook to load all “.stories.ts(x)” files in the current library; it looks as follows:
+
+```typescript
+import { configure } from '@storybook/angular';
+
+configure(require.context('../src/lib', true, /\.stories\.tsx?$/), module);
+```
+
+As you can see, it only looks for stories within the library’s src/lib folder.
+
+So finding and loading libraries from other libraries is actually as simple as changing the above _require.context_ path to look for Stories in the whole “libs” folder (and most certainly works just as well for React apps).
+
+Of course you don’t want to do this on one of your existing libraries; it’s preferable to create a dedicated library for this. In [his example](https://github.com/juristr/nx-shared-storybook), Juri has created a dedicated [library called “storybook” under “libs/shared”](https://github.com/juristr/nx-shared-storybook/tree/master/libs/shared/storybook).
+
+By the way, note that you can use a different port for this Storybook instance by adapting your angular.json file.
+
+### Conclusion
+
+This was a really short piece, but I found it quite nice and interesting to write a few words about it. Thanks to Juri for sharing the idea! ;-)
+
+If you’re also diving into Storybook, Nx (and/or Angular), then don’t hesitate to look at my [other articles](https://medium.com/@dSebastien/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e) on the [subject](https://medium.com/@dSebastien/using-ngx-translate-in-storybook-stories-3f4228f80e02).
+
+That’s it for today!
+
+<BlogPostSignature />

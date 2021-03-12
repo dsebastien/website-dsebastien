@@ -21,7 +21,7 @@ Steps we’ll go through:
 - Implement a JUnit 5+ Extension class for Mockito
 - Adapt existing tests
 
-### Build configuration
+## Build configuration
 
 I’m still using Maven (sorry Gradle fanboys), so just adapt to your build system of choice.
 
@@ -207,7 +207,7 @@ junit.jupier.extensions.autodetection.enabled = true
 
 Reference: [http://junit.org/junit5/docs/current/user-guide/#running-tests-config-params](http://junit.org/junit5/docs/current/user-guide/#running-tests-config-params)
 
-### Mockito Extension
+## Mockito Extension
 
 At the time of writing, Mockito doesn’t support JUnit 5 yet: [https://github.com/mockito/mockito/issues/445](https://github.com/mockito/mockito/issues/445)
 
@@ -291,7 +291,7 @@ With the above extension on your classpath, you can now add this to your Mockito
 @ExtendWith(MockitoExtension::class)
 ```
 
-### Adapting existing tests
+## Adapting existing tests
 
 Well sorry but let’s not reinvent the wheel here, [the official migration guide](http://junit.org/junit5/docs/current/user-guide/#migrating-from-junit4) should provide you with more than enough information :)
 

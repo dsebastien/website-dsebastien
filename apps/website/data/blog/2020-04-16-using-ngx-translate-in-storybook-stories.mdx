@@ -2,12 +2,21 @@
 title: 'Using NGX Translate in Storybook stories'
 summary: 'How to use ngx-translate with Storybook stories'
 publishedAt: '2020-04-16'
+image: '/static/images/logos/storybook.svg'
 slug: 'using-ngx-translate-in-storybook-stories'
 categories: [javascript, angular, storybook]
 keywords: [javascript, angular, storybook]
 ---
 
-If you’re using [NGX Translate](https://github.com/ngx-translate/core) in your Angular application, you may realize that some additional setup is required to test components relying on the translate pipe, since simply importing the TranslateModule won’t cut it.
+If you’re using [NGX Translate](https://github.com/ngx-translate/core) in your Angular application, you may realize that some additional setup is required to test components relying on the translate pipe, since simply importing the `TranslateModule` won’t cut it.
+
+<Image
+  alt={`Storybook`}
+  src={`/static/images/logos/storybook.svg`}
+  width={256}
+  height={319}
+  priority
+/>
 
 When using NGX translate, you not only need to import the TranslateModule module, but also define the default language to use.
 
@@ -23,9 +32,9 @@ Here’s an example:
 
 <Gist gistLink="dsebastien/20f1ca125857c7361d673f9e650dbd51" />
 
-As you can see, this module uses the .forRoot(…) method in order to define the NGX Translate configuration. I’ve left the configuration out, as it really depends how you prefer to work with ngx-translate, which can vary from application to application.
+As you can see, this module uses the `.forRoot(...)` method in order to define the NGX Translate configuration. I’ve left the configuration out, as it really depends how you prefer to work with ngx-translate, which can vary from application to application.
 
-Note that you still need to load the TranslateModule (not only call TranslateModule.forRoot(…)). You can do that either in the imports of the StorybookTranslateModule (right after the TranslateModule.forRoot line), or in your Storybook module.
+Note that you still need to load the `TranslateModule` (not only call `TranslateModule.forRoot(…)`). You can do that either in the imports of the `StorybookTranslateModule` (right after the `TranslateModule.forRoot` line), or in your Storybook module.
 
 In the constructor of the module, the default language is set.
 
