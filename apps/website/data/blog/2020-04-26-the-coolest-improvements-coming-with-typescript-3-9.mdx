@@ -1,0 +1,139 @@
+---
+title: 'Improvements coming with TypeScript 3.9'
+summary: 'The coolest improvements coming with TypeScript 3.9'
+publishedAt: '2020-04-26'
+image: '/static/images/logos/typescript.svg'
+slug: 'the-coolest-improvements-coming-with-typescript-3-9'
+categories: [programming, typescript, programming languages]
+keywords: [programming, typescript, programming languages]
+---
+
+TypeScript keeps going at lightning speed. [My book about TS 3.x](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding-ebook/dp/B081FB89BL/) has been released in December and now 3.9 is already around the corner! Phew!
+
+<Image
+  alt={`TypeScript`}
+  src={`/static/images/logos/typescript.svg`}
+  width={400}
+  height={400}
+  priority
+/>
+
+TS 3.9 is [scheduled for release in May](https://github.com/microsoft/TypeScript/issues/37198), but [a beta is already out](https://devblogs.microsoft.com/typescript/announcing-typescript-3-9-beta/) for us to try. Let’s look at what this new release will bring us!
+
+### Speed!
+
+As stated in the beta release notes, 3.9 is coming with many [performance improvements](https://devblogs.microsoft.com/typescript/announcing-typescript-3-9-beta/#speed-improvements). The TypeScript team and various contributors have fixed multiple issues around this.
+
+They’ve resolved issues with large unions/intersections/conditional types as well as with mapped types. Check out the beta release notes for a small list of the related pull requests (unsurprisingly many of those were initiated by Anders himself :p).
+
+[Daniel Rosenwasser](https://twitter.com/drosenwasser), the program manager for TypeScript, announces a ~40% reduction in compile times for material-ui, which is a rather large project that was experiencing slow build times. I don’t know about you, but this sounds _awesome_.
+
+Daniel also mentions that TS 3.9 addresses a problem with file renaming. Previously, it took quite a long time to determine which import statements had to be updated after file rename operations. I’ve witnessed this quite a few times and it was indeed annoying; one less problem to worry about!
+
+Having switched to the beta recently, I can indeed confirm that the compilation times are better now; even though my project is not _that_ big!
+
+### @ts-expect-error
+
+Sometimes, when writing test code, we need to test things that the TypeScript compiler won’t let us.
+
+For instance if you write APIs that will get consumed by clients written in JavaScript, your code might get called incorrectly and it’s useful to test such cases as well.
+
+Let’s take a look at a concrete example taken from my current project:
+
+<Gist gistLink="dsebastien/691127ba26c56be948aee1ac5a85f4b4" />
+
+In the Jest test above, I’m ensuring that the authentication service gracefully handles invalid input.
+
+On line 3, the TypeScript compiler would have refused to compile my code if I didn’t use the little “as unknown as …” trick.
+
+Currently, this is one way to keep the compiler happy. The thing is that after casting something to _unknown_, we can cast it again to anything else and the compiler won’t mind at all. Even if not perfect, this works and is useful in the context of testing.
+
+The other approach is to add a `@ts-ignore` comment above the concerned line:
+
+```typescript
+// @ts-ignore
+```
+
+The problem is that this simply tells the compiler to ignore the whole line, which is even worse in this case since other errors could creep in and wouldn't be noticed by TypeScript.
+
+With TypeScript 3.9, we’ll have one more option: adding a `@ts-expect-error` comment above the line:
+
+```typescript
+// @ts-expect-error
+```
+
+This new “suppression comment” tells TypeScript not to report the error (if there was one), but to warn us if there was actually no error.
+
+This is super useful in my scenario, as I could avoid using the “as unknown” trick and just do this instead:
+
+```typescript
+// @ts-expect-error
+service.handleError(null).subscribe({
+```
+
+The thing to be careful about though is how you use this feature. In the example above, I could mistype the name of the service variable, the name of the handleError method or the name of the subscribe method and in all of those cases, the compiler wouldn’t mind much.
+
+So it is better to split up the line so that the compiler knows exactly where to expect an error. Here’s a safer version:
+
+```typescript
+service.handleError(
+  // @ts-expect-error
+  null
+).subscribe(...)
+```
+
+This way, the compiler expects an error only for the handleError method argument, which is exactly what I want in this test.
+
+I think that I’ll stop using the “as unknown as…” trick and instead use this neat new feature, as it feels somewhat safer to me.
+
+And of course, I’ll continue to avoid using ts-ignore at all costs ;-)
+
+### Uncalled Function Checks in Conditional Expression
+
+Apparently, TS 3.7 has started reporting errors when it detects that we forgot to call a function in an if statement.
+
+Here’s the example from the release notes:
+
+<Gist gistLink="dsebastien/5a3eb9ceb8f3f67e8a0af1c3428d7fec" />
+
+As you can see above, in the if statement a poor soul has forgotten to actually call the hasImportantPermissions function. Since the function is indeed defined, it is always truthy. Fortunately with TypeScript 3.7 and onwards, the compiler notices it and errors out. Neat.
+
+I actually didn’t notice this in the release notes and must’ve been lucky never to face this issue.
+
+With TypeScript 3.9, the support for detecting such nasty issues has been extended to also cover ternary conditionals. Awesome!
+
+I rarely forget to call my functions, but now I’m reassured that even if it happens to me, TypeScript will help me fix it! :)
+
+### Editor improvements
+
+As I’ve explained in [my previous article](https://medium.com/@dSebastien/typescript-non-goals-43f47c1ecd84), the TypeScript compiler’s architecture has been designed so as to make it a breeze for code editors and IDEs to include TypeScript support. As a matter of fact it’s also thanks to this that editors like VSCode provide awesome JavaScript support, helping fix issues for JavaScript code, even without coding using TypeScript.
+
+TypeScript 3.9 brings new improvements here.
+
+For one, VSCode now supports [switching between TypeScript versions](https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version-of-typescript). As the release notes state, note that there’s also a nightly version of the TypeScript extension that you can use to benefit from the latest improvements.
+
+By the way, did you know that I [maintain a set of VSCode extension packs](https://medium.com/@dSebastien/vs-code-extension-packs-to-boost-productivity-fa1ba44dfc2e)? Of course there’s one for JavaScript/TypeScript development ;-)
+
+For all the details about the editor improvements, you’d better [take a look at the release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-3-9-beta/#editor-improvements).
+
+To summarize:
+
+* Better/more homogeneous CommonJS auto imports (yay!)
+* Code actions that now preserves newlines (this one is nice, but I have my lovely [Prettier](https://prettier.io/) to take care of all that code formatting nonsense)
+* Support for “solution-style” tsconfig.json files
+
+### Breaking changes
+
+As sad as it may sound, TS 3.9 also includes some breaking changes. I won’t cover these in this article, but might write a follow-up if there is interest. On my end I’ve been lucky as it seems that I don’t need to adapt my project.
+
+Anyway, do check out the [beta release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-3-9-beta/#breaking-changes) if you want to learn about those!
+
+### Conclusion
+
+In this article, I’ve briefly explained the new features that I feel are most interesting in the upcoming TypeScript release.
+
+I’ve been using the beta quite happily. Also, the update was a breeze. So go ahead and give it a try! And if you’re cautious, then it’s okay, it’ll get released soon enough.
+
+That’s it for today!
+
+<BlogPostSignature />
