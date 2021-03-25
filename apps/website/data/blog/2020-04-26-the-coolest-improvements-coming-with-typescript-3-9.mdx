@@ -20,7 +20,7 @@ TypeScript keeps going at lightning speed. [My book about TS 3.x](https://www.am
 
 TS 3.9 is [scheduled for release in May](https://github.com/microsoft/TypeScript/issues/37198), but [a beta is already out](https://devblogs.microsoft.com/typescript/announcing-typescript-3-9-beta/) for us to try. Let’s look at what this new release will bring us!
 
-### Speed!
+## Speed!
 
 As stated in the beta release notes, 3.9 is coming with many [performance improvements](https://devblogs.microsoft.com/typescript/announcing-typescript-3-9-beta/#speed-improvements). The TypeScript team and various contributors have fixed multiple issues around this.
 
@@ -32,7 +32,7 @@ Daniel also mentions that TS 3.9 addresses a problem with file renaming. Previou
 
 Having switched to the beta recently, I can indeed confirm that the compilation times are better now; even though my project is not _that_ big!
 
-### @ts-expect-error
+## @ts-expect-error
 
 Sometimes, when writing test code, we need to test things that the TypeScript compiler won’t let us.
 
@@ -88,7 +88,7 @@ I think that I’ll stop using the “as unknown as…” trick and instead use 
 
 And of course, I’ll continue to avoid using ts-ignore at all costs ;-)
 
-### Uncalled Function Checks in Conditional Expression
+## Uncalled Function Checks in Conditional Expression
 
 Apparently, TS 3.7 has started reporting errors when it detects that we forgot to call a function in an if statement.
 
@@ -104,7 +104,7 @@ With TypeScript 3.9, the support for detecting such nasty issues has been extend
 
 I rarely forget to call my functions, but now I’m reassured that even if it happens to me, TypeScript will help me fix it! :)
 
-### Editor improvements
+## Editor improvements
 
 As I’ve explained in [my previous article](https://medium.com/@dSebastien/typescript-non-goals-43f47c1ecd84), the TypeScript compiler’s architecture has been designed so as to make it a breeze for code editors and IDEs to include TypeScript support. As a matter of fact it’s also thanks to this that editors like VSCode provide awesome JavaScript support, helping fix issues for JavaScript code, even without coding using TypeScript.
 
@@ -122,13 +122,13 @@ To summarize:
 * Code actions that now preserves newlines (this one is nice, but I have my lovely [Prettier](https://prettier.io/) to take care of all that code formatting nonsense)
 * Support for “solution-style” tsconfig.json files
 
-### Breaking changes
+## Breaking changes
 
 As sad as it may sound, TS 3.9 also includes some breaking changes. I won’t cover these in this article, but might write a follow-up if there is interest. On my end I’ve been lucky as it seems that I don’t need to adapt my project.
 
 Anyway, do check out the [beta release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-3-9-beta/#breaking-changes) if you want to learn about those!
 
-### Conclusion
+## Conclusion
 
 In this article, I’ve briefly explained the new features that I feel are most interesting in the upcoming TypeScript release.
 

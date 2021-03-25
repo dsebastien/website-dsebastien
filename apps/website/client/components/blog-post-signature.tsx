@@ -24,9 +24,9 @@ const BlogPostSignature = () => {
         >
           subscribe to my newsletter
         </a>
-        , and come{' '}
+        , and{' '}
         <a href="https://twitter.com/dSebastien" rel="noopener">
-          say hi on Twitter!
+          come say hi on Twitter!
         </a>
       </StyledDiv>
 
