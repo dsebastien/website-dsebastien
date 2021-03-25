@@ -1,0 +1,35 @@
+---
+title: 'Getting rid of Kubernetes pods stuck on "Terminating"'
+summary: 'How to get rid of pods that are stuck in the "Terminating" state'
+publishedAt: '2020-05-08'
+image: '/static/images/logos/kubernetes.svg'
+slug: 'getting-rid-of-kubernetes-pods-stuck-on-terminating'
+categories: [infrastructure, kubernetes, k8s, troubleshooting]
+keywords: [infrastructure, kubernetes, k8s, troubleshooting]
+---
+
+Here’s a really quick tip about an annoying Kubernetes issue I’ve encountered from time to time while updating my deployments.
+
+<Image
+  alt={`Kubernetes`}
+  src={`/static/images/logos/kubernetes.svg`}
+  width={450}
+  height={250}
+  priority
+/>
+
+Sometimes, for obscure reasons, pods get stuck in the “Terminating” state. There’s an [open issue about this on Github](https://github.com/kubernetes/kubernetes/issues/51835).
+
+It can apparently happen because of a lack of memory, timeouts, issues with volumes, etc. Since the issue is not resolved, there are only workarounds at this time.
+
+The one that has worked for me is the following:
+
+```
+kubectl delete pods <pod> --grace-period=0 --force
+```
+
+This kills the problematic pods (pretty violently). Personally I only do this on my development workstation, so it’s all right. But be careful if you use this on a production system ;-)
+
+That’s it for today!
+
+<BlogPostSignature />
