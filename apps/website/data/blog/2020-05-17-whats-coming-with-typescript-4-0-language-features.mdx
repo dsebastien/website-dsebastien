@@ -1,0 +1,185 @@
+---
+title: "What's coming with TypeScript 4.0 -- Language features"
+summary: 'Learn everything about git, step by step. Part 1'
+publishedAt: '2020-05-17'
+image: '/static/images/logos/typescript.svg'
+slug: 'whats-coming-with-typescript-4-0-language-features'
+categories: [programming, programming languages, typescript]
+keywords: [typescript, programming, programming languages]
+---
+
+[TypeScript 3.9](https://medium.com/@dSebastien/whats-new-with-typescript-3-9-9095ff9f68a5) has just been [released](https://medium.com/@dSebastien/whats-new-with-typescript-3-9-9095ff9f68a5), so it’s only natural to look at what’s coming next! The good news is that since TypeScript is developed in the open, the plans are also available for all to see.
+
+<Image
+  alt={`TypeScript`}
+  src={`/static/images/logos/typescript.svg`}
+  width={400}
+  height={400}
+  priority
+/>
+
+In this article I’ll try to summarize what I could find out by looking at the [4.0 iteration plan](https://github.com/microsoft/TypeScript/issues/38510). I’ll only cover the language features. I might write additional posts to cover what’s also coming regarding editor productivity, performance and bug fixes.
+
+**Please keep in mind that this is article is based on a roadmap, it doesn’t mean that everything will actually be part of 4.0 or even actually implemented! ;-)**
+
+### Class property inference from constructors
+
+Currently, when tsc is configured in `noImplicitAny` mode, the following TS code doesn’t compile:
+
+<Gist gistLink="dsebastien/47f4caf69371aebbb9e42115dfe1cb10" />
+
+Now that [this PR](https://github.com/microsoft/TypeScript/pull/37920) has been merged and thus, as of TS 4.0, the code above _will_ compile and TypeScript will infer the type of `x` to be `string | boolean`.
+
+This is one more case where TypeScript’s type inference will help us out!
+
+### Short-circuiting assignment operators
+
+This [proposal](https://github.com/microsoft/TypeScript/issues/37255), introduced by Daniel Rentz, corresponds to a [TC39 proposal called “proposal-logic-assignment”](https://github.com/tc39/proposal-logical-assignment), which is now in Stage 3 (i.e., [almost good to go](https://tc39.es/process-document/)!).
+
+It aims to combine logical operators and assignment expressions. Combined with [nullish coalescing](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#nullish-coalescing), which we’ve got since TS 3.7, we will be able to write more condensed code.
+
+Here’s an example given in the proposal:
+
+```typescript
+obj1.obj2.obj3.x ??= 42;
+```
+
+And the same code without those new short-circuiting operators:
+
+```typescript
+obj1.obj2.obj3.x = obj1.obj2.obj3.x ?? 42;
+```
+
+As you can see, with support for this, we would have an even more expressive language, and we’d be able to combine checks and assignments, which would be great.
+
+As mentioned by Daniel Rosenwasser, we’d get one such operator for each of the logical operators, thus:
+
+```typescript
+LeftHandSideExpression &&= AssignmentExpression
+LeftHandSideExpression ||= AssignmentExpression
+LeftHandSideExpression ??= AssignmentExpression
+```
+
+Corresponding to what we can currently do with:
+
+```typescript
+LeftHandSideExpression && (LeftHandSideExpression = AssignmentExpression)
+LeftHandSideExpression || (LeftHandSideExpression = AssignmentExpression)
+LeftHandSideExpression ?? (LeftHandSideExpression = AssignmentExpression)
+```
+
+Given that the corresponding proposal has hit Stage 3, I bet that this will be part of TS 4.0, which would be great as this is a really nice feature.
+
+### Allow unknown on catch clause bindings
+
+Currently, if you try to add a type annotation to a catch clause, the compiler complains:
+
+<Gist gistLink="dsebastien/0cfc3b8528b2cb8e96b3b1043fa411a7" />
+
+The code above does not compile and it raises the following error: `TS1196: Catch clause variable cannot have a type annotation`
+
+At this point, we simply can’t add a type annotation to a catch clause, which is rather sad from a type safety perspective. The problem is that the errors are always considered to be `any`, which lets us do anything with the object within the catch block.
+
+This behavior is simply due to the fact that, originally, the `unknown` keyword didn’t exist. But now that it does, it would make much more sense to use it here.
+
+As pointed out in the comments of [this proposal](https://github.com/microsoft/TypeScript/issues/36775), we could get a new strict flag to let us enforce this by default (i.e., make all catch clause errors to be of type unknown). This would force us to correctly check the type before making use of it within the block.
+
+This is one improvement that I’m really interested about!
+
+### Labeled Tuple Elements
+
+Another [proposal](https://github.com/Microsoft/TypeScript/issues/28259), introduced by Brian Kim, aims to give us the capability of defining labels for tuple elements. I’m not the biggest fan of tuples (I generally prefer objects/custom types), but sometimes they can indeed prove useful, for instance while writing tests (or type definitions for weird libraries like React :p).
+
+Currently, tuples are declared like this:
+
+```typescript
+// length, count
+type Segment = [number, number];
+```
+
+
+Since we can’t assign labels to the tuple elements, the simplest (but really ugly) solution is to rely on comments to remind us of what each element corresponds to.
+
+The other solution (cleaner) is to use custom types that have more useful names. Still, there’s room for improvement.
+
+Some languages such as [C#](https://docs.microsoft.com/en-us/dotnet/csharp/tuples#named-and-unnamed-tuples) and Python for instance support this.
+
+If this gets added to the language, then we would be able to create more expressive tuples much more simply:
+
+```typescript
+type Segment = [length: number, count: number];
+```
+
+Here, by taking a look at the tuple, we directly know what each number corresponds to.
+
+This would be really useful to clearly understand what tuples are composed of. In addition, as mentioned in the proposal, it would also add more expressiveness to APIs that manipulate/return tuples.
+
+As stated by Daniel Rosenwasser, tuple element names won’t enforce anything in the type system; they’ll exist purely to communicate intent.
+
+### Forward declarations
+
+As [Daniel Rosenwasser explains](https://github.com/microsoft/TypeScript/issues/31894), there are times when we need to be able to tell TypeScript that a type _might_ exist depending on the environment in which the code gets executed.
+
+When a situation like this occurs, we can take advantage of [declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html). This works, but has some problems, especially when different environment have conflicting types. Also, it only works with custom types and interfaces.
+
+With this [new proposal](https://github.com/microsoft/TypeScript/issues/31894), TypeScript would provide us with means to properly handle such situations, by letting us define placeholder types, which will act as placeholders until an implementation is available. At that point, TypeScript will act as if the placeholder type doesn’t exist anymore.
+
+Here’s an example from the proposal:
+
+<Gist gistLink="dsebastien/04b21dd4427c96f890d8b533739dc692" />
+
+The (proposed) new `exists` keyword would let us define those placeholder types.
+
+Then, when introducing the actual implementation type, the TS compiler would ensure that the implementation respects the constraint(s) defined by the placeholder:
+
+<Gist gistLink="dsebastien/5900a2054aa0579018914ceeba21ee1f" />
+
+If the implementation type does not respect the placeholder type constraints, then the compiler would bail out:
+
+<Gist gistLink="dsebastien/c36aeaa8337f51e53420e1f9f80937c2" />
+
+Note that the `exists`keyword is only the proposed one, no definitive choice has been made yet.
+
+Check out [the proposal](https://github.com/microsoft/TypeScript/issues/31894) for more details.
+
+### Better support for Promises and await
+
+In the release notes of TS 3.9, there was [a note](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-9.html#what-about-the-awaited-type) that I didn’t understand at first about a potential “awaited” keyword, stating that it wasn’t ready for primetime yet.
+
+I haven’t been a huge fan of Promises since I fell in love (haha) with Rx and Observables back in 2016, but after looking at the plans for TS 4.0, I’ve stumbled upon this [bug report](https://github.com/microsoft/TypeScript/issues/27711), which has helped me understand what this is all about.
+
+In JavaScript, nested promises always unwrap; they’re automatically _flattened_. Here’s an example of what I mean:
+
+<Gist gistLink="dsebastien/cfd5e4bc4a187d69bc6339b0cb63afd5" />
+
+No matter how many times a promise is wrapped, it is automatically unwrapped for us. This is something that also works in the real world. If you wrap a present inside of a box inside of a box inside of a box and give it to kids, you’ll see how it works ;-)
+
+In TypeScript though, this normal behavior of JavaScript currently does not work as it should. The following code compiles fine, but the types are incorrect:
+
+<Gist gistLink="dsebastien/ba81bcb7d0f02ff4b73a76fbc2796742" />
+
+With the code above, the compiler should complain, because the `p1` promise is actually a `Promise<number>` and not a `Promise<Promise<number>>`.
+
+There are actually a few other issues around Promises and the await keyword in TypeScript, as explained in [this PR](https://github.com/microsoft/TypeScript/pull/17077). TypeScript currently has trouble finding out the correct return types to use with complex promise chains. Also, TS also has difficulties correctly identifying the “awaited type” for a type variable.
+
+The TypeScript team has in mind to introduce an `awaited T` operator to explicitly define the “awaited type”. This aims to correctly mimic the runtime behavior of JavaScript, but it doesn’t cover the promise unwrapping issue above.
+
+As this is still in flux, it isn’t clear yet how this will evolve and what will land in 4.0. One thing is for sure though: the TypeScript team will certainly improve the status quo for Promises in TS in the upcoming releases ;-)
+
+### Adapt TypeScript’s support for React
+
+Just like TypeScript, React moves crazy fast.
+
+Since I’ve published [my book about TypeScript, React, Angular and Vue](https://www.amazon.com/gp/product/B081FB89BL?pf_rd_r=F02ZS5HWMKCHHHY5N0JB&pf_rd_p=6fc81c8c-2a38-41c6-a68a-f78c79e7253f), things have continued to evolve. My chapter about React remains relevant, but the React.createElement API is [changing](https://github.com/reactjs/rfcs/blob/createlement-rfc/text/0000-create-element-changes.md).
+
+Since TypeScript supports JSX, it indeed needs to follow those evolutions. This is tracked in [this issue](https://github.com/microsoft/TypeScript/issues/34547).
+
+### Conclusion
+
+In this article, I’ve shared what I could discover so far about what might be coming in TypeScript 4.0.
+
+I can’t wait to see what we’ll actually get!
+
+That’s it for today!
+
+<BlogPostSignature />
