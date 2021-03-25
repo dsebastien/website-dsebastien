@@ -1,0 +1,160 @@
+---
+title: 'Handling scrolling on Angular route transitions'
+summary: ''
+publishedAt: '2020-05-12'
+image: '/static/images/blog/2020/bumpy-road.jpeg'
+slug: 'handling-scrolling-on-angular-router-transitions'
+categories: [front-end, angular, ux]
+keywords: [angular, routing, scroll, transitions, front-end, programming]
+---
+
+<Image
+  alt={`Bumpy road`}
+  src={`/static/images/blog/2020/bumpy-road.jpeg`}
+  width={2632}
+  height={1582}
+  priority
+/>
+
+By default, when a new route is activated, Angular’s router doesn’t touch the scroll position. At least this is still true of Angular 9, even if it’ll probably change in the future.
+
+This is problematic in some cases. For instance, if you are on a page that ends up being longer that the viewport, scroll down and navigate to a new route (e.g., using a `routerLink`), then if the new page is also longer than the viewport, the scrollbar will not be at the top. Not that great since you won’t see the top of the page.
+
+Also, if you navigate back/forward using the browser’s buttons, the scroll position will not be restored either. A sad situation indeed…
+
+Fortunately, there are different solutions to fix that. Let’s see how.
+
+### Bazooka approach
+
+When a new route is activated, an “activated” event is emitted, which you can react to. So you could do something like this:
+
+<Gist gistLink="dsebastien/e0a1a3fcd00868ed4a9c2a1ba4164351" />
+
+In the example App component above, notice that I’ve added a `###Content` anchor so that I can access the ## element from the controller (using the `ViewChild` decorator).
+
+Also, I’ve attached an event handler to the `activate` event. This event fires whenever a new route has been activated.
+
+Let’s now look at what we can do with this in the controller:
+
+<Gist gistLink="dsebastien/960fbbdef5c2d81a9f33d3242c864804" />
+
+In the controller’s `onActivate` method, I’ve simply retrieved the `##Content` ## element from the DOM and set the nativeElement’s [scrollTop](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollTop) property to 0, effectively bringing the scrollbar back to the top of the page.
+
+This ensures that the actual content pane of the application is scrolled back on top whenever we arrive on a new route.
+
+It does work for my use case but is far from perfect. Most notably, if I navigate back to a previous page, it’ll also be scrolled back on top, which is not always what you might want.
+
+So, how can we improve this?
+
+First of all, if you have pages that take a while to load, you could make use of the [Window.scrollTo](https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollTo) API to scroll to where you want (e.g., an anchor or something), or using the [ViewportScroller](https://angular.io/api/common/ViewportScroller) of Angular, but this would be a nightmare to ##tain as it would have to be handled page per page. Moreover, it would only work if your page layout relies on the ## viewport (i.e., if the whole layout scrolls).
+
+Ideally, if you need to remember and restore scroll positions when navigating back/forward, it’s probably better to have a more powerful solution.
+
+### Angular’s built-in (but broken?) solution
+
+Since [version 6](https://blog.angular.io/angular-v6-1-now-available-typescript-2-9-scroll-positioning-and-more-9f1c03007bb6), Angular has built-in support for restoring the scroll position when navigating using the Angular router. Note that, as of Angular 9, that feature still isn’t enabled by default.
+
+To enable [scroll position restoration](https://angular.io/api/router/ExtraOptions#scrollPositionRestoration) (as it is called), you need to adapt your app-routing.module.ts file (i.e., the place where you should find the `RouterModule.forRoot` call):
+
+<Gist gistLink="dsebastien/2d9ad1718d4f9af4a1433e85aebb7922" />
+
+In the example above, I’ve enabled the `scrollPositionRestoration` feature of Angular, which takes care of restoring the scroll position (heh) when navigating.
+
+That setting accepts multiple values:
+
+* `disabled`: default, which does nothing
+* `top`: force scroll position to be (0,0) on all navigation
+* `enabled`
+
+When it is set to `enabled`, it:
+
+* Scrolls to top whenever you navigate to a new route
+* Restores the previous scroll position when you navigate back to a previous route
+
+Unfortunately, even if it sounds perfect, [as explained in this issue](https://github.com/angular/angular/issues/24547), it doesn’t solve all the problems and doesn’t work in all situations.
+
+For instance, in my case, it didn’t help one bit because it only takes care of the scroll position of the ## viewport. Since my application’s layout has a fixed top/left bar, only the content pane (contained in my “##” element) can scroll. This means that scrolling to the top of the page can’t be done simply by using [Window.scrollTo(…)](https://developer.mozilla.org/en-US/docs/Web/API/Window/scrollTo). In practice, the scroll position restoration feature of Angular doesn’t do anything useful for my application.
+
+Another case where it won’t be able to help is when your content takes time to load. If that’s the case then, depending on the timing, the Angular support for scroll position restoration might fail and put the page on top even if should have restored the scroll position lower.. The thing is that it isn’t aware of your content at all.
+
+Also, it isn’t able to tell the difference between route changes that replace the entire viewport of only change a subset of the page (e.g., changing the contents of a secondary router outlet).
+
+In Angular’s defense, restoring the scroll position isn’t that easy and certainly hard to handle for all cases alike. Other libraries like React and Vue also face the same kinds of issues.
+
+Check out the [github issue](https://github.com/angular/angular/issues/24547) for other improvement ideas.
+
+Bummer. Let’s try something else.
+
+### Custom router scroll service
+
+As far as I’m concerned the bazooka and built-in solution of Angular didn’t cut it. I’ve thus started looking for alternatives.
+
+After searching for a bit, I’ve stumbled upon a great (as usual) [article from Angular In Depth](https://medium.com/angular-in-depth/reactive-scroll-position-restoration-with-rxjs-792577f842c) which proposed to leverage RxJS and router events to keep track of scroll positions and restore those if/when needed.
+
+Based on that article, its comments and some personal wizardry, I’ve written an Angular service that:
+
+* keeps track of the scroll position of the ## viewport (just like Angular can do, which is fine for some cases)
+* optionally keeps track of the scroll position of some additional HTML element (e.g., my ##Content ## element, which is my application’s real content viewport)
+* can be configured programmatically using the service’s API
+* can be configured declaratively through custom route data definitions
+* works great with lazy loaded modules
+
+Here are its interfaces:
+
+<Gist gistLink="dsebastien/1211242afa31e00b2d19fdc3dc6db5e6" />
+
+Let’s go through these step by step.
+
+The `RouterScrollService`:
+
+* `disableScrollDefaultViewport`: by default, the service keeps track of the scroll position of the default viewport (i.e., just like Angular does). This method allows disabling that, meaning that it won’t track/adapt its scrolling position
+* `setCustomViewportToScroll`: this method can be called to tell the service to keep track of & adapt the scroll position of a specific HTML element. I’ll show an example usage afterwards
+* `addStrategyForPartialRoute`: way to programmatically register a route path and define the expected scroll behavior for matching routes
+* …
+
+As I’ve explained above, the `RouterScroll` service not only supports programmatic configuration (using `addStrategyForPartialRoute`), but also supports declarative configuration through the route’s data. To that end the `CustomRouteData` interface defines an optional `scrollBehavior` field for application routes and can be used to strongly type the route data (I’ll write an article about that subject later on :p).
+
+Here’s an example showing how these interfaces can be leveraged while defining the routes:
+
+<Gist gistLink="dsebastien/d6b170670ebc2f77ee8d12d013d0de19" />
+
+In the example above, I’ve defined a route leveraging the `CustomRoute` type and specifying the `scrollBehavior` for that route as `KEEP_POSITION`, meaning that its scrolling position should be tracked/restored when needed.
+
+Here’s the implementation of the service:
+
+<Gist gistLink="dsebastien/bfa963af2a72de2035783058ddc28737" />
+
+This service follows the general algorithm proposed by [Jason Awbrey](https://medium.com/angular-in-depth/reactive-scroll-position-restoration-with-rxjs-792577f842c), with a few twists, so make sure to check out his article for implementation details.
+
+Note that this service must be declared (as I’ve separated interface/implementation and defined an injection token).
+
+Here’s how to declare it, just in case:
+
+<Gist gistLink="dsebastien/16383d05bb021c7845171a7c6e6d947a" />
+
+With this service declared and loaded (through a `CoreModule.forRoot()` call, then service can easily be injected and programmatically configured like this:
+
+<Gist gistLink="dsebastien/53b71a7bf5473985d8c459159080da51" />
+
+With the above in place (and still considering the same AppComponent template presented earlier in this article), the service is now configured to also keep track of the scroll position of the `##Content` ## element of the page. This ensures that this specific viewport’s scroll position will also be recorded/restored whenever needed.
+
+
+This solution is much more powerful than what I could achieve with the bazooka approach (i.e., always scroll to top) or with Angular’s built-in support for scrolling. Now, I can easily adapt the configuration route per route. To define the behavior for each route, I’m using the declarative approach, which feels cleanest.
+
+There’s still tons of room for improvement though. For instance, Ben Nadel has created a much more advanced solution, capable of keeping track of the scroll position of various elements in the DOM. He explains his approach in detail [here](https://www.bennadel.com/blog/3534-restoring-and-resetting-the-scroll-position-using-the-navigationstart-event-in-angular-7-0-4.htm). With a bit of effort, the service above could be refactored to do something similar.
+
+At the very least, it could be improved to keep track of more than a single additional viewport’s scroll position, which would be nice for applications relying on multiple router outlets.
+
+### Conclusion
+
+In this article, I’ve explained what I’ve learned recently about scroll position handling in Angular using the Angular router.
+
+As I’ve explained, there are different ways to handle the scrolling behavior when navigating between routes. Some more or less powerful, some with quirks/bugs.
+
+There are certainly tons of other ways to do all this but, for now, the service that I’ve created and shared here (standing on the shoulder of giants) does what I need and is simple enough to use/configure.
+
+If you want to learn more, make sure to check out the [Angular In Depth article](https://medium.com/angular-in-depth/reactive-scroll-position-restoration-with-rxjs-792577f842c) of [Jason Awbrey](https://twitter.com/jsonberrry) as well as [Ben Nadel’s awesome blog](https://www.bennadel.com/).
+
+That’s it for today!
+
+<BlogPostSignature />
