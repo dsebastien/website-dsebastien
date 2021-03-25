@@ -26,7 +26,7 @@ Note: for those who prefer the [Fish shell](https://en.wikipedia.org/wiki/Friend
 
 Let’s discover why Bash aliases ROCK.
 
-### Condensed vs verbose commands
+## Condensed vs verbose commands
 
 I usually “hate” it when people share commands like:
 
@@ -110,7 +110,7 @@ This one allows me to quickly amend a git commit. Type “amend”, Enter, boom,
 
 By the way, since the aliases are part of a Bash script, you can add comments, links, etc to help you remember why things are there. Neat.
 
-### Aliases of aliases
+## Aliases of aliases
 
 What if you’re like me and have a bad memory for commands? What if you forget that the “archive” alias exists? Well, you can also alias an alias and create a “compress” alias based on the previous one:
 
@@ -122,7 +122,7 @@ How fun is that? Now, you don’t have to care all that much and you can become 
 
 It’s not a panacea and it has quirks, but it’s a useful trick.
 
-### Setting defaults for commands
+## Setting defaults for commands
 
 Another cool thing that we can do with Bash is create aliases of existing commands just to replace their defaults or improve/adapt their behavior to your liking.
 
@@ -134,7 +134,7 @@ alias ls='ls --color=auto --human-readable -al' # colored and human readable siz
 
 Thanks to this, whenever I use ls, I get the output like I want it.
 
-### Functions
+## Functions
 
 You can also create Bash “aliases” using Bash functions. This can be useful for more advanced scenarios.
 
@@ -185,7 +185,7 @@ calc() { awk "BEGIN{ print $* }" ;}
 
 In the example above, we have a simple calculator at hand.. ;-)
 
-### Navigating faster in your file system
+## Navigating faster in your file system
 
 Did you already have to go up 5 folders in the file system tree? How did you feel then? To me, doing that is always super annoying.
 
@@ -256,7 +256,7 @@ alias w='wks'
 
 Now, simply by typing `w`, I get where I want to be. Clean and simple.
 
-### Running programs real fast
+## Running programs real fast
 
 A few years back, we could use tools like [Launchy](https://www.launchy.net/), [ULauncher](https://ulauncher.io/) or [Albert](https://albertlauncher.github.io/) to quickly start programs. Fortunately, over the years, operating systems have improved and have integrated built-in means to quickly start programs.
 
@@ -309,7 +309,7 @@ Knowing all this, you probably realize that you can create complex scenarios lik
 
 In my case, whenever I open my shell, I configure my work environment (e.g., NodeJS version, npm version, Java version, etc), go to my work folder, list the contents, etc.
 
-### Only for Linux? Nope!
+## Only for Linux? Nope!
 
 If you’re a Windows or Mac user, don’t make the mistake to think that you can’t use Bash and Bash aliases/functions. You can.
 
@@ -319,11 +319,11 @@ On Windows, you also have multiple options. A first one is Git, which comes alon
 
 I personally share most of my aliases between OSes without major hurdles…
 
-### But.. How do I do?
+## But.. How do I do?
 
 If there’s demand, then I’ll write an article about how/where to define Bash aliases. In any case, if you’re motivated, there are already tons of articles about this out there.
 
-### What’s worth aliasing?
+## What’s worth aliasing?
 
 Once you get started, to help you figure out which aliases you need, you can leverage the Bash history file. That file contains the commands that you’ve used previously in your terminal; this is what allows you to use the “up/down” arrows to reuse commands.
 
@@ -348,7 +348,7 @@ alias tl='typeless'
 
 The above alias helps me a lot to figure out what I need to automate to gain time.
 
-### Conclusion
+## Conclusion
 
 In this article, I’ve tried to give you an idea of what Bash aliases/functions are and why they’re so _awesome_.
 

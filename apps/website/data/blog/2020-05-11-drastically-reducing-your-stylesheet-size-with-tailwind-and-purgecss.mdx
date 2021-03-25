@@ -1,0 +1,115 @@
+---
+title: 'Drastically reducing your stylesheet size with Tailwind and PurgeCSS'
+summary: 'Learn how to configure PurgeCSS with Tailwind to reduce get rid of useless styles'
+publishedAt: '2020-05-11'
+image: '/static/images/blog/2020/purgecss-tailwind.png'
+slug: 'drastically-reducing-your-stylesheet-size-with-tailwind-and-purgecss'
+categories: [front-end, tailwind, optimization, production]
+keywords: [tailwind, purgecss, optimization, production, css]
+---
+
+<Image
+  alt={`PurgeCSS with Tailwind`}
+  src={`/static/images/blog/2020/purgecss-tailwind.png`}
+  width={1920}
+  height={1080}
+  priority
+/>
+
+In a [previous article](https://medium.com/javascript-in-plain-english/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e), I’ve explained how to install [Tailwind](http://tailwindcss.com/) in a Nrwl NX workspace with Angular and Storybook.
+
+This setup works fine, but has one major issue: the stylesheet bundle size. On my project, it was more than 2MB. I don’t know about you, but 2MB of CSS feels like _a whole darn lot_.
+
+In this article, I’ll explain what [PurgeCSS](https://purgecss.com/) is and how to leverage it to drastically reduce the size of your stylesheets.
+
+## The problem
+
+Why did I end up with a 2MB stylesheet? I certainly didn’t introduce that many styles in my application.
+
+When we use CSS frameworks like Bootstrap or Tailwind, there are actually tons and tons of built-in styles that we don’t use. In the case of Tailwind, it’s even worse, since it generates a huge amount of styles based on how it is configured. For instance, adding a single color to the Tailwind configuration implies the addition of tons of rules like `bg-newColor-100`, `bg-newColor-200`, `text-newColor-100`, `text-newColor-200`, and so on and so on.
+
+The same goes for many other settings of Tailwind. And we don’t want to change Tailwind, it’s fine as it is, because we precisely want all those styles to be available for use. What we don’t want though is to still have them in our stylesheet if we don’t use them.
+
+Let’s see how we can fix that.
+
+## PurgeCSS
+
+[PurgeCSS](https://purgecss.com/) is a tool dedicated to finding/removing unused CSS.
+
+It works in a quite simple manner. Once integrated into the build pipeline of a project, it’ll scan through:
+
+* The CSS files that we rely on
+* The _content_ files that we feed it
+
+By scanning the CSS files, it’ll identify all of the selectors that exist. Then, by scanning the content files (i.e., the JS/TS/HTML/CSS files in our project’s code), it’ll identify which CSS selectors are actually being used.
+
+To identify which CSS selectors are really used, PurgeCSS uses what it calls [extractors](https://purgecss.com/extractors.html). Extractors are simple functions that take the contents of a file as input and returns an array of CSS selectors.
+
+Once done, PurgeCSS can compare the list of used selectors with the list of available selectors and identify all of those that aren’t needed.
+
+PurgeCSS can be [configured](https://purgecss.com/configuration.html#configuration-file) in different ways. In our case, we’ll use the configuration exposed by Tailwind itself (see next section for details).
+
+There a a few options to be aware of:
+
+* `css`: an array of filenames and/or [globs](https://github.com/isaacs/node-glob/blob/master/README.md#glob-primer) pointing to the CSS to analyze (i.e., the CSS that should be _cleaned_)
+* `content`: an array of filenames and/or globs pointing to the project content to analyze (i.e., the content in which to identify what is actually used)
+* `defaultExtractor`: to customize the default selector extractor of PurgeCSS
+* `extractors`: an array of extractor functions; each of which being an object with a set of extensions (i.e., the file types it can handle) and an extractor function. This can be leveraged to get better clean up results (i.e., if PurgeCSS doesn’t find/clean everything it should)
+
+There are more options to go further and clean up font faces, CSS variables, and more. You can check those here: [https://purgecss.com/configuration.html#options](https://purgecss.com/configuration.html#options)
+
+## Tailwind + PurgeCSS = Light as a feather
+
+Since I’m writing this article, you can probably guess that yes, PurgeCSS can help us removed unused Tailwind styles.
+
+As a matter of fact, Tailwind has [first-class support for PurgeCSS](https://tailwindcss.com/docs/controlling-file-size/); it integrates it directly and exposes its features through its configuration file.
+
+Here’s how I’ve configured PurgeCSS is my project:
+
+<Gist gistLink="dsebastien/e82a6ffe9fd4fbb6a42a3b53f5f9320e" />
+
+As you can see, there’s an aptly called “purge” section in the configuration. Through it, we’re actually configuring PurgeCSS.
+
+The content option is indeed PurgeCSS’s content option. Through it, I point PurgeCSS towards all of the content files of my project. Since this is a Nrwl NX workspace with an Angular application, I simply point it towards all of the html/scss/ts files under the “apps” and “libs” folders. That way, PurgeCSS should be able to find all of the rules that I’m using.
+
+In the case of Tailwind, there’s no need to configure the `css` option; Tailwind does it for us by default. Note that it of course only considers the Tailwind CSS rules. You could also want to use PurgeCSS for other CSS libraries, but I won’t cover that here.
+
+The other setting, `option` is the one that can be used to further configure PurgeCSS. In the example above, I’ve enabled the “rejected” and “printRejected” settings of PurgeCSS, which allow me to troubleshoot what PurgeCSS does.
+
+Finally, I’ve used the `whitelistPatterns` option of PurgeCSS to exclude the selector prefixes used by the Angular CDK and Angular Material, which are still used in my project at the moment.
+
+Note that we didn’t even need to write an extractor function; Tailwind did it all for us.
+
+With this configured, PurgeCSS will do its job whenever the _production_ build of the application is generated. In my case, the CSS stylesheet goes from 2MB to a more reasonable 125KB.
+
+## Webpack production mode
+
+There’s one last thing to know about this configuration. As I’ve stated, PurgeCSS will only be executed for the production build. The reason for this is that PurgeCSS is really intensive/slow. We simply don’t want it to run during development.
+
+To determine whether PurgeCSS should be enabled or not, we rely on the “mode” setting of Webpack.
+
+To configure it, I have adapted the production build script in our package.json file:
+
+```json
+"build:prod:web": "NODE_ENV=production nx run web:build --prod",
+```
+
+The above simply sets of `NODE_ENV` variable to `production` before asking NX to build the production version of the “web” application.
+
+Finally, I’ve leveraged that environment variable in the Webpack configuration to enable the production mode:
+
+<Gist gistLink="dsebastien/7befab38590399d1571bd8241f2ecf70" />
+
+As you can see above, if the `NODE_ENV` variable is set to `production`, then I set the mode option of Webpack accordingly.
+
+## Conclusion
+
+In this article, I’ve explained why we need to cleanup our CSS stylesheet if we’re using Tailwind and how to leverage PurgeCSS to do it.
+
+Thanks to Tailwind’s built-in support for PurgeCSS, this was really easy to integrate/configure.
+
+After configuring PurgeCSS, our stylesheet went from 2MB to ~125KB, which is much better. It should be possible to optimize further, but this is enough for my needs at the moment.
+
+That’s it for today!
+
+<BlogPostSignature />
