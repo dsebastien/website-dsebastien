@@ -15,7 +15,7 @@ const BlogPostSignature = () => {
         PS: If you want to learn tons of other cool things about
         product/software/Web development, then{' '}
         <a href="https://dev-concepts.dev" rel="noopener">
-          check out my upcoming book
+          check out the Dev Concepts series
         </a>
         ,{' '}
         <a

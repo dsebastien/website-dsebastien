@@ -1,0 +1,363 @@
+---
+title: 'Bash aliases are awesome'
+summary: 'How to leverage Bash aliases to boost your productivity'
+publishedAt: '2020-05-09'
+image: '/static/images/logos/bash.jpg'
+slug: 'bash-aliases-are-awesome'
+categories: [bash, linux, productivity]
+keywords: [bash, linux, productivity, aliases]
+---
+
+Awesome. Awesome. Awesome. I cannot express how much I love bash aliases and my [Bash (Bourne Again) shell](https://en.wikipedia.org/wiki/Bash_%28Unix_shell%29).
+
+<Image
+  alt={`Bash`}
+  src={`/static/images/logos/bash.jpg`}
+  width={513}
+  height={419}
+  priority
+/>
+
+Ok, “love” might be a little _strong_, I admit. But still; right next to my IDE and [time management habits](https://medium.com/@dSebastien/steps-towards-a-better-work-life-equilibrium-5557af620e42), Bash aliases are my biggest time savers. Each day I spare tons of time thanks to those.
+
+In this article, I won’t explain what Bash is, why it’s so popular or how to write Bash scripts. Today, I want to explain what bash aliases are and why you should be using them to increase your productivity. This is geared towards power users, but can be used by anyone, not only software developers or system administrators.
+
+Note: for those who prefer the [Fish shell](https://en.wikipedia.org/wiki/Friendly_interactive_shell): kudos to you, you’re the best. A previous colleague of mine almost succeeded in converting me, but I still haven’t taken the time to “migrate” and get used to it. Although, I do see it as a potential replacement for my dear Bash… ;-)
+
+Let’s discover why Bash aliases ROCK.
+
+### Condensed vs verbose commands
+
+I usually “hate” it when people share commands like:
+
+```bash
+tar -czvf compressed_files.tar.gz files/
+```
+
+This one is really popular, but do you really understand why it’s “czvf” and not something else? I certainly don’t.
+
+The problem of the above command is that it can only make sense to you if you know the specific tool and use it all the time. The thing is that, after a few years, everything starts to get _blurry_. I know so many editors, tools and commands that I mix everything up.
+
+To help my memory, I prefer writing the expanded versions, which are (usually) much easier to read and understand:
+
+```bash
+tar --create --gzip --verbose --file compressed_files.tar.gz files/
+```
+
+What do you think? With the above, even if you don’t know the nitty gritty details of the tar utility, you’ll at least be able to guess that it’s going to create a gzipped file containing what is inside of the “files” folder. I personally prefer this verbose version of the command by a million miles.
+
+The drawback of course (and the reason that the short version of command arguments exist in the first place) is that it is _boring/slow_ to type. If you have to type this whole line in each time, you’ll suffer.
+
+Once you get used to it, the condensed version of the command is much more practical. But if you stop using it for a while, or just need every once in a while, then it’s a real pain to remember (i.e., hey Google).
+
+But what if we could instead simply use this:
+
+```bash
+archive compressed_files.tar.gz files/
+```
+
+This imaginary command doesn’t exist on my system and, still, I’m able to execute the above and get the compressed version of my files.
+
+So what’s this archive command? A Bash alias!
+
+Here’s how this alias is defined:
+
+```bash
+alias archive='tar --create --gzip --verbose --file'
+```
+
+Quite simple, right?
+
+With this Bash alias defined, typing “archive” is exactly the same as writing the whole tar command. On the plus side, if I need the details, then I can simply check my alias and see the full blown command.
+
+Bash aliases are as simple as that, they allow to perform string expansion (and much more). They’re _cheap_; you can create thousands without slowing anything down.
+
+What I also like to do is create shorthand versions of command names. For instance, “kubectl” is a command that I use quite a lot; with the following alias, using it is less painful:
+
+```bash
+alias k='kubectl'
+```
+
+The same goes for many other utilities:
+
+```bash
+alias d='docker'
+```
+
+It might look stupid, but if you use a command all the time, such an alias is golden ;-)
+
+I also tend to create short aliases for commands that I use all the time. For instance:
+
+```bash
+alias krm='kubectl delete -f'
+```
+
+The above command allows me to easily remove things from my Kubernetes cluster using kubectl.
+
+Here are a few others:
+
+```bash
+alias gitlog="git log --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit" # show git log
+```
+
+This gives me a nice git log.
+
+```bash
+alias amend='git commit --amend --no-edit'
+```
+
+This one allows me to quickly amend a git commit. Type “amend”, Enter, boom, done.
+
+By the way, since the aliases are part of a Bash script, you can add comments, links, etc to help you remember why things are there. Neat.
+
+### Aliases of aliases
+
+What if you’re like me and have a bad memory for commands? What if you forget that the “archive” alias exists? Well, you can also alias an alias and create a “compress” alias based on the previous one:
+
+```bash
+alias compress='archive'
+```
+
+How fun is that? Now, you don’t have to care all that much and you can become a bit more “sloppy” about those commands. To me, what matters is achieving the goal, not being pedantic about the precise command that has to be used. Sysadmins all over the world will hate me for writing this, but I couldn’t care less about the commands (really). I want to achieve my goals; the rest doesn’t matter one bit. If I need two aliases of the same thing, then so be it ;-)
+
+It’s not a panacea and it has quirks, but it’s a useful trick.
+
+### Setting defaults for commands
+
+Another cool thing that we can do with Bash is create aliases of existing commands just to replace their defaults or improve/adapt their behavior to your liking.
+
+For instance, when I use the `ls` command, I prefer to have colors and human-readable output. Instead of putting the command arguments in my head and typing it all out each time, I’ve just created an alias like this:
+
+```bash
+alias ls='ls --color=auto --human-readable -al' # colored and human readable sizes
+```
+
+Thanks to this, whenever I use ls, I get the output like I want it.
+
+### Functions
+
+You can also create Bash “aliases” using Bash functions. This can be useful for more advanced scenarios.
+
+Here’s an example:
+
+```bash
+uuid() {
+ local N B C='89ab'
+for (( N=0; N < 16; ++N ))
+ do
+  B=$(( $RANDOM%256 ))
+case $N in
+   6)
+    printf '4%x' $(( B%16 ))
+    ;;
+   8)
+    printf '%c%x' ${C:$RANDOM%${#C}:1} $(( B%16 ))
+    ;;
+   3 | 5 | 7 | 9)
+    printf '%02x-' $B
+    ;;
+   *)
+    printf '%02x' $B
+    ;;
+  esac
+ done
+echo
+}
+```
+
+As its name indicates, the above function generated a [UUID](https://en.wikipedia.org/wiki/Universally_unique_identifier). This is quite cool as I don’t need any tool for this. Of course I wouldn’t put too much trust into the global uniqueness of those identifiers, but for testing purposes it does the job, and that’s all I need.
+
+Here’s another one:
+
+```bash
+mkcd() {
+ mkdir -p $1 && cd $1
+}
+```
+
+This one is quite cool; it creates a new directory and cd’s into it directly. In this alias, I’ve used “$1”, which corresponds to the first argument provided to the function. So it’ll take whatever word I type right after “cd” and use that as folder name.
+
+You can also use `$*` to take all the arguments:
+
+```bash
+calc() { awk "BEGIN{ print $* }" ;}
+```
+
+In the example above, we have a simple calculator at hand.. ;-)
+
+### Navigating faster in your file system
+
+Did you already have to go up 5 folders in the file system tree? How did you feel then? To me, doing that is always super annoying.
+
+To ease the pain, I’m using… You’ve guessed it, Bash aliases! :)
+
+```bash
+..() {
+  N=$(($1))
+  if [ $N -lt 1 ]; then
+ N=1
+  fi
+  while ((N)); do
+ cd ..
+ let N-=1
+  done;
+}
+```
+
+With the above alias, I can simply type `.. 5` to go 5 levels above.
+
+But you can have more fun with this:
+
+```bash
+alias .1='cd ..' # see .. function
+alias .2='.. 2'
+alias .3='.. 3'
+alias .4='.. 4'
+alias .5='.. 5'
+alias .6='.. 6'
+alias .7='.. 7'
+alias .8='.. 8'
+alias ..1='.1'
+alias ..2='.2'
+alias ..3='.3'
+alias ..4='.4'
+alias ..5='.5'
+alias ..6='.6'
+alias ..7='.7'
+alias ..8='.8'
+alias ...='.. 2'
+alias ....='.. 3'
+alias .....='.. 4'
+alias ......='.. 5'
+alias .......='.. 6'
+alias .......='.. 7'
+alias ........='.. 8'
+alias cd..='cd ..'
+alias cd...='.. 2'
+alias cd....='.. 3'
+alias cd.....='.. 4'
+alias cd......='.. 5'
+alias cd.......='.. 6'
+alias cd........='.. 7'
+alias cd.........='.. 8'
+```
+
+With those aliases in place, you can get even lazier and type `.5`, `..5` or `cd.....`. Anyways, this was just for fun.
+
+Another complementary approach to go quickly where you need to go is to define aliases with specific paths. I do this for my development workspace and writing projects.
+
+For instance:
+
+```bash
+export DEV_HOME=/home/sebastien/wks
+alias wks='cd $DEV_WKS_HOME'
+alias w='wks'
+```
+
+Now, simply by typing `w`, I get where I want to be. Clean and simple.
+
+### Running programs real fast
+
+A few years back, we could use tools like [Launchy](https://www.launchy.net/), [ULauncher](https://ulauncher.io/) or [Albert](https://albertlauncher.github.io/) to quickly start programs. Fortunately, over the years, operating systems have improved and have integrated built-in means to quickly start programs.
+
+Still, Bash aliases remain useful for this use case. Sometimes, a program that you want to run is not in the OS menus or needs specific parameters. Of course you can add it, but it’s a bummer.
+
+Personally, the thing is simply that my Bash shell is my _home_, so the more I can do from there, the better. Running programs using Bash is real easy. First of all, any executable on the path is of course directly accessible. Second, it’s easy to create aliases to start programs with specific parameters and to turn them into background processes if needed.
+
+Here’s an example:
+
+```bash
+alias visualparadigm='(~/Visual_Paradigm_CE_15.2/Visual_Paradigm) &'
+alias vp='visualparadigm'
+```
+
+The above aliases allow me to start Visual Paradigm in the background (i.e., keeping my shell usable) simply by tiping ‘vp’.
+
+I’ve got the same for IntelliJ:
+
+```bash
+alias intellij='/opt/idea-IU/bin/idea.sh > /dev/null 2>&1 &'
+alias ij='intellij'
+```
+
+In this case, I redirect all to output of the program to `/dev/null` to avoid letting it pollute my shell with nonsense.
+
+Of course, it’s also possible to start a set of tools at once by creating higher level aliases:
+
+```bash
+alias tools='(intellij) && (visualparadigm)'
+```
+
+With the above, I can simply type `tools`, hit Enter and have my IDE and modeling tool open. Of course you can configure/launch as many things as you’d like.
+
+One last thing about programs is that you can indeed pass parameters to those by using function and function arguments, as I’ve explained in the last section. Here’s a cool example:
+
+```bash
+enfr(){ (google-chrome "https://translate.google.com/?sl=en&tl=fr&text=$*" )& }
+```
+
+With this alias, I can quickly look up translations from English to French. For instance by typing `enfr gorgeous`, Google will tell me that it corresponds to “Magnifique”. Neat! Of course you could improve that to actually get the translation right there on your bash terminal, but I didn’t go that far.. yet.
+
+
+Knowing all this, you probably realize that you can create complex scenarios like:
+
+* Go to your work folder
+* Open your tools
+* Write a timestamp in some file
+* Send a mail
+* … Sky’s the limit ;-)
+
+In my case, whenever I open my shell, I configure my work environment (e.g., NodeJS version, npm version, Java version, etc), go to my work folder, list the contents, etc.
+
+### Only for Linux? Nope!
+
+If you’re a Windows or Mac user, don’t make the mistake to think that you can’t use Bash and Bash aliases/functions. You can.
+
+On [OSX Catalina, Apple has replaced bash](https://www.theverge.com/2019/6/4/18651872/orange-macos-catalina-zsh-bash-shell-replacement-features) with [Z shell (zsh)](https://en.wikipedia.org/wiki/Z_shell) as the default shell, but as far as I know, Zsh [supports the same syntax as Bash for aliases](https://unix.stackexchange.com/questions/25243/difference-between-alias-in-zsh-and-alias-in-bash).
+
+On Windows, you also have multiple options. A first one is Git, which comes along with Git Bash, a port of the Bourne shell that exists thanks to [MinGW](https://en.wikipedia.org/wiki/MinGW) and its MSYS component. The other option is to use the [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/faq), which provides you with a full-featured Linux distribution, on Windows and with access to your Windows file system (and even capability to execute Windows binaries right from WSL).
+
+I personally share most of my aliases between OSes without major hurdles…
+
+### But.. How do I do?
+
+If there’s demand, then I’ll write an article about how/where to define Bash aliases. In any case, if you’re motivated, there are already tons of articles about this out there.
+
+### What’s worth aliasing?
+
+Once you get started, to help you figure out which aliases you need, you can leverage the Bash history file. That file contains the commands that you’ve used previously in your terminal; this is what allows you to use the “up/down” arrows to reuse commands.
+
+There are a few environment variables that you can use to control the history file:
+
+```bash
+PROMPT_COMMAND='history -a' # append current session history to the content of the history file
+export HISTFILE=$HOME/.bash_history
+export HISTCONTROL=ignoreboth # ignore duplicates and spaces in .bash_history
+export HISTSIZE=20000 # Big history
+export HISTFILESIZE=20000 # Big history
+export SAVEHIST=20000 # Big history
+shopt -s histappend # append to the history file, don't overwrite it
+```
+
+The history file can be parsed/analyzed to find the commands that you use the most. This is useful because those commands are probably worth aliasing ;-)
+
+```bash
+alias typeless='history | tail -n 20000 | sed "s/.* //" | sort | uniq -c | sort -g | tail -n 100' # top 100 commands
+alias tl='typeless'
+```
+
+The above alias helps me a lot to figure out what I need to automate to gain time.
+
+### Conclusion
+
+In this article, I’ve tried to give you an idea of what Bash aliases/functions are and why they’re so _awesome_.
+
+What makes Bash aliases awesome is that they’re simple to define, easy to maintain, easy to understand (you can write the full blown commands) and cheap.
+
+I gave you a few examples of the cool things that you can do, but there are tons more. In a future article, I’ll share my favorite aliases.
+
+Now that you know about Bash aliases, go ahead and make use of them. If you do, then share the cool stuff that you’re doing with those! ;-)
+
+That’s it for today!
+
+<BlogPostSignature />
