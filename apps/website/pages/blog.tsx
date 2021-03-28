@@ -39,7 +39,7 @@ export default function Blog(input: { posts: FrontMatter[] }) {
       <StyledArticle className="page-content-wrapper">
         <h1 className="page-heading">Blog</h1>
         <p className="text-gray-900 dark:text-gray-400 mb-4">
-          I've published {`${input.posts.length}`} article
+          I've published <b>{`${input.posts.length}`}</b> article
           {input.posts.length > 1 && 's'} here. I usually post everything here,
           but you can also find my some of my content on{' '}
           <SocialLink

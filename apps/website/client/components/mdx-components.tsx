@@ -14,6 +14,9 @@ import {
   YouTube,
 } from 'mdx-embed';
 import BlogPostSignature from './blog-post-signature';
+import BlogPostWarning from './blog-post-warning';
+import BlogPostCenteredContent from './blog-post-centered-content';
+import BlogPostTip from './blog-post-tip';
 
 type CustomLinkProps = { href: string } & any;
 
@@ -44,6 +47,9 @@ const MDXComponents = {
   YouTube,
   TwitterFollowButton,
   BlogPostSignature,
+  BlogPostTip,
+  BlogPostWarning,
+  BlogPostCenteredContent,
 };
 
 export default MDXComponents;

@@ -22,7 +22,7 @@ In this article I’ll try to summarize what I could find out by looking at the 
 
 **Please keep in mind that this is article is based on a roadmap, it doesn’t mean that everything will actually be part of 4.0 or even actually implemented! ;-)**
 
-### Class property inference from constructors
+## Class property inference from constructors
 
 Currently, when tsc is configured in `noImplicitAny` mode, the following TS code doesn’t compile:
 
@@ -32,7 +32,7 @@ Now that [this PR](https://github.com/microsoft/TypeScript/pull/37920) has been 
 
 This is one more case where TypeScript’s type inference will help us out!
 
-### Short-circuiting assignment operators
+## Short-circuiting assignment operators
 
 This [proposal](https://github.com/microsoft/TypeScript/issues/37255), introduced by Daniel Rentz, corresponds to a [TC39 proposal called “proposal-logic-assignment”](https://github.com/tc39/proposal-logical-assignment), which is now in Stage 3 (i.e., [almost good to go](https://tc39.es/process-document/)!).
 
@@ -55,22 +55,22 @@ As you can see, with support for this, we would have an even more expressive lan
 As mentioned by Daniel Rosenwasser, we’d get one such operator for each of the logical operators, thus:
 
 ```typescript
-LeftHandSideExpression &&= AssignmentExpression
-LeftHandSideExpression ||= AssignmentExpression
-LeftHandSideExpression ??= AssignmentExpression
+LeftHandSideExpression &&= AssignmentExpression;
+LeftHandSideExpression ||= AssignmentExpression;
+LeftHandSideExpression ??= AssignmentExpression;
 ```
 
 Corresponding to what we can currently do with:
 
 ```typescript
-LeftHandSideExpression && (LeftHandSideExpression = AssignmentExpression)
-LeftHandSideExpression || (LeftHandSideExpression = AssignmentExpression)
-LeftHandSideExpression ?? (LeftHandSideExpression = AssignmentExpression)
+LeftHandSideExpression && (LeftHandSideExpression = AssignmentExpression);
+LeftHandSideExpression || (LeftHandSideExpression = AssignmentExpression);
+LeftHandSideExpression ?? (LeftHandSideExpression = AssignmentExpression);
 ```
 
 Given that the corresponding proposal has hit Stage 3, I bet that this will be part of TS 4.0, which would be great as this is a really nice feature.
 
-### Allow unknown on catch clause bindings
+## Allow unknown on catch clause bindings
 
 Currently, if you try to add a type annotation to a catch clause, the compiler complains:
 
@@ -86,7 +86,7 @@ As pointed out in the comments of [this proposal](https://github.com/microsoft/T
 
 This is one improvement that I’m really interested about!
 
-### Labeled Tuple Elements
+## Labeled Tuple Elements
 
 Another [proposal](https://github.com/Microsoft/TypeScript/issues/28259), introduced by Brian Kim, aims to give us the capability of defining labels for tuple elements. I’m not the biggest fan of tuples (I generally prefer objects/custom types), but sometimes they can indeed prove useful, for instance while writing tests (or type definitions for weird libraries like React :p).
 
@@ -96,7 +96,6 @@ Currently, tuples are declared like this:
 // length, count
 type Segment = [number, number];
 ```
-
 
 Since we can’t assign labels to the tuple elements, the simplest (but really ugly) solution is to rely on comments to remind us of what each element corresponds to.
 
@@ -116,7 +115,7 @@ This would be really useful to clearly understand what tuples are composed of. I
 
 As stated by Daniel Rosenwasser, tuple element names won’t enforce anything in the type system; they’ll exist purely to communicate intent.
 
-### Forward declarations
+## Forward declarations
 
 As [Daniel Rosenwasser explains](https://github.com/microsoft/TypeScript/issues/31894), there are times when we need to be able to tell TypeScript that a type _might_ exist depending on the environment in which the code gets executed.
 
@@ -142,7 +141,7 @@ Note that the `exists`keyword is only the proposed one, no definitive choice has
 
 Check out [the proposal](https://github.com/microsoft/TypeScript/issues/31894) for more details.
 
-### Better support for Promises and await
+## Better support for Promises and await
 
 In the release notes of TS 3.9, there was [a note](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-9.html#what-about-the-awaited-type) that I didn’t understand at first about a potential “awaited” keyword, stating that it wasn’t ready for primetime yet.
 
@@ -166,7 +165,7 @@ The TypeScript team has in mind to introduce an `awaited T` operator to explicit
 
 As this is still in flux, it isn’t clear yet how this will evolve and what will land in 4.0. One thing is for sure though: the TypeScript team will certainly improve the status quo for Promises in TS in the upcoming releases ;-)
 
-### Adapt TypeScript’s support for React
+## Adapt TypeScript’s support for React
 
 Just like TypeScript, React moves crazy fast.
 
@@ -174,7 +173,7 @@ Since I’ve published [my book about TypeScript, React, Angular and Vue](https:
 
 Since TypeScript supports JSX, it indeed needs to follow those evolutions. This is tracked in [this issue](https://github.com/microsoft/TypeScript/issues/34547).
 
-### Conclusion
+## Conclusion
 
 In this article, I’ve shared what I could discover so far about what might be coming in TypeScript 4.0.
 
