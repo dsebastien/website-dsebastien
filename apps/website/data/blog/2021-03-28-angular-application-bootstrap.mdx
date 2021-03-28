@@ -5,7 +5,7 @@ publishedAt: '2021-03-28'
 image: '/static/images/logos/angular.svg'
 slug: 'angular-application-bootstrap'
 categories: [angular, javascript, typescript, programming]
-keywords: [angular, javascript, typescript, programming]
+keywords: [angular, javascript, typescript, programming, coding]
 ---
 
 Did you ever wonder how Angular applications start?
@@ -29,18 +29,18 @@ For an Angular application to start, multiple things have to happen within the W
 - The HTML of the entry point must be loaded
 - The different JavaScript bundles of the application must be loaded
 - The main bundle of the application must be executed
-- The main bundle must load Angular and trigger the boostrap of the root Angular application module
+- The main bundle must load Angular and trigger the bootstrap of the root Angular application module
 - Angular must bootstrap the root Angular application module, and render the application
 
 Let's look at those steps a bit more in detail.
 
-## HTML entrypoint
+## HTML entry point
 
 First of all, the `index.html` file is downloaded and evaluated by the Web browser:
 
 <Gist gistLink="dsebastien/860fbeb464d6d78f185df8ddda535338" />
 
-At a minimum, the body of that HTML file must contain the _root component_ (i.e., its _entrypoint_ component); in this case `<app-root></app-root>`. As soon as the Angular application gets loaded and executed, Angular will recognize it and will update the DOM with the interpolated/rendered template.
+At a minimum, the body of that HTML file must contain the _root component_ (i.e., its _entry point_ component); in this case `<app-root></app-root>`. As soon as the Angular application gets loaded and executed, Angular will recognize it and will update the DOM with the interpolated/rendered template.
 
 That's actually the "end" of the story. Let's rewind a bit.
 
@@ -83,7 +83,7 @@ Note that you could have additional bundles if you make use of features such as 
 
 Since those script tags are part of the `index.html` file, the Web browser will also load these. But loading those is not enough for something to happen. Code must be executed for your application to start. Let's look at that next.
 
-## Main entrypoint execution
+## Main entry point execution
 
 The `main` bundle is the one of interest here. As I've mentioned in the previous section, it's the one containing the code of our Angular application.
 
@@ -112,7 +112,7 @@ There are multiple things to notice here.
 
 First, there are a number of import statements. Those will remain once the code is transpiled into JavaScript code by the compiler. At runtime, those imports will be taken care of by Webpack. Once the imports have been _executed_, the rest of the code will execute.
 
-Second, if project has been built for production, then the [production mode of Angular](https://angular.io/api/core/enableProdMode) will be enabled. This is pretty important for performance.
+Second, if the project has been built for production, then the [production mode of Angular](https://angular.io/api/core/enableProdMode) will be enabled. This is pretty important for performance.
 
 Finally, and most importantly, the following line will be executed:
 
@@ -120,9 +120,9 @@ Finally, and most importantly, the following line will be executed:
 platformBrowserDynamic().bootstrapModule(AppModule);
 ```
 
-It's a single line, but it does _a lot_. `platformBrowserDynamic` is a module that is able to load Angular in the context of a Web browser. It loads the necessary elements of the framework and configures what needs be. Given that Angular can run in other contexts (e.g., mobile, server-side, etc), note that there are other ways to load Angular.
+It's a single line, but it does _a lot_. `platformBrowserDynamic` is a module that is able to load Angular in the context of a Web browser. It loads the necessary elements of the framework and configures what needs to be. Given that Angular can run in other contexts (e.g., mobile, server-side, etc), note that there are other ways to load Angular.
 
-So, the first part, `platformBrowserDynamic()` loads Angular. Once that is done, the second part `bootstrapModule(...)` instructs Angular to bootstrap the given module. By default, all Angular applications include _at lest_ an `AppModule`.
+So, the first part, `platformBrowserDynamic()` loads Angular. Once that is done, the second part `bootstrapModule(...)` instructs Angular to bootstrap the given module. By default, all Angular applications include _at least_ an `AppModule`.
 
 At this point, Angular takes over, loads the components, services, directives, pipes, and whatever else your `AppModule` may import, refer to, declare, etc. In fine, it will look for a component matching the `app-root` _selector_. Normally, that component is the `AppComponent`:
 
@@ -130,7 +130,11 @@ At this point, Angular takes over, loads the components, services, directives, p
 
 Once Angular has found that component, it will render it for you and update the DOM of the page include the rendered content.
 
-If you are curious, and want to know more, then check out [the following article](https://medium.com/angular-in-depth/angular-platforms-in-depth-part-2-application-bootstrap-process-8be461b4667e).
+If you are curious and want to know more, then check out the following articles:
+
+* https://angular.io/guide/bootstrapping#launching-your-app-with-a-root-module
+* https://stackoverflow.com/questions/48942691/how-angular-builds-and-runs
+* https://medium.com/angular-in-depth/angular-platforms-in-depth-part-2-application-bootstrap-process-8be461b4667e
 
 ## Conclusion
 
