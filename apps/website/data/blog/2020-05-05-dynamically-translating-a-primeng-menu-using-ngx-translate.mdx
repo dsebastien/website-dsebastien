@@ -10,13 +10,15 @@ keywords: [programming, angular, primeng]
 
 Recently, for our _awesome_ startup project, we’ve decided to move away from Angular Material and to switch to [Tailwind](https://tailwindcss.com/) + [PrimeNG](https://www.primefaces.org/primeng/).
 
-<Image
-  alt={`PrimeNG`}
-  src={`/static/images/logos/primeng.png`}
-  width={400}
-  height={400}
-  priority
-/>
+<BlogPostCenteredContent>
+  <Image
+    alt={`PrimeNG`}
+    src={`/static/images/logos/primeng.png`}
+    width={400}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
 
 The reason for this move is the fact that our designer’s work feels too distant from Material Design and we’re not willing to swim against the flow. We feel like overriding all the Angular Material styles is not going to be easy and would be hacky (at best).
 
@@ -50,8 +52,8 @@ The problem is that with this in place, the menu translations are interpolated o
 
 After looking into it a bit, only two solutions stood out:
 
-* Fork PrimeNG’s menu to bend it to our will and be able to use the translate pipe directly against the labels provided in the menu model
-* Rebuild the menu model whenever the language changes so that it contains the correct translated text
+- Fork PrimeNG’s menu to bend it to our will and be able to use the translate pipe directly against the labels provided in the menu model
+- Rebuild the menu model whenever the language changes so that it contains the correct translated text
 
 For now, we’ve started with the second option. The first one would be better for other reasons, but also problematic because it would introduce technical debt.
 
@@ -60,7 +62,6 @@ So here’s our plan: subscribe to language changes events and rebuild the whole
 In our application, we store the current language in the NGRX store and our facade simply exposes a selector to let us watch for value changes, which makes this really easy, but the same can be achieved using the `onTranslationChange` event emitter exposed by the `TranslateService` service of [ngx-translate](https://github.com/ngx-translate/core):
 
 <Gist gistLink="dsebastien/49a7e4e772ea0a682f9c5298e896693f" />
-
 
 With this, we get warned whenever the language changes. When that happens, we need to rebuild the menu. Note that the example code above doesn’t handle the subscription correctly; don’t forget it for your applications though or you’ll introduce a memory leak ;-)
 

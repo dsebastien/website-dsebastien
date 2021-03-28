@@ -12,14 +12,15 @@ Over the years I’ve changed my mind multiple times about code comments.
 
 In this article, I’ll explain how my commenting practice (yes, that’s a thing :p) has evolved as well as what I currently recommend, whether you’re a junior fresh out of school, a seasoned developer or a team lead.
 
-<Image
-  alt={`Code comments`}
-  src={`/static/images/blog/2020/code-comments.png`}
-  width={800}
-  height={266}
-  priority
-/>
-
+<BlogPostCenteredContent>
+  <Image
+    alt={`Code comments`}
+    src={`/static/images/blog/2020/code-comments.png`}
+    width={800}
+    height={266}
+    priority
+  />
+</BlogPostCenteredContent>
 
 ## Evolution
 
@@ -107,11 +108,11 @@ Useful comments are all mostly about the why, not about the how.
 
 TLDR;
 
-* Don’t write too many comments. When you do, focus on explaining the rationale/intent, or add important warnings, external references
-* Maintain comments along with the rest of the code; they’re also part of the “technical debt”, so don’t ignore it. Remove bogus comments, adapt comments when you change the code
-* To explain what is going on, prefer log statements; those will also be useful for production troubleshooting
-* To explain why things and are there and how they work, prefer writing automated BDD tests
-* Don’t comment-out code; delete it. If you see commented-out code, don’t hesitate and delete it.
+- Don’t write too many comments. When you do, focus on explaining the rationale/intent, or add important warnings, external references
+- Maintain comments along with the rest of the code; they’re also part of the “technical debt”, so don’t ignore it. Remove bogus comments, adapt comments when you change the code
+- To explain what is going on, prefer log statements; those will also be useful for production troubleshooting
+- To explain why things and are there and how they work, prefer writing automated BDD tests
+- Don’t comment-out code; delete it. If you see commented-out code, don’t hesitate and delete it.
 
 That’s it for today!
 

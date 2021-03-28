@@ -8,13 +8,15 @@ categories: [front-end, tailwind, optimization, production]
 keywords: [tailwind, purgecss, optimization, production, css]
 ---
 
-<Image
-  alt={`PurgeCSS with Tailwind`}
-  src={`/static/images/blog/2020/purgecss-tailwind.png`}
-  width={1920}
-  height={1080}
-  priority
-/>
+<BlogPostCenteredContent>
+  <Image
+    alt={`PurgeCSS with Tailwind`}
+    src={`/static/images/blog/2020/purgecss-tailwind.png`}
+    width={1920}
+    height={1080}
+    priority
+  />
+</BlogPostCenteredContent>
 
 In a [previous article](https://medium.com/javascript-in-plain-english/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e), I’ve explained how to install [Tailwind](http://tailwindcss.com/) in a Nrwl NX workspace with Angular and Storybook.
 
@@ -38,8 +40,8 @@ Let’s see how we can fix that.
 
 It works in a quite simple manner. Once integrated into the build pipeline of a project, it’ll scan through:
 
-* The CSS files that we rely on
-* The _content_ files that we feed it
+- The CSS files that we rely on
+- The _content_ files that we feed it
 
 By scanning the CSS files, it’ll identify all of the selectors that exist. Then, by scanning the content files (i.e., the JS/TS/HTML/CSS files in our project’s code), it’ll identify which CSS selectors are actually being used.
 
@@ -51,10 +53,10 @@ PurgeCSS can be [configured](https://purgecss.com/configuration.html#configurati
 
 There a a few options to be aware of:
 
-* `css`: an array of filenames and/or [globs](https://github.com/isaacs/node-glob/blob/master/README.md#glob-primer) pointing to the CSS to analyze (i.e., the CSS that should be _cleaned_)
-* `content`: an array of filenames and/or globs pointing to the project content to analyze (i.e., the content in which to identify what is actually used)
-* `defaultExtractor`: to customize the default selector extractor of PurgeCSS
-* `extractors`: an array of extractor functions; each of which being an object with a set of extensions (i.e., the file types it can handle) and an extractor function. This can be leveraged to get better clean up results (i.e., if PurgeCSS doesn’t find/clean everything it should)
+- `css`: an array of filenames and/or [globs](https://github.com/isaacs/node-glob/blob/master/README.md#glob-primer) pointing to the CSS to analyze (i.e., the CSS that should be _cleaned_)
+- `content`: an array of filenames and/or globs pointing to the project content to analyze (i.e., the content in which to identify what is actually used)
+- `defaultExtractor`: to customize the default selector extractor of PurgeCSS
+- `extractors`: an array of extractor functions; each of which being an object with a set of extensions (i.e., the file types it can handle) and an extractor function. This can be leveraged to get better clean up results (i.e., if PurgeCSS doesn’t find/clean everything it should)
 
 There are more options to go further and clean up font faces, CSS variables, and more. You can check those here: [https://purgecss.com/configuration.html#options](https://purgecss.com/configuration.html#options)
 

@@ -8,13 +8,15 @@ categories: [front-end, angular, ux]
 keywords: [angular, routing, scroll, transitions, front-end, programming]
 ---
 
-<Image
-  alt={`Bumpy road`}
-  src={`/static/images/blog/2020/bumpy-road.jpeg`}
-  width={2632}
-  height={1582}
-  priority
-/>
+<BlogPostCenteredContent>
+  <Image
+    alt={`Bumpy road`}
+    src={`/static/images/blog/2020/bumpy-road.jpeg`}
+    width={2632}
+    height={1582}
+    priority
+  />
+</BlogPostCenteredContent>
 
 By default, when a new route is activated, Angular’s router doesn’t touch the scroll position. At least this is still true of Angular 9, even if it’ll probably change in the future.
 
@@ -62,14 +64,14 @@ In the example above, I’ve enabled the `scrollPositionRestoration` feature of 
 
 That setting accepts multiple values:
 
-* `disabled`: default, which does nothing
-* `top`: force scroll position to be (0,0) on all navigation
-* `enabled`
+- `disabled`: default, which does nothing
+- `top`: force scroll position to be (0,0) on all navigation
+- `enabled`
 
 When it is set to `enabled`, it:
 
-* Scrolls to top whenever you navigate to a new route
-* Restores the previous scroll position when you navigate back to a previous route
+- Scrolls to top whenever you navigate to a new route
+- Restores the previous scroll position when you navigate back to a previous route
 
 Unfortunately, even if it sounds perfect, [as explained in this issue](https://github.com/angular/angular/issues/24547), it doesn’t solve all the problems and doesn’t work in all situations.
 
@@ -93,11 +95,11 @@ After searching for a bit, I’ve stumbled upon a great (as usual) [article from
 
 Based on that article, its comments and some personal wizardry, I’ve written an Angular service that:
 
-* keeps track of the scroll position of the ## viewport (just like Angular can do, which is fine for some cases)
-* optionally keeps track of the scroll position of some additional HTML element (e.g., my ##Content ## element, which is my application’s real content viewport)
-* can be configured programmatically using the service’s API
-* can be configured declaratively through custom route data definitions
-* works great with lazy loaded modules
+- keeps track of the scroll position of the ## viewport (just like Angular can do, which is fine for some cases)
+- optionally keeps track of the scroll position of some additional HTML element (e.g., my ##Content ## element, which is my application’s real content viewport)
+- can be configured programmatically using the service’s API
+- can be configured declaratively through custom route data definitions
+- works great with lazy loaded modules
 
 Here are its interfaces:
 
@@ -107,10 +109,10 @@ Let’s go through these step by step.
 
 The `RouterScrollService`:
 
-* `disableScrollDefaultViewport`: by default, the service keeps track of the scroll position of the default viewport (i.e., just like Angular does). This method allows disabling that, meaning that it won’t track/adapt its scrolling position
-* `setCustomViewportToScroll`: this method can be called to tell the service to keep track of & adapt the scroll position of a specific HTML element. I’ll show an example usage afterwards
-* `addStrategyForPartialRoute`: way to programmatically register a route path and define the expected scroll behavior for matching routes
-* …
+- `disableScrollDefaultViewport`: by default, the service keeps track of the scroll position of the default viewport (i.e., just like Angular does). This method allows disabling that, meaning that it won’t track/adapt its scrolling position
+- `setCustomViewportToScroll`: this method can be called to tell the service to keep track of & adapt the scroll position of a specific HTML element. I’ll show an example usage afterwards
+- `addStrategyForPartialRoute`: way to programmatically register a route path and define the expected scroll behavior for matching routes
+- …
 
 As I’ve explained above, the `RouterScroll` service not only supports programmatic configuration (using `addStrategyForPartialRoute`), but also supports declarative configuration through the route’s data. To that end the `CustomRouteData` interface defines an optional `scrollBehavior` field for application routes and can be used to strongly type the route data (I’ll write an article about that subject later on :p).
 
@@ -137,7 +139,6 @@ With this service declared and loaded (through a `CoreModule.forRoot()` call, th
 <Gist gistLink="dsebastien/53b71a7bf5473985d8c459159080da51" />
 
 With the above in place (and still considering the same AppComponent template presented earlier in this article), the service is now configured to also keep track of the scroll position of the `##Content` ## element of the page. This ensures that this specific viewport’s scroll position will also be recorded/restored whenever needed.
-
 
 This solution is much more powerful than what I could achieve with the bazooka approach (i.e., always scroll to top) or with Angular’s built-in support for scrolling. Now, I can easily adapt the configuration route per route. To define the behavior for each route, I’m using the declarative approach, which feels cleanest.
 
