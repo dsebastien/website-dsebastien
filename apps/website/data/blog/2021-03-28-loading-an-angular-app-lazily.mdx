@@ -1,0 +1,150 @@
+---
+title: 'Lazy loading Angular applications'
+summary: 'How to delay the execution of your Angular app'
+publishedAt: '2021-03-28'
+image: '/static/images/logos/angular.svg'
+slug: 'lazy-loading-angular-apps'
+categories: [angular, javascript, typescript, programming]
+keywords: [angular, lazy loading, javascript, typescript, programming, coding]
+---
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Angular`}
+    src={`/static/images/logos/angular.svg`}
+    width={400}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+In _very rare_ circumstances, you might want to delay the loading of your Angular application. In this article, I'll show you how you can do it.
+
+<BlogPostWarning>
+  Don't do this lightly. Carefully evaluate if you really need to do this, as it
+  can have a devastating effect on user experience!
+</BlogPostWarning>
+
+## Angular module import side-effects
+
+In my [previous article](/blog/2021-03-28-angular-application-bootstrap), I've briefly explained the Angular application bootstrap process. One thing that I mentioned there is that the import statements remain at runtime, and are taken care of by Webpack.
+
+What I didn't mention though is what happens as soon as Webpack imports an Angular module; for instance with the following line:
+
+```
+import { AppModule } from './app/app.module';
+```
+
+When you see this line, you might think that nothing much happens, apart for the `AppModule` to be loaded and available for use in the rest of the current module. Well actually there's a side-effect at play here!
+
+As soon as Webpack loads an Angular module, the decorator attached to the class of the Angular module is executed. Let me explain through an example:
+
+<Gist gistLink="dsebastien/a49991134c264c83c8ebfeb11ab54940" />
+
+As you can see, this is the Angular 1-01 module. It's a simple class with a decorator containing metadata. But what you may not know is that decorators are not _just_ metadata.
+
+Decorators are actually [functions](https://www.typescriptlang.org/docs/handbook/decorators.html) that are attached to elements (e.g., classes, methods, accessors, etc). They receive the decorated element as argument, and can modify those at will. TypeScript/JavaScript decorators are in fact instances of the [decorator design pattern](https://en.wikipedia.org/wiki/Decorator_pattern).
+
+But the interesting question here is really _when_ that decorator function get executed! When attached to a class, decorators are executed [as soon as the class declaration is executed](https://stackoverflow.com/questions/50182601/when-does-decorator-code-execute). And since Angular module classes are usually declared at the top-level, the class declarations get executed _as soon_ as the ES module is loaded by Webpack!
+
+Thus, coming back to this line:
+
+```
+import { AppModule } from './app/app.module';
+```
+
+This is clearly _not_ side-effect free code! As soon as the module is loaded, the class declaration of the module is executed, and the same goes for the associated decorator function! This is important to keep in mind; I'll come back to this in a second.
+
+## Problematic situation
+
+Before I get to the "how", let me describe a situation where delaying the loading of an Angular application makes sense.
+
+In the project that I'm currently working on, we use the [Auth0 Angular SDK](https://github.com/auth0/auth0-angular). That library takes care of the authentication process. In addition, it provides an Angular HTTP interceptor, which can be used to attach OAuth access tokens to relevant outgoing HTTP requests (e.g., back-end API calls).
+
+For that HTTP interceptor to function, the `AuthModule` of the SDK must be loaded, and [configured](https://github.com/auth0/auth0-angular#configure-authhttpinterceptor-to-attach-access-tokens):
+
+```typescript
+AuthModule.forRoot({
+  domain: 'YOUR_AUTH0_DOMAIN',
+  clientId: 'YOUR_AUTH0_CLIENT_ID',
+  httpInterceptor: {
+      allowedList: [ ... ],
+      ...
+  },
+  ...
+}),
+```
+
+So far, so good. Where's the problem you might ask? Well the `allowedList` above is a list of URLs/URL patterns that the HTTP interceptor will use to determine if the access token should be attached to a request or not. In our application, we didn't want to simply hardcode that list, as it varies between environments. Before configuring the ` AuthModule`, we first needed to load the environment configuration file. The environment configuration file is a static JSON file that contains the configuration of the current environment.
+
+Fortunately, the Auth0 Angular SDK provides a way to [postpone the configuration of the module](https://github.com/auth0/auth0-angular#dynamic-configuration), using an `APP_INITIALIZER`:
+
+<Gist gistLink="dsebastien/b3e0d7e39437e5a1c589f02436d25252" />
+
+Great, problem solved... Or not?
+
+Unfortunately, not in our case! Why? Because our application already has other app initializers, some of which requiring the injection of an `HttpClient` instance. And this is where the out of the box solution failed us. As soon as the `HttpClient` needs to be injected somewhere in the application, the Auth0 HTTP interceptor gets instantiated. And if at that point in time the Auth0 module has not been configured yet, then the interceptor crashes with [an error](https://github.com/auth0/auth0-angular/issues/70) explaining that the configuration is missing. Doh!
+
+Classic chicken and egg problem!
+
+Unfortunately for us, we couldn't easily get rid of the dependency on the `HttpClient` in the other initializers; our only solution was to load the configuration even before the Angular application was started, and to delay the evaluation of the `AppModule` decorator in order to be sure that our configuration was already loaded/available by the time it ran.
+
+Why is that? Well because, as we've seen, the `@NgModule` decorator on `AppModule` gets executed as soon as the module is imported, and `main.ts` imports it by default.
+
+Alright, now let's look at _how_ to delay the bootstrap of an Angular application.
+
+## Delaying the loading and execution of Angular
+
+The key to delay the loading/execution of an Angular application is in the default entry point: `main.ts`.
+
+The idea is to postpone the moment where `platformBrowserDynamic().bootstrapModule(...)` gets called. But as I've hinted before in this article, it is _not_ enough. If we want to avoid the side-effects caused by the `AppModule` import, we also need to get rid of that import statement.
+
+But if we don't import the `AppModule`, then how do to bootstrap it? Well luckily for us, Angular has support for [lazy loading modules](https://angular.io/guide/lazy-loading-ngmodules):
+
+```typescript
+const routes: Routes = [
+  {
+    path: 'items',
+    loadChildren: () =>
+      import('./items/items.module').then((m) => m.ItemsModule),
+  },
+];
+```
+
+Lazy loading Angular modules is done using [dynamic imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#dynamic_imports). Such imports are only executed when needed.
+
+We have all the pieces of the puzzle now:
+
+- Remove the `AppModule` top-level import
+- Delay the call to `platformBrowserDynamic().bootstrapModule(...)`
+
+Let's see the solution now:
+
+<Gist gistLink="dsebastien/023f3b416553bbfd4e651290ffca2c43" />
+
+Let me explain how this works. First, as explained before, we don't import `AppModule`. Second, we load the runtime configuration of our application using the `runtimeConfigLoader$` observable. Once the configuration has been loaded (line 32+), we store the configuration in `sessionStorage` -- it's an arbitrary choice; could've been `localStorage` or other means instead.
+
+Finally, we switch to a different observable using the following:
+
+```typescript
+return from(import('./app/app.module')).pipe(
+  concatMap((mod) => {
+    platformBrowserDynamic().bootstrapModule(mod.AppModule);
+    return of(void 0);
+  })
+);
+```
+
+The `import` statement returns a `Promise`, which provides us with the ES module. Once the ES module is available (line 49+), we finally use `platformBrowserDynamic().bootstrapModule(...)` to load Angular and bootstrap the `AppModule`.
+
+And there you have it, lazy loading of an Angular application. Of course, the code above corresponds to a specific scenario, but the same approach can be used to load an Angular application on-demand.
+
+## Conclusion
+
+In this article, I've explained that importing Angular modules has side-effects, and I've explained how to avoid those and how to lazily bootstrap an Angular application.
+
+Keep in mind that this should be avoided, as it slows down the application startup, and can have a very negative impact on user experience.
+
+That’s it for today!
+
+<BlogPostSignature />
