@@ -41,6 +41,7 @@ export default class CustomDocument extends Document<{
     return (
       <Html lang="en">
         <Head>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
           {this.props.styleTags}
           {/* Preload the fonts */}
           <link
