@@ -31,7 +31,7 @@ About two weeks ago, Adam Wathan [announced a new Tailwind experiment](https://b
 
 ## What is Tailwind's Just-In-Time mode and why should you care?
 
-Since I started using [Tailwind](https://tailwindcss.com/), I never looked back. It feels so much more efficient than good-old CSS. Want some margin, some padding on the left and rounded corners? There you go: `m-2 px-2 rounded-lg`. The ability to quickly express complex CSS rules very concisely is one of the key strengths of Tailwind.
+Since I started using [Tailwind](https://tailwindcss.com/), I never looked back. It feels so much more efficient than good-old CSS. Want some margin, some padding on the left, and rounded corners? There you go: `m-2 px-2 rounded-lg`. The ability to quickly express complex CSS rules very concisely is one of the key strengths of Tailwind.
 
 Some people misunderstand it and think that they have to clutter their HTML templates with a gazillion Tailwind directives, but it's just one way to do it; you can also use standard CSS classes and apply Tailwind rules on those, and work in a more _classical_ way. Although, the goal of this article is not to convince you to use Tailwind; I think there are enough articles covering that. Here, I'll instead focus on what the Just-In-Time mode is, and why it's interesting.
 
@@ -41,7 +41,7 @@ Many rules can also be combined. For instance, you can use `text-red-500` to get
 
 As you can imagine, the generated CSS code is huge, and it gets exponentially worse as you add more colors, variants, etc. This leads to _cataclysmic_ bundle sizes. Fortunately, Tailwind includes [built-in support for PurgeCSS](/blog/2020-05-11-drastically-reducing-your-stylesheet-size-with-tailwind-and-purgecss), allowing us to get rid of all the unused classes.
 
-PurgeCSS is great for production builds, as it gets rid of all the unused utility classes, leading to optimal CSS bundles. Unfortunately, during development, using it isn't really an option; it just takes too much time. The consequence is that, as the Tailwind generated CSS bundle becomes larger, the app gets slower and slower to build, and the Web browser dev tools become sluggish because of the amount of CSS to ingest. This is of course a major issue for developer experience. The tax for larger teams is huge. Each time you change the global styles, the Tailwind "compiler" needs to re-generate the whole shabang.
+PurgeCSS is great for production builds, as it gets rid of all the unused utility classes, leading to optimal CSS bundles. Unfortunately, during development, using it isn't really an option; it just takes too much time. The consequence is that, as the Tailwind generated CSS bundle becomes larger, the app gets slower and slower to build, and the Web browser dev tools become sluggish because of the amount of CSS to ingest. This is of course a major issue for developer experience. The tax for larger teams is huge. Each time you change the global styles, the Tailwind "compiler" needs to re-generate the whole shebang.
 
 That's where the Just-In-Time (JIT) mode comes into play. With Tailwind's JIT mode enabled, The Tailwind compiler will only generate CSS code for the Tailwind rules that you really make use of. And this is _fantastic_!
 
@@ -100,21 +100,21 @@ Finally, make sure that the `purge` option is enabled/configured in your `tailwi
 // Help Tailwind configure PurgeCSS correctly
 // Reference: https://tailwindcss.com/docs/controlling-file-size/#app
 purge: {
-    content: [
-      "./apps/**/*.html",
-      "./apps/**/*.ts",
-      "./apps/**/*.scss",
-      "./libs/**/*.html",
-      "./libs/**/*.ts",
-      "./libs/**/*.scss",
-    ],
-    // PurgeCSS options
-    // Reference: https://purgecss.com/
-    options: {
-      rejected: true,
-      printRejected: true,
-    },
+  content: [
+    "./apps/**/*.html",
+    "./apps/**/*.ts",
+    "./apps/**/*.scss",
+    "./libs/**/*.html",
+    "./libs/**/*.ts",
+    "./libs/**/*.scss",
+  ],
+  // PurgeCSS options
+  // Reference: https://purgecss.com/
+  options: {
+    rejected: true,
+    printRejected: true,
   },
+},
 ```
 
 That's it! Yes, really! How cool is that? ;-)
@@ -157,7 +157,7 @@ Before:
 
 ```scss
 .create-page-user-autocomplete-input-box {
-  @apply border-didowiGray-400 !important;
+  @apply border-gray-400 !important;
 }
 ```
 
@@ -165,7 +165,7 @@ After:
 
 ```scss
 .create-page-user-autocomplete-input-box {
-  @apply !border-didowiGray-400;
+  @apply !border-gray-400;
 }
 ```
 
@@ -182,7 +182,7 @@ Believe it or not, but these are pretty much the only changes that I had to do t
 
 ## Enabling JIT in Storybook
 
-If you're using [Storybook](https://storybook.js.org/) in your project, then you'll probably want to enable JIT over there too. Doing so currently requires a bit more work because Tailwind's JIT mode only supports PostCSS 8+. Fortunately, support for PostCSS 8 was [recently introduced](https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#deprecated-implicit-postcss-loader) by [Storybook 6.2](https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#from-version-61x-to-620).I
+If you're using [Storybook](https://storybook.js.org/) in your project, then you'll probably want to enable JIT over there too. Doing so currently requires a bit more work because Tailwind's JIT mode only supports PostCSS 8+. Fortunately, support for PostCSS 8 was [recently introduced](https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#deprecated-implicit-postcss-loader) by [Storybook 6.2](https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#from-version-61x-to-620).
 
 <BlogPostTip>
   Storybook 6.2 includes major improvements for Angular. I might write an
