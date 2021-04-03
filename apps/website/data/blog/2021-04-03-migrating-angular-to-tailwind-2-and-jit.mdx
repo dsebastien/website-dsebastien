@@ -1,0 +1,237 @@
+---
+title: 'How to migrate an Angular application to Tailwind 2 and JIT'
+summary: 'Learn how to migrate to Tailwind 2, and enable just-in-time for Angular and Storybook'
+publishedAt: '2021-04-03'
+image: '/static/images/logos/tailwind.svg'
+slug: 'how-to-migrate-an-angular-app-to-tailwind-2-and-jit'
+categories: [angular, tailwind, css, programming]
+keywords: [angular, tailwind, css, postcss, programming, coding]
+---
+
+Learn how to migrate your Angular application to [Tailwind](https://tailwindcss.com/) 2, and how to enable the [Just-In-Time](https://github.com/tailwindlabs/tailwindcss-jit) mode for Angular and Storybook.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Tailwind`}
+    src={`/static/images/logos/tailwind.svg`}
+    width={400}
+    height={200}
+    priority
+  />
+</BlogPostCenteredContent>
+
+About two weeks ago, Adam Wathan [announced a new Tailwind experiment](https://blog.tailwindcss.com/just-in-time-the-next-generation-of-tailwind-css): [Just-In-Time](https://github.com/tailwindlabs/tailwindcss-jit). In this article, I'll tell you what it's all about, and how you can take advantage of it.
+
+<BlogPostWarning>
+  Tailwind's Just-In-Time mode is still an experiment at this point in time. It
+  should soon be part of Tailwind 2.1, but it isn't there yet. I use it in
+  production for my product and haven't had any issues so far, but you never
+  know.
+</BlogPostWarning>
+
+## What is Tailwind's Just-In-Time mode and why should you care?
+
+Since I started using [Tailwind](https://tailwindcss.com/), I never looked back. It feels so much more efficient than good-old CSS. Want some margin, some padding on the left and rounded corners? There you go: `m-2 px-2 rounded-lg`. The ability to quickly express complex CSS rules very concisely is one of the key strengths of Tailwind.
+
+Some people misunderstand it and think that they have to clutter their HTML templates with a gazillion Tailwind directives, but it's just one way to do it; you can also use standard CSS classes and apply Tailwind rules on those, and work in a more _classical_ way. Although, the goal of this article is not to convince you to use Tailwind; I think there are enough articles covering that. Here, I'll instead focus on what the Just-In-Time mode is, and why it's interesting.
+
+One of the major downsides of Tailwind is that it generates _megabytes_ of CSS code. Atomic CSS classes are generated for each and every rule and variant in your project. For instance, Tailwind includes [utility classes for width](https://tailwindcss.com/docs/width). As you can see in the docs, by default it includes the following values: `w-0 w-0.5 w-1 w-1.5 w-2 w-2.5 w-3 w-3.5 w-4 w-5 w-6 w-7 w-8 w-9 w-10 w-11 w-12 w-14 w-16 w-18 w-20 w-24 w-28 w-32 w-36 w-40 w-44 w-48 w-52 w-56 w-64 w-1/2 w-1/3`, and many more. In addition, you can customize those using the `tailwind.config.js` configuration file. The same goes for minimum width, maximum width, height, fonts, colors, and more!
+
+Many rules can also be combined. For instance, you can use `text-red-500` to get vivid red text, or `bg-red-500` to change the color of the background. To support that, Tailwind generates CSS classes for each and every possible combination of rules (e.g., border colors, background colors, hover, focus, etc).
+
+As you can imagine, the generated CSS code is huge, and it gets exponentially worse as you add more colors, variants, etc. This leads to _cataclysmic_ bundle sizes. Fortunately, Tailwind includes [built-in support for PurgeCSS](/blog/2020-05-11-drastically-reducing-your-stylesheet-size-with-tailwind-and-purgecss), allowing us to get rid of all the unused classes.
+
+PurgeCSS is great for production builds, as it gets rid of all the unused utility classes, leading to optimal CSS bundles. Unfortunately, during development, using it isn't really an option; it just takes too much time. The consequence is that, as the Tailwind generated CSS bundle becomes larger, the app gets slower and slower to build, and the Web browser dev tools become sluggish because of the amount of CSS to ingest. This is of course a major issue for developer experience. The tax for larger teams is huge. Each time you change the global styles, the Tailwind "compiler" needs to re-generate the whole shabang.
+
+That's where the Just-In-Time (JIT) mode comes into play. With Tailwind's JIT mode enabled, The Tailwind compiler will only generate CSS code for the Tailwind rules that you really make use of. And this is _fantastic_!
+
+Why? Because it means that all the bloat is gone! With JIT enabled, we only get CSS classes that we really need. Because of that, the CSS code is generated way faster, leading to much better startup times. Also, because there's less CSS, the browser Dev Tools get a lot more responsive. As an added benefit, CSS is the same between development and production. Those benefits alone are enough to motivate me to enable JIT. But there's more!
+
+Previously, many [Tailwind variants](https://tailwindcss.com/docs/configuring-variants) were disabled by default because they'd cause megabytes of CSS to be generated (e.g., dark mode, responsible, hover, focus-visible, active, disabled, etc). Because JIT generates styles "on-demand", it means that all those variants can be used directly, with zero configuration.
+
+The JIT mode also comes with new interesting features. One of those is the possibility to stack multiple rules on top of each other. For example, let's make the font bold when the element is active, and hovered for the medium breakpoint: `sm:focus:hover:active:font-bold`. Previously, stacking rules like this wasn't possible. This opens up a world of new possibilities.
+
+Another cool feature brought by JIT is the possibility to use custom values for some rules, without changing the design system's configuration. Previously, the only way was to either resort to standard CSS, or to customize Tailwind's configuration, leading to more CSS bloat. For instance, adding a color implied adding a ton of CSS because of all the combinations. Now, if there's a color you need in a single place, then you can do the following: `bg-[#a0cdae]`. Awesome!
+
+Needless to say, this is a _huge_ step forward for Tailwind: less configuration, more features out of the box, better performance. It's a win on all fronts!
+
+There are a [few limitations](https://github.com/tailwindlabs/tailwindcss-jit#known-limitations) though, but nothing too annoying.
+
+If you want to learn more, check out the introduction video:
+
+<YouTube youTubeId="3O_3X7InOw8" />
+
+Now let's see how to enable JIT!
+
+## Enabling Tailwind's JIT mode
+
+Here, I assume that you are already using Tailwind and PostCSS in your project.
+
+For now, the JIT mode of Tailwind is provided through a separate [npm package](https://www.npmjs.com/package/@tailwindcss/jit):
+
+```bash
+npm install -D @tailwindcss/jit
+```
+
+Also, make sure to update `autoprefixer` to the latest version!
+
+To enable JIT, you need to modify the PostCSS configuration as follows:
+
+```javascript
+...
+plugins: {
+  '@tailwindcss/jit': {},
+  ...
+},
+...
+```
+
+For my Angular application, I use a custom Webpack configuration. Here's the relevant part:
+
+<Gist gistLink="dsebastien/33294db954431ce357e142df5d078759" />
+
+As you can see above, I configure the `postcss-loader`, and pass the Tailwind JIT plugin as part of the PostCSS plugins.
+
+If you're curious about how to customize the Webpack build of Angular, then check out my [previous article about that](/blog/2020-03-26-adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook).
+
+Finally, make sure that the `purge` option is enabled/configured in your `tailwind.config.js` configuration file. It should include all files that include Tailwind "rules". Here's the configuration that I'm using in my [Nrwl NX](https://nx.dev/)-based Angular application:
+
+```javascript
+// Help Tailwind configure PurgeCSS correctly
+// Reference: https://tailwindcss.com/docs/controlling-file-size/#app
+purge: {
+    content: [
+      "./apps/**/*.html",
+      "./apps/**/*.ts",
+      "./apps/**/*.scss",
+      "./libs/**/*.html",
+      "./libs/**/*.ts",
+      "./libs/**/*.scss",
+    ],
+    // PurgeCSS options
+    // Reference: https://purgecss.com/
+    options: {
+      rejected: true,
+      printRejected: true,
+    },
+  },
+```
+
+That's it! Yes, really! How cool is that? ;-)
+
+## Adapting existing code
+
+The next step is to adapt your existing code. Here, I'll highlight some of the changes that I had to make in my project. Although, note that some of these might be related to Tailwind 2 rather than JIT, as my project was still using Tailwind 1.x before. For each case, I'll show you the code before, and after the migration.
+
+### Not possible anymore to nest `@apply ...` within `@screen`
+
+Before:
+
+```scss
+.create-page-body {
+  @apply mt-4 flex flex-wrap gap-8 justify-between;
+
+  @screen md {
+    @apply mt-10;
+  }
+
+  @screen lg {
+    @apply justify-around;
+  }
+}
+```
+
+After:
+
+```scss
+.create-page-body {
+  @apply mt-4 flex flex-wrap gap-8 justify-between md:mt-10 lg:justify-around;
+}
+```
+
+As you can see above, the code becomes much less cluttered by `@screen` rules and feels much lighter. There are pros and cons of course. Maybe the old syntax will be supported again later on, I'm not sure.
+
+### No `!important` rule anymore
+
+Before:
+
+```scss
+.create-page-user-autocomplete-input-box {
+  @apply border-didowiGray-400 !important;
+}
+```
+
+After:
+
+```scss
+.create-page-user-autocomplete-input-box {
+  @apply !border-didowiGray-400;
+}
+```
+
+The rules can now be prefixed by `!` to enforce them, to override the CSS cascade.
+
+<BlogPostWarning>
+  Breaking the CSS cascade is evil, I know. But there are cases where it's
+  necessary.
+</BlogPostWarning>
+
+### That's it!
+
+Believe it or not, but these are pretty much the only changes that I had to do to get my project working under Tailwind 2 with JIT enabled. Wonderful!
+
+## Enabling JIT in Storybook
+
+If you're using [Storybook](https://storybook.js.org/) in your project, then you'll probably want to enable JIT over there too. Doing so currently requires a bit more work because Tailwind's JIT mode only supports PostCSS 8+. Fortunately, support for PostCSS 8 was [recently introduced](https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#deprecated-implicit-postcss-loader) by [Storybook 6.2](https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#from-version-61x-to-620).I
+
+<BlogPostTip>
+  Storybook 6.2 includes major improvements for Angular. I might write an
+  article about that later on:
+  https://github.com/storybookjs/storybook/blob/next/MIGRATION.md#62-angular-overhaul
+</BlogPostTip>
+
+Assuming that you've already upgraded to Storybook 6.2+, here's how to enable JIT.
+
+First, you need to install the new [PostCSS add-on](https://github.com/storybookjs/addon-postcss):
+
+```bash
+npm install -D @storybook/addon-postcss
+```
+
+You can find its documentation [over here](https://storybook.js.org/addons/@storybook/addon-postcss). Once installed, you need to modify the `main.js` configuration file of Storybook in order to enable it:
+
+```javascript
+{
+  name: "@storybook/addon-postcss",
+  options: {
+    /**
+     * Make sure to use the expected PostCSS version
+     */
+    postcssLoaderOptions: {
+      implementation: require("postcss"),
+    },
+  },
+},
+```
+
+The nice thing about this new Storybook add-on is that it makes it a breeze to keep Storybook and the rest of your application aligned, and using the same PostCSS version everywhere.
+
+Of course, you also need to adapt Storybook's Webpack configuration in order to load Tailwind. For this, I use the same configuration file as for the Angular application. If you don't know how to add Tailwind to Storybook, then check out [my earlier article](/blog/2020-03-26-adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook) about that. There's also a repository that you can take a look at if you want a [minimal working example](https://github.com/wagerfield/storybook-tailwind).
+
+## Future
+
+Tailwind's JIT mode is fresh out of the oven, but works like a charm. The JIT mode will soon be part of Tailwind 2.1:
+
+<Tweet tweetLink="adamwathan/status/1378054054107041792" />
+
+JIT will most probably become the default mode in Tailwind 3. I'm convinced that it will _heavily_ impact the future evolutions of Tailwind (for the better!).
+
+## Conclusion
+
+In this article, I've explained why the new Just-In-Time mode of Tailwind is a game changer, and how to enable it for both Angular and Storybook.
+
+To conclude, my advice is to give it a try _right now_. It works great and comes with great benefits. The performance boost alone is worth the tiny effort!
+
+That’s it for today!
+
+<BlogPostSignature />
