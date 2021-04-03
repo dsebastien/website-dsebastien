@@ -7,6 +7,7 @@ import GlobalStylesComponent from '@/components/global-styles';
 import { MDXProvider } from '@mdx-js/react';
 import MDXComponents from '@/components/mdx-components';
 import useRouterScroll from '../utils/use-router-scroll';
+import Head from 'next/head';
 
 /**
  * Wrapper around all pages
@@ -22,6 +23,10 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <>
+      <Head>
+        {/* Why here? https://nextjs.org/docs/messages/no-document-viewport-meta */}
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
       <GlobalStylesComponent />
       {/* Use the ThemeProvider of next-themes, combined with Tailwind: https://github.com/pacocoursey/next-themes#with-tailwind */}
       <ThemeProvider attribute="class">
