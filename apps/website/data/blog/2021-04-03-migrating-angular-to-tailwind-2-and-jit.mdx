@@ -8,7 +8,7 @@ categories: [angular, tailwind, css, programming]
 keywords: [angular, tailwind, css, postcss, programming, coding]
 ---
 
-Learn how to migrate your Angular application to [Tailwind](https://tailwindcss.com/) 2, and how to enable Tailwind's [Just-In-Time](https://github.com/tailwindlabs/tailwindcss-jit) mode for Angular and Storybook.
+Learn how to migrate your applications to [Tailwind](https://tailwindcss.com/) 2, and how to enable Tailwind's [Just-In-Time](https://github.com/tailwindlabs/tailwindcss-jit) mode for Angular and Storybook.
 
 <BlogPostCenteredContent>
   <Image
@@ -68,11 +68,7 @@ Now let's see how to enable JIT!
 
 Here, I assume that you are already using Tailwind and PostCSS in your project.
 
-First, you need to upgrade to Tailwind 2.1
-
-For now, the JIT mode of Tailwind is provided through a separate [npm package](https://www.npmjs.com/package/@tailwindcss/jit).
-
-Also, make sure to update `autoprefixer` to the latest version!
+First, you need to upgrade to Tailwind 2.1, which is the first version to include the JIT mode. Also, make sure to update `autoprefixer` to the latest version!
 
 Once done, modify your Tailwind configuration (i.e., `tailwind.config.js`) to enable the JIT mode:
 
@@ -80,11 +76,10 @@ Once done, modify your Tailwind configuration (i.e., `tailwind.config.js`) to en
 module.exports = {
   mode: 'jit',
   ...
-
 }
 ```
 
-While you're at it, make sure that the `purge` option is enabled and configured properly. It should include all files that include Tailwind "rules". Here's the configuration that I'm using in my [Nrwl NX](https://nx.dev/)-based Angular application:
+While you're at it, make sure that the `purge` option is enabled and configured properly. It should include all files that contain Tailwind "rules". Here's the configuration that I'm using in my [Nrwl NX](https://nx.dev/)-based Angular application:
 
 ```javascript
 // Help Tailwind configure PurgeCSS correctly
@@ -206,15 +201,15 @@ You can find its documentation [over here](https://storybook.js.org/addons/@stor
 
 The nice thing about this new Storybook add-on is that it makes it a breeze to keep Storybook and the rest of your application aligned, and using the same PostCSS version everywhere.
 
-Of course, you also need to adapt Storybook's Webpack configuration in order to load Tailwind. If you don't know how to add Tailwind to Storybook, then check out [my earlier article](/blog/2020-03-26-adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook) about that. There's also a repository that you can take a look at if you want a [minimal working example](https://github.com/wagerfield/storybook-tailwind).
+Of course, you also need to adapt Storybook's Webpack configuration in order to load Tailwind. If you don't know how to add Tailwind to Storybook, then check out [my earlier article](/blog/2020-03-26-adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook) about that.
 
 ## Future
 
-Tailwind's JIT mode is fresh out of the oven, but works like a charm. JIT will most probably become the default mode in Tailwind 3. I'm convinced that it will _heavily_ impact the future evolutions of Tailwind (for the better!).
+Tailwind's JIT mode is fresh out of the oven but works like a charm. JIT will most probably become the default mode in Tailwind 3. I'm convinced that it will _heavily_ impact the future evolutions of Tailwind (for the better!).
 
 ## Conclusion
 
-In this article, I've explained why the new Just-In-Time mode of Tailwind is a game-changer, and how to enable it for both Angular and Storybook.
+In this article, I've explained why the new Just-In-Time mode of Tailwind is a game-changer, and how to enable it.
 
 To conclude, my advice is to give it a try _right now_. It works great and comes with important benefits. The performance boost alone is worth the tiny effort!
 
