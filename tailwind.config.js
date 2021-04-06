@@ -4,6 +4,7 @@ const { spacing } = require('tailwindcss/defaultTheme');
 const mdx = require('@mdx-js/mdx');
 
 module.exports = {
+  mode: 'jit',
   purge: {
     content: [
       './apps/**/*.html',

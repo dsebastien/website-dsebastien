@@ -60,7 +60,7 @@
     "rxjs": "6.6.6",
     "styled-components": "5.2.1",
     "swr": "0.4.2",
-    "tailwindcss": "2.0.3",
+    "tailwindcss": "2.1.0",
     "tslib": "2.1.0"
   },
   "devDependencies": {
