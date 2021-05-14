@@ -28,7 +28,7 @@ If you're just looking for the bird-eye view, then check out the [official relea
 
 The Angular team has been working on [Ivy](https://angular.io/guide/ivy) (the new compilation & rendering pipeline) since 2018. It was finally released with Angular 8. Since Angular 9, Ivy has been the default for new projects, and the ecosystem is slowly migrating to it. With Angular 12, _the old View Engine is now officially deprecated_. It will be removed in a future major release. Also, it won't be possible to create new applications using View Engine. Finally, Ivy is now the default for new library projects.
 
-At this point, library authors can still rely on View Engine thanks to `ngcc` (the compatibility compiler of Angular), but it's really time for them to evaluate whether they can migrate their libraries to Ivy or not. A few weeks ago, Minko Gechev has published [an article](https://blog.angular.io/upcoming-improvements-to-angular-library-distribution-76c02f782aa4) to explain that in detail. Also check out the related [RFC](https://github.com/angular/angular/issues/38366).
+At this point, library authors can still rely on View Engine thanks to `ngcc` (the compatibility compiler of Angular), but it's really time for them to evaluate whether they can migrate their libraries to Ivy or not. A few weeks ago, Minko Gechev has published [an article](https://blog.angular.io/upcoming-improvements-to-angular-library-distribution-76c02f782aa4) to explain that in detail. Also, check out the related [RFC](https://github.com/angular/angular/issues/38366).
 
 In case you didn't know, `ngcc` is the small process that runs after you create an Angular project or install dependencies. When you see messages like `Compiling ... : es2015 as esm2015`, it's `ngcc` doing its job. What `ngcc`does is compile libraries that rely on View Engine so that Ivy can consume those.
 
@@ -42,7 +42,7 @@ How Angular works by Kara Erickson:
 
 <YouTube youTubeId="S0o-4yc2n-8" />
 
-Deep Dive into the Angular Compiler:
+Deep Dive into the Angular Compiler by Alex Rickabaugh:
 
 <YouTube youTubeId="anphffaCZrQ" />
 
@@ -52,7 +52,7 @@ There's also an excellent article about Ivy [over there](https://medium.com/angu
 
 In April, the Angular team has announced plans to end the support of [Protractor](https://www.protractortest.org/) at the end of 2022.
 
-As of Angular 12, Protractor won't be included by default in new projects. Instead, the Angular CLI will provide options to use other solutions like [Cypress](https://www.cypress.io/), [WebdriverIO](https://webdriver.io/) or [TestCafe](https://testcafe.io/). This means that the `ng e2e` command should continue to be supported in the future.
+As of Angular 12, Protractor won't be included by default in new projects. Instead, the Angular CLI will provide options to use other solutions like [Cypress](https://www.cypress.io/), [WebdriverIO](https://webdriver.io/), or [TestCafe](https://testcafe.io/). This means that the `ng e2e` command should continue to be supported in the future.
 
 As explained in [the announcement](https://github.com/angular/protractor/issues/5502), back in 2013 when Protractor was created, [WebDriver](https://developer.mozilla.org/en-US/docs/Web/WebDriver) was not [a standard](https://www.w3.org/TR/webdriver/), and end-to-end (e2e) tests were hard to write, and a nightmare to maintain. Protractor brought an innovative solution by wrapping [selenium-webdriver](https://www.npmjs.com/package/selenium-webdriver), and provided a way to control the execution flow.
 
@@ -141,7 +141,7 @@ If you're curious, then you should take a look at [Manfred Steyer](https://twitt
 
 Among the major changes, Webpack 5 has dropped everything that was previously deprecated (e.g., `NoEmitOnErrorsPlugin`, `ModuleConcatenationPlugin`, `NamedModulesPlugin`), as well as `IgnorePlugin` and `BannerPlugin`.
 
-Also, the Node.js polyfills that were previously automatically injected have been removed; and that is one of the biggest changes in that release. Those polyfills initially allowed Webpack to let us use modules made for Node.js in the browser. That was cool, but it had a major downside: larger bundles. In addition, those polyfills were less and less useful, as there were either browser-compatible alternatives of libraries, or specific distributions with Browser support. As of Webpack 5, since those polyfills won't be added automagically anymore, we might stumble upon some surprises. For instance in cases where we use modules made for Node.js in the browser without realizing that it previously worked thanks to Webpack. You can learn more about that [here](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#automatic-nodejs-polyfills-removed).
+Also, the Node.js polyfills that were previously automatically injected have been removed; and that is one of the biggest changes in that release. Those polyfills initially allowed Webpack to let us use modules made for Node.js in the browser. That was cool, but it had a major downside: larger bundles. In addition, those polyfills were less and less useful, as there were either browser-compatible alternatives of libraries or specific distributions with Browser support. As of Webpack 5, since those polyfills won't be added automagically anymore, we might stumble upon some surprises. For instance in cases where we use modules made for Node.js in the browser without realizing that it previously worked thanks to Webpack. You can learn more about that [here](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#automatic-nodejs-polyfills-removed).
 
 Webpack 5 has introduced better support for long-term caching. In production mode, it now includes new algorithms by default:
 
@@ -191,7 +191,7 @@ This needs to be enabled by setting the new `inlineStyleLanguage` property to `t
 
 [Tailwind](https://tailwindcss.com/) is now officially supported by Angular. Actually, support was introduced in the Angular CLI in v11.2.
 
-Tailwind is [busy taking-over the world](https://javascript.plainenglish.io/why-tailwind-just-in-time-mode-is-a-game-changer-and-how-to-use-it-right-now-dubois-s%C3%A9bastien-182db2e64e26), especially now that it has a [rad JIT compiler](https://javascript.plainenglish.io/why-tailwind-just-in-time-mode-is-a-game-changer-and-how-to-use-it-right-now-dubois-s%C3%A9bastien-182db2e64e26), and it's wonderful to have built-in support for it in Angular.
+Tailwind is [busy taking over the world](https://javascript.plainenglish.io/why-tailwind-just-in-time-mode-is-a-game-changer-and-how-to-use-it-right-now-dubois-s%C3%A9bastien-182db2e64e26), especially now that it has a [rad JIT compiler](https://javascript.plainenglish.io/why-tailwind-just-in-time-mode-is-a-game-changer-and-how-to-use-it-right-now-dubois-s%C3%A9bastien-182db2e64e26), and it's wonderful to have built-in support for it in Angular.
 
 Previously, adding Tailwind to an Angular project required [customizing the Webpack build](https://javascript.plainenglish.io/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e). Not anymore! Now, adding Tailwind is as simple as installing the package, creating the `tailwind.config.js` file using `npx tailwindcss init`, and making sure to enable [Tailwind's JIT mode](https://javascript.plainenglish.io/why-tailwind-just-in-time-mode-is-a-game-changer-and-how-to-use-it-right-now-dubois-s%C3%A9bastien-182db2e64e26).
 
@@ -203,7 +203,7 @@ Angular 12 introduces a number of improvements around its HTTP support.
 
 First, the `HttpClient` can now be used to store and retrieve custom metadata for requests. This is particularly useful for HTTP interceptors. This capability can be used through the new `HttpContext`.
 
-Previously, it was complicated to provide context to interceptors, but now it will be much more straightforward. Now, the different HTTP methods provided by `HttpClient` include a new `context: HttpContext` option, which we can used to pass-in a map.
+Previously, it was complicated to provide context to interceptors, but now it will be much more straightforward. Now, the different HTTP methods provided by `HttpClient` include a new `context: HttpContext` option, which we can used to pass in a map.
 
 [Netanel Basal](https://twitter.com/NetanelBasal) has written an article about this, so [check it out if you want to know more](https://netbasal.com/new-in-angular-v12-passing-context-to-http-interceptors-308a1ca2f3dd).
 
@@ -259,7 +259,7 @@ Previously, we could only require an exact match (or not) for the whole URL:
 </a>
 ```
 
-Now, we can instead provide fine-grained matching rules for paths, query parameters, matrix parameters and fragments:
+Now, we can instead provide fine-grained matching rules for paths, query parameters, matrix parameters, and fragments:
 
 ```html
 <a
@@ -340,7 +340,7 @@ Angular now generates less code for safe property access; for example for templa
 
 The Angular compiler now supports incremental compilation even in the presence of redirected source files. Previously, work from prior compilation could not be reused when TypeScript deduplicated source files. You can read more about that [here](https://github.com/angular/angular/issues/41475).
 
-The Angular compiler now caches filesystem path of source files. Previously, it repeatedly called `fs.resolve()`, which is time-consuming.
+The Angular compiler now caches the filesystem path of source files. Previously, it repeatedly called `fs.resolve()`, which is time-consuming.
 
 The `getDirectives` function has been improved. Along with that change, the `ng` namespace has also been expanded to include a new `getDirectiveMetadata` utility.
 
@@ -382,7 +382,7 @@ The `LocationService` of Angular now includes a `historyGo` method, which can be
 
 The language service, which is what provides IDEs all the useful insights about Angular code has also improved with this release.
 
-With Angular 12, the language service is enabled by default (previously it required us to opt in).
+With Angular 12, the language service is enabled by default (previously it required us to opt-in).
 
 As of Angular 12, it will also detect if [strict template type checking](https://javascript.plainenglish.io/angular-template-type-checking-e2c99c50f999) is not enabled, and [will advise you to enable those](https://github.com/angular/angular/pull/40423).
 
@@ -715,9 +715,9 @@ As usual, there's a complete upgrade guide available, and `ng update` will help 
 
 In this article, I've explored the new features of Angular 12.
 
-As usual, this is release is _heroic_ (what else could it be?! ).
+As usual, this is release is _heroic_ (what else could it be?! 😎).
 
-Ivy is moving forward, and hopefully we'll "soon" be less annoyed by `ngcc`, as the ecosystem migrates. There are a number of awesome changes with this release.
+Ivy is moving forward, and hopefully, we'll "soon" be less annoyed by `ngcc`, as the ecosystem migrates. There are a number of awesome changes with this release, so check it out and upgrade now!.
 
 That’s it for today!
 
