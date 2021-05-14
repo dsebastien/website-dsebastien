@@ -7,20 +7,8 @@ module.exports = {
   mode: 'jit',
   purge: {
     content: [
-      './apps/**/*.html',
-      './apps/**/*.mdx',
-      './apps/**/*.tsx',
-      './apps/**/*.ts',
-      './apps/**/*.jsx',
-      './apps/**/*.js',
-      './apps/**/*.scss',
-      './libs/**/*.html',
-      './libs/**/*.mdx',
-      './libs/**/*.tsx',
-      './libs/**/*.ts',
-      './libs/**/*.jsx',
-      './libs/**/*.js',
-      './libs/**/*.scss',
+      './apps/**/*.{html,mdx,tsx,ts,jsx,js,scss}',
+      './libs/**/*.{html,mdx,tsx,ts,jsx,js,scss}',
     ],
     // PurgeCSS options
     // Reference: https://purgecss.com/

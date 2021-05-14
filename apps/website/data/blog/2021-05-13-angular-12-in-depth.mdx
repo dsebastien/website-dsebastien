@@ -1,0 +1,724 @@
+---
+title: 'Angular 12 in Depth'
+summary: 'Everything you need to know about Angular 12'
+publishedAt: '2021-05-13'
+image: '/static/images/logos/angular.svg'
+slug: 'angular-12-in-depth'
+categories: [angular, javascript, typescript, programming]
+keywords: [angular, lazy loading, javascript, typescript, programming, coding]
+---
+
+Angular 12 has just been released. Time to discover what's new!
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Angular`}
+    src={`/static/images/logos/angular.svg`}
+    width={400}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+In this article, I’ll go over (almost) everything noteworthy in this brand new release. I’ll also highlight what’s changed around Angular, just like I did with my previous articles about [Angular 11](https://medium.com/swlh/angular-11-in-depth-9a7372b4a600) and [Angular 10](https://javascript.plainenglish.io/angular-10-in-depth-a48a3a7dd1a7).
+
+If you're just looking for the bird-eye view, then check out the [official release announcement](https://blog.angular.io/angular-v12-is-now-available-32ed51fbfd49). Here, I'll dig much deeper into the release notes.
+
+## Join the Ivy league...
+
+The Angular team has been working on [Ivy](https://angular.io/guide/ivy) (the new compilation & rendering pipeline) since 2018. It was finally released with Angular 8. Since Angular 9, Ivy has been the default for new projects, and the ecosystem is slowly migrating to it. With Angular 12, _the old View Engine is now officially deprecated_. It will be removed in a future major release. Also, it won't be possible to create new applications using View Engine. Finally, Ivy is now the default for new library projects.
+
+At this point, library authors can still rely on View Engine thanks to `ngcc` (the compatibility compiler of Angular), but it's really time for them to evaluate whether they can migrate their libraries to Ivy or not. A few weeks ago, Minko Gechev has published [an article](https://blog.angular.io/upcoming-improvements-to-angular-library-distribution-76c02f782aa4) to explain that in detail. Also check out the related [RFC](https://github.com/angular/angular/issues/38366).
+
+In case you didn't know, `ngcc` is the small process that runs after you create an Angular project or install dependencies. When you see messages like `Compiling ... : es2015 as esm2015`, it's `ngcc` doing its job. What `ngcc`does is compile libraries that rely on View Engine so that Ivy can consume those.
+
+Like me, you've probably noticed that `ngcc` takes a lot of time to execute, and has a very negative impact on developer experience. This is why it is crucial for the Angular ecosystem to migrate to Ivy as soon as possible. Second, until a majority of the ecosystem has moved on, the Angular team will have to keep View Engine around, which is problematic for a number of reasons. Last but not least, libraries that rely on View Engine can't depend on Ivy ones.
+
+Library authors probably can't migrate to Ivy too fast, but they should clearly push reluctant users to upgrade. Anyways, the path forward is to migrate all the things to Ivy asap ;-)
+
+As a side note, if you're not familiar with the internals of Angular, then check out the following videos.
+
+How Angular works by Kara Erickson:
+
+<YouTube youTubeId="S0o-4yc2n-8" />
+
+Deep Dive into the Angular Compiler:
+
+<YouTube youTubeId="anphffaCZrQ" />
+
+There's also an excellent article about Ivy [over there](https://medium.com/angular-in-depth/all-you-need-to-know-about-ivy-the-new-angular-engine-9cde471f42cf).
+
+## Bye Protractor
+
+In April, the Angular team has announced plans to end the support of [Protractor](https://www.protractortest.org/) at the end of 2022.
+
+As of Angular 12, Protractor won't be included by default in new projects. Instead, the Angular CLI will provide options to use other solutions like [Cypress](https://www.cypress.io/), [WebdriverIO](https://webdriver.io/) or [TestCafe](https://testcafe.io/). This means that the `ng e2e` command should continue to be supported in the future.
+
+As explained in [the announcement](https://github.com/angular/protractor/issues/5502), back in 2013 when Protractor was created, [WebDriver](https://developer.mozilla.org/en-US/docs/Web/WebDriver) was not [a standard](https://www.w3.org/TR/webdriver/), and end-to-end (e2e) tests were hard to write, and a nightmare to maintain. Protractor brought an innovative solution by wrapping [selenium-webdriver](https://www.npmjs.com/package/selenium-webdriver), and provided a way to control the execution flow.
+
+Of course, a lot of things have evolved since then. We now have the `WebDriver` API, `async` and `await` (even top-level `await`, woah). Also, the ecosystem has also evolved. Solutions like [Cypress](https://www.cypress.io/), [Playwright](https://playwright.dev/), [Puppeteer](https://pptr.dev/) have gained a lot of (well-deserved) popularity. Tools like Cypress for example provide a much better developer experience than Protractor, leverage the modern standards, and even support cross-browser testing (among other powerful capabilities). Another benefit of the current de-facto e2e testing tools is that they're framework-agnostic, which is very valuable.
+
+Long story short, maintaining Protractor doesn't make much sense for the Angular team. Evolving Protractor now would require too much effort and induce a ton of breaking changes. You can find more details in the RFC, it's an interesting read.
+
+The timeline is important for teams/projects that have invested a lot of time and energy writing e2e tests with Protractor. The Angular team is still busy evaluating the feedback collected through the RFC, so we'll probably know more later this year.
+
+Anyways; give Cypress a try if you haven't already, you won't be disappointed! By the way, I keep recommending everyone to start using [Nrwl NX](https://nx.dev/), a wonderful solution that includes support for Angular, React, Next.js, Cypress, and a lot more ;-)
+
+## Nullish coalescing
+
+Angular 12 includes support for using the [nullish coalescing operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator) in Angular templates. And this is awesome! That operator has been supported in TypeScript [since version 3.7](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#nullish-coalescing).
+
+If you haven't heard about this operator, then let me give you a quick explanation. The idea is to be able to define a fallback value in case something is `null` or `undefined`. Here's an example:
+
+```typescript
+let x = foo ?? true;
+```
+
+If `foo` is `null` or `undefined`, then `x` will be set to `true` (i.e., the fallback value), and we could set it to anything we like.
+
+Without this awesome `??` operator, we would have to write this instead:
+
+```typescript
+let x = foo !== null && foo !== undefined ? foo : true;
+```
+
+Now that Angular supports it too, we can finally write expressions such as:
+
+```
+{{ age ?? calculateAge() }}
+```
+
+Instead of the old and more verbose alternative. NEAT!
+
+You can learn more about this change [here](https://github.com/angular/angular/issues/36528).
+
+You can find more information about nullish coalescing in the [TypeScript handbook](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#nullish-coalescing) as well as on [MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing_operator).
+
+## TypeScript 4.2 support
+
+Angular 12 introduces support for [TypeScript 4.2](https://devblogs.microsoft.com/typescript/announcing-typescript-4-2/), which means that we can now use a _ton_ of new wonderful language features. Also, support for TypeScript 4.0 and 4.1 has been dropped.
+
+Here's a quick rundown of what TS 4.2 includes:
+
+_Smart Type Alias Preservation_: The expected types are displayed by code editors instead of raw types as it occurred before. You can learn more about that [here](https://devblogs.microsoft.com/typescript/announcing-typescript-4-2/#smarter-type-alias-preservation).
+
+_Leading/Middle Rest elements in Tuple Types_: We can now include rest elements anywhere within a tuple (with a few caveats). This is pretty cool for those of us who rely on tuples from time to time. Learn more about that [here](https://devblogs.microsoft.com/typescript/announcing-typescript-4-2/#non-trailing-rests).
+
+_Understanding your project structure_: TS 4.2 includes [a new flag](https://devblogs.microsoft.com/typescript/announcing-typescript-4-2/#explain-files) called `--explainFiles`, which instructs the TypeScript to output information about why a filed was included in your program. This is very useful for troubleshooting.
+
+_Improvements for uncalled function checks_: TypeScript can now detect more cases where functions aren't being called. For instance when writing `foo` instead of `foo()`. More details and examples can be found [here](https://github.com/microsoft/TypeScript/issues/40197).
+
+_Destructured variables can now be explicitly marked as unused_: `let [_first, second] = getValues(); `, which is awesome; no more errors when `noUnusedLocals` is enabled!
+
+There's a lot more actually, like stricter checks for the `in` operator, and a few breaking changes that might impact you. So make sure to check out the [release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-4-2).
+
+## Webpack 5 support
+
+Angular 11 brought us [experimental support for Webpack 5](https://medium.com/swlh/angular-11-in-depth-9a7372b4a600). With Angular 12, the Webpack 5 support is now production-ready. w00t!
+
+If you haven't looked at [Webpack 5](https://webpack.js.org/blog/2020-10-10-webpack-5-release/), you're going to be amazed. Webpack 5 was released back in October 2020, so it's quite stable by now. Webpack is currently at [version 5.37](https://github.com/webpack/webpack/releases/tag/v5.37.0) (released a few days ago).
+
+Here's a short explanation about what changed with Webpack 5, and why I'm so glad about this 🤩
+
+First off, as you know, Webpack is the _key_ piece of the Angular CLI puzzle, and it plays a big role for bundle size, build performance, etc.
+
+Second, Webpack 5 is a major release for a reason. It includes a number of breaking changes, which explains why it took a while for Angular and a gazillion utilities/libraries in the ecosystem to upgrade.
+
+In the release notes, the Webpack team indicated that Webpack 5 focuses on:
+
+- Improving the build performance with _persistent_ caching
+- Improving long-term caching with better algorithms & defaults
+- Improving bundle size with better Tree Shaking and code generation
+- Improving compatibility with the Web platform
+- Cleaning up internal structures
+- Introducing breaking changes (haha) now, allowing them to stay on v5 for as long as possible
+
+The coolest feature of Webpack 5 is its [support for Module Federation](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#module-federation), which provides the foundations necessary to facilitate the [creation of micro front-ends](https://levelup.gitconnected.com/micro-frontends-step-by-step-using-react-webpack-5-and-module-federation-e4b9d840ec71). It's a bit out of scope of this article, but in a jiffy, module federation makes it possible for different builds to behave like a huge connected module graph, and allows us to import and use modules from remote builds. Check out [the official documentation](https://webpack.js.org/concepts/module-federation/) to know more.
+
+If you're curious, then you should take a look at [Manfred Steyer](https://twitter.com/ManfredSteyer)'s talk about that subject:
+
+<YouTube youTubeId="2yo5mxQZ37c" />
+
+Among the major changes, Webpack 5 has dropped everything that was previously deprecated (e.g., `NoEmitOnErrorsPlugin`, `ModuleConcatenationPlugin`, `NamedModulesPlugin`), as well as `IgnorePlugin` and `BannerPlugin`.
+
+Also, the Node.js polyfills that were previously automatically injected have been removed; and that is one of the biggest changes in that release. Those polyfills initially allowed Webpack to let us use modules made for Node.js in the browser. That was cool, but it had a major downside: larger bundles. In addition, those polyfills were less and less useful, as there were either browser-compatible alternatives of libraries, or specific distributions with Browser support. As of Webpack 5, since those polyfills won't be added automagically anymore, we might stumble upon some surprises. For instance in cases where we use modules made for Node.js in the browser without realizing that it previously worked thanks to Webpack. You can learn more about that [here](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#automatic-nodejs-polyfills-removed).
+
+Webpack 5 has introduced better support for long-term caching. In production mode, it now includes new algorithms by default:
+
+- `chunkIds: "deterministic"`
+- `moduleIds: "deterministic"`
+- `mangleExports: "deterministic"`
+
+As the value indicates, those algorithms assign deterministic IDs to chunks and modules, and deterministic names to exports.
+
+Webpack 5 is able to perform nested tree shaking, by tracking access to nested properties of exports (welcome to the Matrix), which should further improve tree shaking. Also, it can now [analyze dependencies between the exports and imports of a module](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#inner-module-tree-shaking). There are also improvements to [CommonJS tree shaking](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#commonjs-tree-shaking). And there are a ton [more optimizations](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#major-changes-optimization).
+
+Webpack 5 also includes a number of changes to improve the developer experience. For example, there's a [new named chunk id algorithm](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#named-chunk-ids) that is enabled by default in development mode. That new algorithm gives human-readable names to chunks. The `target` property has also been vastly [improved](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#improved-target-option).
+
+To be honest, I don't have enough space here to cover everything new with Webpack 5, [there](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#json-modules)'s [just](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#asset-modules) [way](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#uris) [too](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#async-modules) [much](https://webpack.js.org/blog/2020-10-10-webpack-5-release/#resolving). So I'll stop here ;-)
+
+If you only use Webpack indirectly through the Angular CLI, then most of this should be "transparent" for you. But if you're using a [custom Webpack build](https://javascript.plainenglish.io/customizing-your-angular-apps-webpack-configuration-4099144949fc) in your project, then you should probably take a look at the [migration guide](https://webpack.js.org/migrate/5).
+
+Finally, if you're curious about what's coming next with Webpack, then check out the [roadmap for 2021](https://webpack.js.org/blog/2020-12-08-roadmap-2021/) and of course the [latest release notes](https://github.com/webpack/webpack/releases/).
+
+## IE11 support is deprecated
+
+As sad as it may sound (who am I kidding? 😂), Angular 12 is deprecating support for IE11. Internet Explorer is dead for most of us, but unfortunately, many organizations still use it in production. IE 11 support will thus be removed by Angular 13, which means that those organizations really need to start moving away from IE (which is a good thing anyway). No more excuses! ;-)
+
+Once the IE support is gone, Angular will be smaller, faster, and thus better for all of us. Also, once the burden of maintaining backwards compatibility with legacy browsers will be gone (IE11 is the last of those!), then Angular will be able to leverage modern APIs (e.g., [CSS variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties), [Intersection Observer](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API), [CSS Grid](https://css-tricks.com/snippets/css/complete-guide-grid/), [Proxies](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy), [Web Animations](https://developer.mozilla.org/en-US/docs/Web/API/Web_Animations_API), and [more](https://github.com/angular/angular/issues/41840)).
+
+I really can't wait for IE support to be gone!
+
+## Strict by default
+
+YES YES YES 🤩. As of Angular 12, the [strict mode of Angular](https://angular.io/guide/strict-mode) is enabled by default in the CLI. And this is awesome.
+
+As you know, I'm a huge fan of TypeScript's strict mode, but also of Angular's strict mode. If you want to know more, then check out [the article I wrote last year](https://javascript.plainenglish.io/angular-template-type-checking-e2c99c50f999) and Minko Gechev's [article explaining the change](https://blog.angular.io/with-best-practices-from-the-start-d64881a16de8).
+
+## Production build by default
+
+Up until now, running the `ng build` command created a development build. As of Angular 12, `ng build` will now default to a production build.
+
+Hopefully, it will help some teams avoid making the mistake of building & deploying development builds to production environments. Although, I fear that teams making that mistake will still have other issues to deal with ;-)
+
+## Sass support for inline styles
+
+Angular supports Sass since a very long time but, so far, we could only use Sass in external stylesheets. With Angular 12, it is now possible to use Sass together with inline component styles (i.e., within the `styles` property).
+
+This needs to be enabled by setting the new `inlineStyleLanguage` property to `true` in `angular.json`.
+
+## Tailwind support
+
+[Tailwind](https://tailwindcss.com/) is now officially supported by Angular. Actually, support was introduced in the Angular CLI in v11.2.
+
+Tailwind is [busy taking-over the world](https://javascript.plainenglish.io/why-tailwind-just-in-time-mode-is-a-game-changer-and-how-to-use-it-right-now-dubois-s%C3%A9bastien-182db2e64e26), especially now that it has a [rad JIT compiler](https://javascript.plainenglish.io/why-tailwind-just-in-time-mode-is-a-game-changer-and-how-to-use-it-right-now-dubois-s%C3%A9bastien-182db2e64e26), and it's wonderful to have built-in support for it in Angular.
+
+Previously, adding Tailwind to an Angular project required [customizing the Webpack build](https://javascript.plainenglish.io/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e). Not anymore! Now, adding Tailwind is as simple as installing the package, creating the `tailwind.config.js` file using `npx tailwindcss init`, and making sure to enable [Tailwind's JIT mode](https://javascript.plainenglish.io/why-tailwind-just-in-time-mode-is-a-game-changer-and-how-to-use-it-right-now-dubois-s%C3%A9bastien-182db2e64e26).
+
+## Http improvements
+
+Angular 12 introduces a number of improvements around its HTTP support.
+
+### Metadata for requests and interceptors
+
+First, the `HttpClient` can now be used to store and retrieve custom metadata for requests. This is particularly useful for HTTP interceptors. This capability can be used through the new `HttpContext`.
+
+Previously, it was complicated to provide context to interceptors, but now it will be much more straightforward. Now, the different HTTP methods provided by `HttpClient` include a new `context: HttpContext` option, which we can used to pass-in a map.
+
+[Netanel Basal](https://twitter.com/NetanelBasal) has written an article about this, so [check it out if you want to know more](https://netbasal.com/new-in-angular-v12-passing-context-to-http-interceptors-308a1ca2f3dd).
+
+### appendAll on HttpParams
+
+The `HttpParams` class now has a new `appendAll` method, which can be used to easily add a set of parameters at once:
+
+```typescript
+appendAll(params: {[param: string]: string|string[]}): HttpParams
+```
+
+### Params can now be passed as numbers and booleans
+
+Previously, numbers and booleans could not directly be used as HTTP parameters. We had to transform those into strings. Not anymore!
+
+### HttpStatusCode
+
+Angular has introduced its own list of human-readable names for HTTP status codes, in the form of a const enum.
+
+Previously, we had to introduce our own solution if we wanted to have human-readable names. Thanks to this new feature, we can now instead use `HttpStatusCode`.
+
+For example:
+
+```
+if (response.status === HttpStatusCode.Ok) {
+ ...
+}
+```
+
+For those who use TypeScript on both back-end and front-end, this isn't super useful (as we probably all have our own abstraction already), but if your project only uses TypeScript/Angular on the front-end, then it's a nice improvement.
+
+### XhrFactory
+
+The `XhrFactory` class has been moved to a different package. It is now exposed by `angular/common` instead of `angular/common/http`.
+
+Note that a migration has been included in the upgrade, so you won't even notice if you run `ng update` ;-)
+
+## Router changes
+
+The Angular router has changed a bit in Angular 12.
+
+First, the `routerLinkActiveOptions` directive has been enhanced. Now, it is possible to specify whether we require an exact match or not for different parts of the URL in order to add a CSS class to a link.
+
+Previously, we could only require an exact match (or not) for the whole URL:
+
+```html
+<a
+  routerLink="/products/foo"
+  routerLinkActive="highlight-product"
+  [routerLinkActiveOptions]="{ exact: true }"
+>
+  foo
+</a>
+```
+
+Now, we can instead provide fine-grained matching rules for paths, query parameters, matrix parameters and fragments:
+
+```html
+<a
+  routerLink="/products/foo"
+  routerLinkActive="highlight-product"
+  [routerLinkActiveOptions]="{ paths: 'exact', queryParams: 'subset', matrixParams: 'ignored', fragment: 'ignored' }"
+>
+  foo
+</a>
+```
+
+The supported values are `exact`, `ignored` and `subset`, which can be used for `queryParams` and `matrixParams`. For paths, you can either pass in `exact` or `subset`, and `exact` or `ignored` for the `fragment`.
+
+Note that the `isActive` method of the router also accepts these new options.
+
+### fragment is nullable
+
+Up until now, `ActivatedRouteSnapshot.fragment` was not nullable. This has changed with Angular 12. Don't worry too much though; `ng update` has got you covered.
+
+## Forms
+
+### More control over emitted events
+
+The `emitEvent` option has been added to various methods of `FormGroup` and `FormArray`. Thanks to this change, it will now be possible to control whether events need to be emitted or not in more cases.
+
+For instance, previously when a control was removed using the `removeControl` method of `FormGroup`, then an event was always emitted. With this change, we will now be able to avoid such problems.
+
+The `emitEvent` option has been added to the following methods of `FormGroup`:
+
+- `addControl`
+- `removeControl`
+- `setControl`
+
+And to the following methods of `FormArray`:
+
+- `push`
+- `insert`
+- `removeAt`
+- `setControl`
+- `clear`
+
+### min and max validators support for template-driven forms
+
+The `min` and `max` validators of Angular can now be used with template-driven forms:
+
+```html
+<input [(ngModel)]="foo.bar" [min]="min" [max]="42" />
+```
+
+Note that this is a breaking change, since those would previously be ignored.
+
+## i18n
+
+The i18n system of Angular has changed with this release.
+
+As pointed out in the announcement blog post, there are currently a number of legacy message id formats being used. Those are fragile and issues can appear because of whitespace, formatting templates & ICU expressions.
+
+Angular 12 introduces a new canonical message id format (i.e., one format to rule them all). This format is more resilient and more intuitive.
+
+This format will reduce the unnecessary translation invalidation and associated retranslation cost in applications where translations do not match due to whitespace changes for example.
+
+Since v11, new projects are automatically configured to use the new message ids, and now there is tooling in place to migrate existing projects with existing translations. If you're concerned, then you can use the `localize-migrate` tool to migrate your message ids:
+
+```bash
+ng extract-i18n --format=legacy-migrate
+npx localize-migrate --files=*.xlf --map-file=messages.json
+```
+
+You can find more information [here](https://angular.io/guide/migration-legacy-message-id).
+
+## Performance improvements
+
+With this release, there are a number of performance improvements. The most obvious one comes along with the upgrade to Webpack 5, but there's more:
+
+A number of unused methods have been removed from `DomAdapter`. It's cool because its methods aren't tree shakeable, and were included in all Angular applications, as explained in the [corresponding PR](https://github.com/angular/angular/pull/41102).
+
+Angular now generates less code for safe property access; for example for template expressions like `a?.b` and the newly supported null coalescing: `a ?? b`.
+
+The Angular compiler now supports incremental compilation even in the presence of redirected source files. Previously, work from prior compilation could not be reused when TypeScript deduplicated source files. You can read more about that [here](https://github.com/angular/angular/issues/41475).
+
+The Angular compiler now caches filesystem path of source files. Previously, it repeatedly called `fs.resolve()`, which is time-consuming.
+
+The `getDirectives` function has been improved. Along with that change, the `ng` namespace has also been expanded to include a new `getDirectiveMetadata` utility.
+
+And there's [some more](https://github.com/angular/angular/blob/master/CHANGELOG.md#performance-improvements).
+
+## ng API improvements
+
+The `ng` [debugging API](https://juristr.com/blog/2019/09/debugging-angular-ivy-console/) that we can use from the browser dev tools has been improved with Angular 12.
+
+There's a new function called `getDirectiveMetadata`, which can be used to retrieve information about components and directives. I don't think we'll need it often, but future dev tooling improvements will most probably rely on this. You can find out more [over here](https://github.com/angular/angular/pull/41525).
+
+A new profiler function called `esetProfiler` has also been implemented, and it is also available in production mode. That new function can be called in a number of scenarios. For instance, it can be used to trace template creation durations, template updates, lifecycle hooks processing, etc. Again, this API will be taken advantage of by upcoming dev tools, giving us a lot more insightful information about how our applications are performing at runtime.
+
+This is still experimental at this point, but I guess we'll hear more about this later on. I'm curious to see if/when tools like Sentry will integrate support for collecting this kind of information in order to provide us with useful performance dashboards.
+
+## And more...
+
+There's [a ton more](https://github.com/angular/angular/blob/master/CHANGELOG.md#features) minor changes in this release. Here's a quick overview.
+
+### APP_INITIALIZER now supports Observables
+
+Up until now, it wasn't possible to use Observables with `APP_INITIALIZER`. As of Angular 12, we can now do so, which is going to allow for cleaner code!
+
+In case you didn't know about this feature of Angular yet, `APP_INITIALIZER` is [a token](https://angular.io/api/core/APP_INITIALIZER) that we can use to define functions that need to execute during application initialization. If that function is asynchronous, returning a `Promise` or an `Observable` (new :p), then Angular waits for it to complete before starting the application.
+
+This change is more than welcome, as it means that we can write even more code using RxJS, instead of having to "fall back" to the `Promise` API.
+
+You can read more about that [here](https://github.com/angular/angular/issues/15088).
+
+### Runtime control over animations
+
+Previously, the only way to disable animations was to provide the `NoopAnimationsModule`. As of Angular 12, it is now possible to disable animations based on runtime information, using `BrowserAnimationModule.withConfig` method, and passing it the `disableAnimations` boolean property.
+
+### New historyGo method on Location service
+
+The `LocationService` of Angular now includes a `historyGo` method, which can be used to navigate towards a specific page in the session history, identified by its relative position to the current page. This method corresponds to the native `window.history.go` method. [Check out MDN](https://developer.mozilla.org/en-US/docs/Web/API/History_API#moving_to_a_specific_point_in_history) for some examples.
+
+### Language service improvements
+
+The language service, which is what provides IDEs all the useful insights about Angular code has also improved with this release.
+
+With Angular 12, the language service is enabled by default (previously it required us to opt in).
+
+As of Angular 12, it will also detect if [strict template type checking](https://javascript.plainenglish.io/angular-template-type-checking-e2c99c50f999) is not enabled, and [will advise you to enable those](https://github.com/angular/angular/pull/40423).
+
+The language service now also includes performance tracing capabilities, which can be used to trace performances. This can be enabled in VSCode, [as explained here](https://github.com/angular/angular/pull/41319) (this is fairly low level though).
+
+If you don't know about the language service yet, check out [the official docs](https://angular.io/guide/language-service), or the nice blog post written by [Ninja Squad](https://blog.ninja-squad.com/2021/01/19/angular-language-service/), or this [video intro](https://www.youtube.com/watch?v=doVYC32hjIw).
+
+### Disable lint rules directly from HTML templates
+
+The Angular template compiler now keeps track of HTML comments.
+
+Previously, it wasn't possible to disable linter rules from HTML templates because the Angular template compiler ignored comments. The workaround was to disable those rules for the whole template from the component's controller. Thanks to this change, it will now be possible to do this more precisely from the template:
+
+```html
+<!-- eslint-disable-next-line @angular-eslint/template/no-any -->
+<span>{{ $any(foo).bar }}</span>
+```
+
+Yay for cleaner code!
+
+### The DatePipe now supports ICU standard Stand Alone day of week
+
+Previously, it [wasn't possible](https://github.com/angular/angular/issues/26922) to format a date to Stand Alone day of week using the DatePipe.
+
+Thanks to this change, Finnish date formatting is now supported, and I'm sure that it is great news for a fraction of the Angular community 😉
+
+### Support for forwardRef in providedIn fields of Injectable decorators
+
+It is now possible to use `forwardRef` within the `providedIn` field of the `@Injectable` decorator.
+
+### New transformResource hook on the ResourceHost interface
+
+A `transformResource` method has been added to the `ResourceHost` interface. Thanks to this, it is now possible for tooling to do things like introducing preprocessor support for inline styles. This is what enables the new support for SASS with inline styles.
+
+You can learn more about that [here](https://github.com/angular/angular/pull/41307) and [here](https://github.com/angular/angular/commit/1de04b124e1e92ea21a070c9d928664f193d220c).
+
+### Possible to create custom router outlet implementations
+
+Up until now, creating custom router outlets was possible, but required jumping through some hoops (i.e., registering custom outlets with `ChildrenOutletContexts`).
+
+Angular 12 provides a [cleaner support for custom router outlets](https://github.com/angular/angular/commit/a82fddf1ce6166e0f697e429370eade114094670).
+
+## Bug fixes
+
+As usual, there's a gazillion bug fixes included in this release.
+
+Here's a copy of the release notes:
+
+- **animations:** ensure consistent transition namespace ordering ([#19854](https://github.com/angular/angular/issues/19854)) ([01cc995](https://github.com/angular/angular/commit/01cc99589bc449eaf3b1de2c94636de878843fba))
+- **animations:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([e918250](https://github.com/angular/angular/commit/e918250a0624cff9bbbbdb016a069303a99fb8cc))
+- **animations:** cleanup DOM elements when the root view is removed ([#41059](https://github.com/angular/angular/issues/41059)) ([c49b280](https://github.com/angular/angular/commit/c49b28013a6c017c9afc73bbc00bb4fdcf15c70e))
+- **animations:** allow animations on elements in the shadow DOM ([#40134](https://github.com/angular/angular/issues/40134)) ([dad42c8](https://github.com/angular/angular/commit/dad42c8cd669357f9c862023abc5f4695863040d)), closes [#25672](https://github.com/angular/angular/issues/25672)
+- **animations:** cleanup DOM elements when the root view is removed ([#41001](https://github.com/angular/angular/issues/41001)) ([a31da48](https://github.com/angular/angular/commit/a31da4850788800ba9735d617e7e3bb621a79c93))
+- **bazel:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([8503246](https://github.com/angular/angular/commit/85032460f133162cc712ab3b9f04d42ff3b6d6d9))
+- **bazel:** update build tooling for latest changes in rules_nodejs ([#40710](https://github.com/angular/angular/issues/40710)) ([696f7bc](https://github.com/angular/angular/commit/696f7bc))
+- **bazel:** update integration test to use rules_nodejs@3.1.0 ([#40710](https://github.com/angular/angular/issues/40710)) ([34de89a](https://github.com/angular/angular/commit/34de89a))
+- **bazel:** update type castings for JSON.parse usage ([#40710](https://github.com/angular/angular/issues/40710)) ([2c90391](https://github.com/angular/angular/commit/2c90391))
+- **benchpress:** update type castings for JSON.parse usage ([#40710](https://github.com/angular/angular/issues/40710)) ([e721a5d](https://github.com/angular/angular/commit/e721a5d))
+- **common:** add right ContentType for boolean values with HttpClient request body([#38924](https://github.com/angular/angular/issues/38924)) ([#41885](https://github.com/angular/angular/issues/41885)) ([922a602](https://github.com/angular/angular/commit/922a60283183c47a268fd084302b2bc87267a73e))
+- **common:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([f2b6fd8](https://github.com/angular/angular/commit/f2b6fd87056cf3159e8ecc275ce654e47fdfa6f0))
+- **common:** viewport scroller not finding elements inside the shadow DOM ([#41644](https://github.com/angular/angular/issues/41644)) ([c0f5ba3](https://github.com/angular/angular/commit/c0f5ba3d36b2509a71d09c436d247211a58ee80d)), closes [#41470](https://github.com/angular/angular/issues/41470)
+- **common:** temporarily re-export and deprecate `XhrFactory` ([#41393](https://github.com/angular/angular/issues/41393)) ([7dfa446](https://github.com/angular/angular/commit/7dfa446c4ace99f4b64069cf672dcaa3665a1f5b))
+- **common:** cleanup location change listeners when the root view is removed ([#40867](https://github.com/angular/angular/issues/40867)) ([38524c4](https://github.com/angular/angular/commit/38524c4d29290d3339ad2d7335a0ea84f5701d26)), closes [#31546](https://github.com/angular/angular/issues/31546)
+- **common:** allow number or boolean as http params ([#40663](https://github.com/angular/angular/issues/40663)) ([91cdc11](https://github.com/angular/angular/commit/91cdc11aa0347d1b71f2f732e00af9c3ff8078fc)), closes [#23856](https://github.com/angular/angular/issues/23856)
+- **common:** avoid mutating context object in NgTemplateOutlet ([#40360](https://github.com/angular/angular/issues/40360)) ([d3705b3](https://github.com/angular/angular/commit/d3705b3284113f752ee05e9f0d2f6e75c723ea5b)), closes [#24515](https://github.com/angular/angular/issues/24515)
+- **compiler:** preserve @page rules in encapsulated styles ([#41915](https://github.com/angular/angular/issues/41915)) ([3e365ba](https://github.com/angular/angular/commit/3e365ba81e313ee31af7a8e9042e33fc046067e0)), closes [#26269](https://github.com/angular/angular/issues/26269)
+- **compiler:** strip scoped selectors from `@font-face` rules ([#41815](https://github.com/angular/angular/issues/41815)) ([2a11cda](https://github.com/angular/angular/commit/2a11cdab51a2d8d7f644ceca744568a1617f5242)), closes [#41751](https://github.com/angular/angular/issues/41751)
+- **compiler:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([bae8126](https://github.com/angular/angular/commit/bae81269c7461063821be7beb66b516e5a8995ce))
+- **compiler:** non-literal inline templates incorrectly processed in partial compilation ([#41583](https://github.com/angular/angular/issues/41583)) ([ab257b3](https://github.com/angular/angular/commit/ab257b370127dce70bd3ee7ad6d64d3a9ad5ae95))
+- **compiler:** not generating update instructions for ng-template inside alternate namespaces ([#41669](https://github.com/angular/angular/issues/41669)) ([2bcbbda](https://github.com/angular/angular/commit/2bcbbda78913be014534fde72318ab09795350f9)), closes [#41308](https://github.com/angular/angular/issues/41308)
+- **compiler:** avoid parsing EmptyExpr with a backwards span ([#41581](https://github.com/angular/angular/issues/41581)) ([e1a2930](https://github.com/angular/angular/commit/e1a29308933e99ee3e0d92aae42b33834f20f50a))
+- **compiler:** handle case-sensitive CSS custom properties ([#41380](https://github.com/angular/angular/issues/41380)) ([e112e32](https://github.com/angular/angular/commit/e112e320bf6c2b60e8ecea46f80bcaec593c65b7)), closes [#41364](https://github.com/angular/angular/issues/41364)
+- **compiler:** include used components during JIT compilation of partial component declaration ([#41353](https://github.com/angular/angular/issues/41353)) ([ff9470b](https://github.com/angular/angular/commit/ff9470b0a0196a3638f19028bba15e002cb0ff27)), closes [#41104](https://github.com/angular/angular/issues/41104) [#41318](https://github.com/angular/angular/issues/41318)
+- **compiler:** support multiple `:host-context()` selectors ([#40494](https://github.com/angular/angular/issues/40494)) ([07b7af3](https://github.com/angular/angular/commit/07b7af3)), closes [#19199](https://github.com/angular/angular/issues/19199)
+- **compiler:** update type castings for JSON.parse usage ([#40710](https://github.com/angular/angular/issues/40710)) ([f728490](https://github.com/angular/angular/commit/f728490))
+- **compiler-cli:** use '' for the source map URL of indirect templates ([#41973](https://github.com/angular/angular/issues/41973)) ([7a4d980](https://github.com/angular/angular/commit/7a4d9805ea73d1b6a7659987da77d266d5e01b88)), closes [#40854](https://github.com/angular/angular/issues/40854)
+- **compiler-cli:** expose the linker as a Babel plugin ([#41918](https://github.com/angular/angular/issues/41918)) ([8fdac8f](https://github.com/angular/angular/commit/8fdac8f4361fd4ac0f20c21c98289c19e8864347))
+- **compiler-cli:** prefer non-aliased exports in reference emitters ([#41866](https://github.com/angular/angular/issues/41866)) ([75bb931](https://github.com/angular/angular/commit/75bb931889b946c243161a6ce0503bc7d08a6565)), closes [#41443](https://github.com/angular/angular/issues/41443) [#41277](https://github.com/angular/angular/issues/41277)
+- **compiler-cli:** allow linker to process minified booleans ([#41747](https://github.com/angular/angular/issues/41747)) ([1fb6724](https://github.com/angular/angular/commit/1fb6724b1f66c4681ddb201bc9b5441d20f5b920)), closes [#41655](https://github.com/angular/angular/issues/41655)
+- **compiler-cli:** match string indexed partial declarations ([#41747](https://github.com/angular/angular/issues/41747)) ([f885750](https://github.com/angular/angular/commit/f8857507642f5d12eebf4ef1ca68b63cc51f4f81)), closes [#41655](https://github.com/angular/angular/issues/41655)
+- **compiler-cli:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([5b463f4](https://github.com/angular/angular/commit/5b463f4541946c795835c9d9cfd7a21e7b0caffc))
+- **compiler-cli:** autocomplete literal types in templates. ([#41456](https://github.com/angular/angular/issues/41456)) ([#41645](https://github.com/angular/angular/issues/41645)) ([8b2b5ef](https://github.com/angular/angular/commit/8b2b5ef903a21b599dfc4bfe8b0c64f7c136c3a9))
+- **compiler-cli:** do not error with prepocessing if component has no inline styles ([#41602](https://github.com/angular/angular/issues/41602)) ([a5fe8b9](https://github.com/angular/angular/commit/a5fe8b95893798467c4eea2b3d38d49f6d0ce1b3))
+- **compiler-cli:** ensure the compiler tracks `ts.Program`s correctly ([#41291](https://github.com/angular/angular/issues/41291)) ([deacc74](https://github.com/angular/angular/commit/deacc741e0ee41666292d2e2c07812a78daf5d6f))
+- **compiler-cli:** prevent eliding default imports in incremental recompilations ([#41557](https://github.com/angular/angular/issues/41557)) ([7f16515](https://github.com/angular/angular/commit/7f1651574ee95eaaa5f636fc37be7b07d1a808e5)), closes [#41377](https://github.com/angular/angular/issues/41377)
+- **compiler-cli:** resolve `rootDirs` to absolute ([#41359](https://github.com/angular/angular/issues/41359)) ([3e0fda9](https://github.com/angular/angular/commit/3e0fda96b827e577cc300f46e8497cb6c810ad61)), closes [#36290](https://github.com/angular/angular/issues/36290)
+- **compiler-cli:** add `useInlining` option to type check config ([#41043](https://github.com/angular/angular/issues/41043)) ([09aefd2](https://github.com/angular/angular/commit/09aefd29045db77689f4dc16a6abae09a79cfb81)), closes [#40963](https://github.com/angular/angular/issues/40963)
+- **compiler-cli:** `readConfiguration` existing options should override options in tsconfig ([#40694](https://github.com/angular/angular/issues/40694)) ([b7c4d07](https://github.com/angular/angular/commit/b7c4d07e81277f7aed566e443d1d4e1395c5a2f4))
+- **compiler-cli:** extend `angularCompilerOptions` in tsconfig from node ([#40694](https://github.com/angular/angular/issues/40694)) ([5eb1954](https://github.com/angular/angular/commit/5eb195416bf73f2fa59de52531724d8d19392975)), closes [#36715](https://github.com/angular/angular/issues/36715)
+- **compiler-cli:** update ngcc integration tests for latest changes in rules_nodejs ([#40710](https://github.com/angular/angular/issues/40710)) ([d7f5755](https://github.com/angular/angular/commit/d7f5755))
+- **compiler-cli:** update type castings for JSON.parse usage ([#40710](https://github.com/angular/angular/issues/40710)) ([b75d7cb](https://github.com/angular/angular/commit/b75d7cb))
+- **core:** do not retain dynamically compiled components and modules ([#42003](https://github.com/angular/angular/issues/42003)) ([1449c5c](https://github.com/angular/angular/commit/1449c5c8ff3bf706c501130fe261627effe5d212)), closes [#19997](https://github.com/angular/angular/issues/19997)
+- **core:** invoke profiler around ngOnDestroy lifecycle hooks ([#41969](https://github.com/angular/angular/issues/41969)) ([e9ddc57](https://github.com/angular/angular/commit/e9ddc57f948f0cb18e3e334aeb3084d1b49689b1))
+- **core:** AsyncPipe now compatible with RxJS 7 ([#41590](https://github.com/angular/angular/issues/41590)) ([9759bca](https://github.com/angular/angular/commit/9759bca339b44ed78ec6aafab0336d531d285f90))
+- **core:** handle multiple i18n attributes with expression bindings ([#41882](https://github.com/angular/angular/issues/41882)) ([73c6c64](https://github.com/angular/angular/commit/73c6c64f82d45c34203d4d18d759ad0c33a6b221)), closes [#41869](https://github.com/angular/angular/issues/41869)
+- **core:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([f9c1f08](https://github.com/angular/angular/commit/f9c1f089573e0158eb5e4443658cfd25aeeeb091))
+- **core:** detect synthesized constructors that have been downleveled using TS 4.2 ([#41305](https://github.com/angular/angular/issues/41305)) ([274dc15](https://github.com/angular/angular/commit/274dc15452739e4fab2f647804a64d5b797cfed5)), closes [#41298](https://github.com/angular/angular/issues/41298)
+- **core:** Switch `emitDistinctChangesOnlyDefaultValue` to true ([#41121](https://github.com/angular/angular/issues/41121)) ([7096246](https://github.com/angular/angular/commit/70962465b5795f0a192f745016b1c461e7c8790b))
+- **core:** remove duplicated EMPTY_OBJ constant ([#41066](https://github.com/angular/angular/issues/41066)) ([bf158e7](https://github.com/angular/angular/commit/bf158e7ff0715aabeae3c2c1ac923bf8cc7e4cfd))
+- **core:** remove duplicated EMPTY_ARRAY constant ([#40991](https://github.com/angular/angular/issues/40991)) ([e12d9de](https://github.com/angular/angular/commit/e12d9dec64bc3d02e58f8f85a65a939394fb9531))
+- **core:** allow EmbeddedViewRef context to be updated ([#40360](https://github.com/angular/angular/issues/40360)) ([a3e1719](https://github.com/angular/angular/commit/a3e17190e7e7e0329ed3643299c24d5fd510b7d6)), closes [#24515](https://github.com/angular/angular/issues/24515)
+- **core:** make DefaultIterableDiffer keep the order of duplicates ([#23941](https://github.com/angular/angular/issues/23941)) ([a826926](https://github.com/angular/angular/commit/a826926)), closes [#23815](https://github.com/angular/angular/issues/23815)
+- **core:** NgZone coaleascing options should trigger onStable correctly ([#40540](https://github.com/angular/angular/issues/40540)) ([22f9e45](https://github.com/angular/angular/commit/22f9e45))
+- **elements:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([4f5d094](https://github.com/angular/angular/commit/4f5d094f3a385cdc6d93c7676457484e3d8b6b09))
+- **elements:** update type castings for JSON.parse usage ([#40710](https://github.com/angular/angular/issues/40710)) ([efd4149](https://github.com/angular/angular/commit/efd4149))
+- **forms:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([dc975ba](https://github.com/angular/angular/commit/dc975bac93a8087d1f31a31db60ef313147e589f))
+- **http:** complete the request on timeout ([#39807](https://github.com/angular/angular/issues/39807)) ([61a0b6d](https://github.com/angular/angular/commit/61a0b6d)), closes [#26453](https://github.com/angular/angular/issues/26453)
+- **http:** emit error on XMLHttpRequest abort event ([#40767](https://github.com/angular/angular/issues/40767)) ([3897265](https://github.com/angular/angular/commit/3897265)), closes [#22324](https://github.com/angular/angular/issues/22324)
+- **language-service:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([9b6198c](https://github.com/angular/angular/commit/9b6198c16f122dd934ac6a66d2ada21df26839b5))
+- **language-service:** use script versions for incremental compilations ([#41475](https://github.com/angular/angular/issues/41475)) ([78236bf](https://github.com/angular/angular/commit/78236bfdcaeb66c5846eb0435d727942bb88f7c5))
+- **language-service:** Only provide Angular property completions in templates ([#41278](https://github.com/angular/angular/issues/41278)) ([0226a11](https://github.com/angular/angular/commit/0226a11c185da2d1e6f7833972d3f12205a6ae59))
+- **language-service:** Add plugin option to force strictTemplates ([#41062](https://github.com/angular/angular/issues/41062)) ([e9e7c33](https://github.com/angular/angular/commit/e9e7c33f3c170648ec8c86d859980c7fe78fba39))
+- **language-service:** use single entry point for Ivy and View Engine ([#40967](https://github.com/angular/angular/issues/40967)) ([e986a97](https://github.com/angular/angular/commit/e986a9787b7787c3cffef69d06a2e7e1228e3f40))
+- **localize:** relax error to warning for missing target ([#41944](https://github.com/angular/angular/issues/41944)) ([35ceed2](https://github.com/angular/angular/commit/35ceed2061a890a70576dc7afa0b779f3779ae7b)), closes [#21690](https://github.com/angular/angular/issues/21690)
+- **localize:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([658ed1f](https://github.com/angular/angular/commit/658ed1f904ef0013c3b08e2b2182cf246ef55b2b))
+- **localize:** update type castings for JSON.parse usage ([#40710](https://github.com/angular/angular/issues/40710)) ([4b469c9](https://github.com/angular/angular/commit/4b469c9))
+- **ngcc:** detect synthesized constructors that have been downleveled using TS 4.2 ([#41305](https://github.com/angular/angular/issues/41305)) ([8d3da56](https://github.com/angular/angular/commit/8d3da56eda12070df1fb473c8609f3a94d77bfd6)), closes [#41298](https://github.com/angular/angular/issues/41298)
+- **platform-browser:** prevent memory leak of style nodes if shadow DOM encapsulation is used ([#42005](https://github.com/angular/angular/issues/42005)) ([d555555](https://github.com/angular/angular/commit/d5555558d00774520dbda40d48721bda2cb9dd1a)), closes [#36655](https://github.com/angular/angular/issues/36655)
+- **platform-browser:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([ea05cfd](https://github.com/angular/angular/commit/ea05cfd0c5a99840f4522b604c33a5b2f7f25f7d))
+- **platform-browser:** configure `XhrFactory` to use `BrowserXhr` ([#41313](https://github.com/angular/angular/issues/41313)) ([e0028e5](https://github.com/angular/angular/commit/e0028e57410281e190caa74e0986320f6591d27b)), closes [#41311](https://github.com/angular/angular/issues/41311)
+- **platform-browser:** update type castings for JSON.parse usage ([#40710](https://github.com/angular/angular/issues/40710)) ([7ecfd2d](https://github.com/angular/angular/commit/7ecfd2d))
+- **platform-browser-dynamic:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([bc45029](https://github.com/angular/angular/commit/bc45029a5437bcea45fa00549241685a1a3f32d0))
+- **platform-server:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([4b9d4fa](https://github.com/angular/angular/commit/4b9d4fa3e729a3af13fb5b50de3e5c73c1d6923f))
+- **router:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([0067edd](https://github.com/angular/angular/commit/0067edd1469a428c11bbe6358fd5650e79abf774))
+- **router:** Only retrieve stored route when reuse strategy indicates it should reattach ([#30263](https://github.com/angular/angular/issues/30263)) ([a4ff071](https://github.com/angular/angular/commit/a4ff071e3f08e3de6d4d3f97c747c2f42b827c49)), closes [#23162](https://github.com/angular/angular/issues/23162)
+- **router:** recursively merge empty path matches ([#41584](https://github.com/angular/angular/issues/41584)) ([1179dc8](https://github.com/angular/angular/commit/1179dc8cb32c9fc451d2af9215c4740af9d2e291)), closes [#41481](https://github.com/angular/angular/issues/41481)
+- **router:** fragment can be null ([#37336](https://github.com/angular/angular/issues/37336)) ([b555160](https://github.com/angular/angular/commit/b5551609fe02787641bdfdb0a6edfded413a3b52)), closes [#23894](https://github.com/angular/angular/issues/23894) [#34197](https://github.com/angular/angular/issues/34197)
+- **router:** update type castings for JSON.parse usage ([#40710](https://github.com/angular/angular/issues/40710)) ([350dada](https://github.com/angular/angular/commit/350dada))
+- **service-worker:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([6b823d7](https://github.com/angular/angular/commit/6b823d7071d59234ab52bdf7eaa248df6b7d9faa))
+- **service-worker:** update type castings for JSON.parse usage ([#40710](https://github.com/angular/angular/issues/40710)) ([4f7ff96](https://github.com/angular/angular/commit/4f7ff96))
+- **upgrade:** preserve $interval.flush when ngMocks is being used ([#30229](https://github.com/angular/angular/issues/30229)) ([87dc851](https://github.com/angular/angular/commit/87dc8511ccb9c75d78866ebd2c250ea96fc91bd0))
+- **upgrade:** update supported range of node versions to only include LTS versions ([#41822](https://github.com/angular/angular/issues/41822)) ([10c4523](https://github.com/angular/angular/commit/10c45239a68e82ea52c1601fae09953aa7843351))
+
+By the way, did you notice that `AsyncPipe` has been [patched](https://github.com/angular/angular/commit/9759bca339b44ed78ec6aafab0336d531d285f90) by Ben Lesh to be compatible with both RxJS 6 and 7? How cool is that? ;-)
+
+## Breaking changes
+
+As usual, there are a number of breaking changes with this release.
+
+As [the official release notes](https://github.com/angular/angular/blob/master/CHANGELOG.md#breaking-changes) are pretty clear, I’m just copy/pasting those here:
+
+- Minified UMD bundles are no longer included in the distributed NPM packages.
+- _animations_: DOM elements are now correctly removed when the root view is removed. If you are using SSR and use the app's HTML for rendering, you will need to ensure that you save the HTML to a variable before destorying the app. It is also possible that tests could be accidentally relying on the old behavior by trying to find an element that was not removed in a previous test. If this is the case, the failing tests should be updated to ensure they have proper setup code which initializes elements they rely on
+- _common_: Methods of the `PlatformLocation` class, namely `onPopState` and `onHashChange`, used to return `void`. Now those methods return functions that can be called to remove event handlers
+- common: The methods of the `HttpParams` class now accept `string | number | boolean` instead of `string` for the value of a parameter. If you extended this class in your application, you'll have to update the signatures of your methods to reflect these changes
+- _compiler-cli_: Linked libraries no longer generate legacy i18n message ids. Any downstream application that provides translations for these messages, will need to migrate their message ids using the `localize-migrate` command line tool
+- _core_: Angular no longer maintains support for node v10, so if you're still using it for your development environment, it's really time to upgrade!
+- _core_: Previously the `ng.getDirectives` function threw an error in case a given DOM node had no Angular context associated with it (for example if a function was called for a DOM element outside of an Angular app). This behavior was inconsistent with other debugging utilities under `ng` namespace, which handled this situation without raising an exception. Now calling the `ng.getDirectives` function for such DOM nodes would result in an empty array returned from that function
+  core: Switching default of `emitDistinctChangesOnlyDefaultValue` which changes the default behavior and may cause some applications which rely on the incorrect behavior to fail
+
+`emitDistinctChangesOnly` flag has also been deprecated and will be removed in a future major release
+
+The previous implementation would fire changes `QueryList.changes.subscribe` whenever the `QueryList` was recomputed. This resulted in an artificially high number of change notifications, as it is possible that recomputing `QueryList` results in the same list. When the `QueryList` gets recomputed is an implementation detail, and it should not be the thing that determines how often change event should fire.
+
+Unfortunately, fixing the behavior outright caused too many existing applications to fail. For this reason, Angular considers this fix a breaking fix and has introduced a flag in `@ContentChildren` and `@ViewChildren`, that controls the behavior.
+
+```typescript
+export class QueryCompWithStrictChangeEmitParent {
+  @ContentChildren('foo', {
+    // This option is the new default with this change.
+    emitDistinctChangesOnly: true,
+  })
+  foos!: QueryList<any>;
+}
+```
+
+For backward compatibility before v12
+`emitDistinctChangesOnlyDefaultValue` was set to `false`. This change
+changes the default to `true`.
+
+- **core:** The type of the `APP_INITIALIZER` token has been changed to more accurately
+  reflect the types of return values that are handled by Angular. Previously,
+  each initializer callback was typed to return `any`, this is now
+  `Promise<unknown> | Observable<unknown> | void`. In the unlikely event that
+  your application uses the `Injector.get` or `TestBed.inject` API to inject
+  the `APP_INITIALIZER` token, you may need to update the code to account for
+  the stricter type.
+
+Additionally, TypeScript may report the TS2742 error if the `APP_INITIALIZER`
+token is used in an expression of which its inferred type has to be emitted
+into a .d.ts file. To workaround this, an explicit type annotation is needed,
+which would typically be `Provider` or `Provider[]`.
+
+- **core:** Minimum supported `zone.js` version is `0.11.4`. Thus it means that if you're using an older version, it's also time to upgrade zone.js in your project!
+- **forms:** The `emitEvent` option was added to the following `FormArray` and `FormGroup` methods:
+
+- FormGroup.addControl
+- FormGroup.removeControl
+- FormGroup.setControl
+- FormArray.push
+- FormArray.insert
+- FormArray.removeAt
+- FormArray.setControl
+- FormArray.clear
+
+If your app has custom classes that extend `FormArray` or `FormGroup` classes and override the
+above-mentioned methods, you may need to update your implementation to take the new options into
+account and make sure that overrides are compatible from a types perspective.
+
+- **forms:** Previously `min` and `max` attributes defined on the `<input type="number">`
+  were ignored by Forms module. Now presence of these attributes would
+  trigger min/max validation logic (in case `formControl`, `formControlName`
+  or `ngModel` directives are also present on a given input) and
+  corresponding form control status would reflect that.
+- **platform-browser:** `XhrFactory` has been moved from `@angular/common/http` to `@angular/common`.
+
+**Before**
+
+```typescript
+import { XhrFactory } from '@angular/common/http';
+```
+
+**After**
+
+```typescript
+import { XhrFactory } from '@angular/common';
+```
+
+- **router:** Strict null checks will report on fragment potentially being null.
+  Migration path: add null check.
+- **router:** The type of the `RouterLinkActive.routerLinkActiveOptions` input was
+  expanded to allow more fine-tuned control. Code that previously read
+  this property may need to be updated to account for the new type.
+
+## Updated roadmap
+
+According to the current Angular [roadmap](https://angular.io/guide/roadmap), the team is now busy with the following improvements:
+
+- Improving developer experience while debugging and profiling. This should help us to understand the component structure (I imagine like React Dev Tools allow for React), and change detection
+- Improving test times and debugging with automatic tear down: This should improve the isolation between tests and test times. The [TestBed](https://angular.io/api/core/testing/TestBed) will also be changed to automatically clean up and tear down the test environment after each test is executed
+- Using ES2017+ as the default output: They'll identify roadblocks and remove those so that the default output language can be upgraded
+- Integrating MDC Web into Angular Material
+- Improving the accessibility of Angular Material components
+- Publishing guides about advanced concepts such as change detection, performance profiling, interactions with Zone.js, etc
+- Updating the e2e testing strategy (cfr above)
+- Preparing the upgrade to RxJS v7+. As you might know, RxJS 7 has been [released recently](https://medium.com/volosoft/whats-new-in-rxjs-7-a11cc564c6c0). Hopefully we should soon be able to upgrade
+
+In the future, the Angular team plans to:
+
+- Look into micro frontend architecture: they might introduce means for us to easily create micro frontends using Angular
+- Improve developer experience with strict typing for Angular forms (we so desperately need this)
+- Make Zone.js optional, which should simplify the framework, improve debugging, reduce bundle sizes and even allow taking advantage of the native async/await syntax
+- Improve build performance by integrating the Angular compiler (`ngc`) as a TypeScript compiler plugin
+- Allow adding directives to host elements. This has been requested by the community for a long time too!
+- Make NgModules optional to ease the learning curve
+- Provide us with easier means to implement code-splitting at the component-level
+
+## Angular Material & Angular CDK
+
+### Sass migration
+
+Internally, both Angular Material and the CDK have migrated to the [new Sass module system](https://sass-lang.com/blog/the-module-system-is-launched).
+
+If your application uses either of those, then you'll need to make sure that you've replaced `node-sass` by `sass`: https://www.npmjs.com/package/sass. The `node-sass` package is not maintained anymore!
+
+With this migration, the Sass theming API has been enhanced, and it now allows us to take advantage of Sass's `@use` utility.
+
+There's now a single entry point for `@angular/material` and `@angular/cdk`.
+
+Finally, the APIs have also been changed for clarity. Many functions, mixins and variables have been renamed along the way.
+
+You can find more information about these changes in the new theming guide: https://github.com/angular/components/blob/master/guides/theming.md. In addition, note that the guides on https://material.angular.io have been rewritten to showcase the new API, and include explanations.
+
+The upgrade process will automatically migrate code to the new Sass API. You can find before/after examples [here](https://gist.github.com/MarkTechson/6283b6a3b353f9e38964af0740e29280).
+
+### Angular CDK changes
+
+Version 12 includes a number of [changes](https://github.com/angular/components/blob/master/CHANGELOG.md#cdk) to the Angular CDK.
+
+Here, I'll only list the new features, but you can check out the release notes if you want details about the bug fixes and performance improvements:
+
+- _Drag-drop_: The dropped event now includes a `dropPoint` property, determining the exact point where the mouse pointed was when the item was dropped. More info [here](https://github.com/angular/components/pull/22410)
+- _Drag-drop_: The preview container [can now be customized](https://github.com/angular/components/issues/13288)
+- _Table_: A new directive allows to [enable the recycle view repeater](https://github.com/angular/components/pull/21508), which caches disposed rows and reuses them when the dataset changes. This can help improve performances (reduce latency)
+- _Table_: [Added](https://github.com/angular/components/pull/21886) the offsets of sticky elements to the `StickyUpdate` interface
+- _Stepper_: When a user tries to move away from a step, an `interacted` event will now be [emitted](https://github.com/angular/components/issues/19918)
+- _Stepper_: The orientation can now be [changed](https://github.com/angular/components/issues/21874)
+- _Accessibility_: A `FocusOptions` object [can now be passed](https://github.com/angular/components/issues/21767) into the various focus trap methods
+- _Testing_: New WebDriver harness environment. I haven't dived into this one yet so I can't tell you more. Check out [the PR](https://github.com/angular/components/pull/22410)
+
+### Angular Material changes
+
+There are also a number of [changes for Angular Material](https://github.com/angular/components/blob/master/CHANGELOG.md#material). Again, check out the release notes for the full list of bug fixes.
+
+New features:
+
+- _Date picker_: No longer depends [on dialog](https://github.com/angular/components/pull/22383)
+- _Stepper_: The orientation can now be changed dynamically (cfr similar change in the CDK)
+- _Stepper_: Allow for content to be [rendered lazily](https://github.com/angular/components/issues/12339)
+- _Menu_: Allow updating the menu position [programmatically](https://github.com/angular/components/pull/22046)
+- _Mat error_: Now uses `aria-live="polite"` instead of `role="alert"`. More details [here](https://github.com/angular/components/issues/21781)
+- _Tabs_: Add method to [programmatically set focus on a specific tab](https://github.com/angular/components/pull/15228)
+- _List_: Now returns an array with changed options from the `selectAll` and `deselectAll` methods. Check out [the PR](https://github.com/angular/components/pull/21358/files) for details
+- _Slide toggle_: Allow to [globally configure a default color](https://github.com/angular/components/pull/22047) through a provider
+- _Tooltip_: Now exposes the effective position of the tooltip through a class on the component
+- _Radio_, _Checkbox_ and _Slider_: Include the background color of those components in the [print stylesheets](https://github.com/angular/components/issues/22298)
+
+There are also a number of changes on the experimental version: https://github.com/angular/components/blob/master/CHANGELOG.md#material-experimental.
+
+## Angular Universal
+
+Angular Universal 12 is also [fresh out of the oven](https://github.com/angular/universal/releases/tag/v12.0.0).
+
+With this release, Universal now [inlines critical CSS by default](https://github.com/angular/universal/commit/3dddb758fa6e89ca1b857b7a7a17a21bc474618c), which is pretty cool.
+
+Universal now includes a new `proxyConfig` option to provide custom proxy configurations to the `ssr-dev-server` builder.
+
+In this version, there's a new (experimental) SSR engine called _Clover_ (reminds me of a quality tool in the Java ecosystem). This new engine seems promising. It aims to simplify things, get us rid of the `Window is undefined` error, remove the need for multiple builds for SSR/prerender, generate application shells without an extra build, and more. We'll probably hear more about it later on. If you're curious, then check out [the PR](https://github.com/angular/universal/commit/c4b7be3bbdbc7334f5cf7049c644e185cf15d0bb).
+
+This version includes a [builder](https://github.com/angular/universal/commit/2066f18a23eecce6dd485c19bc1ed10a4c3be497) that can be used to generate static pages (i.e., pre-rendering) using the new Universal Clover approach.
+
+Finally, this version also includes [TLS support](https://github.com/angular/universal/issues/1633) for the dev-server.
+
+## Google Maps
+
+As you know, Angular includes components for Google Maps and Youtube. Version 12 brings a few improvements for the Google Maps component:
+
+- Now includes an `icon` input to easily customize the marker
+- Now emits a `clusterClick` event when a cluster [has been clicked](https://github.com/angular/components/issues/22020)
+- Includes [a wrapper](https://github.com/angular/components/issues/21665) around the Google Maps Geocoder API, and exports `MapDirectionsResponse`, which was not exposed before
+- Introduces support for [rendering heatmaps](https://github.com/angular/components/pull/21489)
+- Added `MapDirectionsRenderer`, allowing to render directions on a map, and `MapDirectionsService`, which wraps `google.maps.DirectionsService` to calculate [routes between two points](https://github.com/angular/components/pull/21736).
+- New `options` input on the [marker clusterer](https://github.com/angular/components/pull/21861), similar to the other directives
+
+## Upgrading
+
+As usual, there's a complete upgrade guide available, and `ng update` will help you out: https://update.angular.io/?l=3&v=11.0-12.0
+
+## Conclusion
+
+In this article, I've explored the new features of Angular 12.
+
+As usual, this is release is _heroic_ (what else could it be?! ).
+
+Ivy is moving forward, and hopefully we'll "soon" be less annoyed by `ngcc`, as the ecosystem migrates. There are a number of awesome changes with this release.
+
+That’s it for today!
+
+<BlogPostSignature />
