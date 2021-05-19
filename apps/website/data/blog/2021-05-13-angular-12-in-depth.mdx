@@ -356,6 +356,20 @@ A new profiler function called `esetProfiler` has also been implemented, and it 
 
 This is still experimental at this point, but I guess we'll hear more about this later on. I'm curious to see if/when tools like Sentry will integrate support for collecting this kind of information in order to provide us with useful performance dashboards.
 
+## New Dev Tools
+
+A few days after the release of Angular 12, the Angular team has [announced](https://blog.angular.io/introducing-angular-devtools-2d59ff4cf62f) the availability of brand new Angular Dev Tools for Google Chrome. You can download those [here](https://chrome.google.com/webstore/detail/angular-devtools/ienfalfjdbdpebioblfackkekamfmbnh/related?hl=en&authuser=0).
+
+Using that brand new browser extension, you can easily inspect your Angular applications during development. It supports:
+
+- Visualizing the structure of the application (i.e., inspecting the component tree)
+- Exploring and editing components
+- Profiling performances
+
+Using the embedded profiler, we can record change detection events, and preview those as they occur. For each change detection cycle, we can look at how long it took, which components took the longest time, whether that cycle caused frame drops.
+
+Angular previously had semi-official Dev Tools through the [Augury](https://augury.rangle.io/) project (which are the basis of the new tools!), but those were not compatible with Ivy. So this is great news for the Angular community!
+
 ## And more...
 
 There's [a ton more](https://github.com/angular/angular/blob/master/CHANGELOG.md#features) minor changes in this release. Here's a quick overview.
