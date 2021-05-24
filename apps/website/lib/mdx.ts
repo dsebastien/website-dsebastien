@@ -92,6 +92,7 @@ export async function getFileBySlug({
     image: '',
     categories: [],
     keywords: [],
+    published: true,
     ...data,
   };
 
@@ -104,22 +105,30 @@ export async function getFileBySlug({
 export async function getAllFilesFrontMatter(type: string) {
   const files = fs.readdirSync(path.join(root, DATA_FOLDER_PATH, type));
 
-  // FIXME fix the types here :)
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  return files.reduce((allPosts, postSlug) => {
+  type AllPosts = { slug: string }[];
+
+  return files.reduce<AllPosts>((allPosts: AllPosts, postSlug) => {
     const source = fs.readFileSync(
       path.join(root, DATA_FOLDER_PATH, type, postSlug),
       'utf8'
     );
     const { data } = matter(source);
 
-    return [
-      {
-        ...data,
-        slug: postSlug.replace('.mdx', ''),
-      },
-      ...allPosts,
-    ];
+    let retVal: AllPosts = allPosts;
+
+    /**
+     * Only consider PUBLISHED articles here
+     */
+    if (data && data.published) {
+      retVal = [
+        {
+          ...data,
+          slug: postSlug.replace('.mdx', ''),
+        },
+        ...allPosts,
+      ];
+    }
+
+    return retVal;
   }, []);
 }

@@ -6,6 +6,10 @@ export interface FrontMatter {
   image: string;
   by?: string;
   /**
+   * Whether the post is published or not
+   */
+  published: boolean;
+  /**
    * To be used for highlighting posts
    */
   featured?: boolean;

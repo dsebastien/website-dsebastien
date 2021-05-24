@@ -6,6 +6,7 @@ image: '/static/images/blog/2020/locks.jpeg'
 slug: 'deploying-tls-certificates-for-local-development-and-production-using-kubernetes-cert-manager'
 categories: [tls, https, security, certificates, kubernetes, infrastructure]
 keywords: [kubernetes, security, certificates, tls, https, cert-manager]
+published: true
 ---
 
 Recently with my project, I’ve dived into how to enable TLS on our client-facing infrastructure in production, but also for the development environment.
@@ -163,7 +164,7 @@ spec:
   dnsNames:
     - my-app.dev.local
   issuerRef:
-    name: tsl-ca-issuer
+    name: tls-ca-issuer
     # Alternative: ClusterIssuer if there is a cluster-wide issuer available
     kind: Issuer
 ```
