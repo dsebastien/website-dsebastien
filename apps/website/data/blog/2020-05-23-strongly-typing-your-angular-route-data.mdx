@@ -1,0 +1,99 @@
+---
+title: "Strongly typing your Angular route data"
+summary: 'As Angular projects grow, it is quite common to add data to your routes. This article shows how to strongly type such data'
+publishedAt: '2020-05-23'
+image: '/static/images/blog/2020/one-way.jpeg'
+slug: 'strongly-typing-your-angular-route-data'
+categories: [angular, typescript, programming, web development, code quality]
+keywords: [angular, typescript, web development, programming, software development, code quality]
+published: true
+---
+
+As Angular projects grow, it’s quite common to add data to your routes. Some of that data will be mandatory for all the routes, some not. But in any case, it’s useful to strongly type your routes, just like the rest of your codebase.
+
+<Image
+  alt={`Git`}
+  src={`/static/images/blog/2020/one-way.jpeg`}
+  width={700}
+  height={467}
+  priority
+/>
+
+In this article, I’ll quickly go through the base data types of the Angular router, then we’ll explore how to strongly type our Angular routes.
+
+## Angular Router API data types
+
+The Angular router API provides us with multiple data types. Here’s a real quick recap.
+
+The most important type is of course the [Route](https://angular.io/api/router/Route). A Route object defines the configuration for a single route, which _may_ include (among other things):
+
+* a path
+* a component
+* a target router outlet
+* guards (canActivate, canDeactivate, etc)
+* resolvers (forget those if you can!)
+* children routes
+* data
+* …
+
+If you’re familiar with the Angular router, then you probably know all of this by heart.
+
+The data property is the one you can use to embed additional data, that will be made available by the router as part of the [ActivatedRoute](https://angular.io/api/router/ActivatedRoute). The ActivatedRoute can easily be injected in your components or services (e.g., through `firstChild?.routeConfig?.data`); I’ve leveraged this feature in the Scrolling service that [I’ve written about recently](https://medium.com/front-end-weekly/handling-scrolling-on-angular-router-transitions-e7652e57d964).
+
+Of course you’ll almost always have more than a single route in your applications. All of those routes need to be added to a [Routes](https://angular.io/api/router/Routes) object, which is nothing more than an array of Route objects (the type is simply defined as `type Routes = Route[]`).
+
+Once your Routes object is defined, you simply provide it to the [RouterModule](https://angular.io/api/router/RouterModule); either through `RouterModule.forRoot` or `RouterModule.forChild`, depending on whether you’re in the root or in a lazy-loaded / child module.
+
+Once the router configuration is defined, then you’re good to go. When the Angular router needs to activate a different route, it tries to match the destination URL’s segments with the different Route objects it has been fed with. But this is not the subject of this article, so we’ll stop here.
+
+Now that we’ve reviewed the base types, let’s introduce our own!
+
+## Strongly typing your route definitions
+
+To strongly type our Angular route definitions, we can extend the base types discussed in the previous section.
+
+What’s interesting to explore is the type of the “data” property. By default, it is [defined as follows](https://angular.io/api/router/Data):
+
+```
+type Data = {     [name: string]: any; };
+```
+
+As you can see, it’s a simple record (i.e., dictionary) with string keys and _whatever_ as values. To improve upon this, we can simply extend this base type. Here’s an example:
+
+<Gist gistLink="dsebastien/f0acd85b5717dcdaa5774773bb0b6cec" />
+
+With the above, I’ve extended the default type provided by Angular with additional properties; one being mandatory.
+
+By using this interface instead of the default one, we can have more help from the TS compiler already. In my project though I went further and didn’t even extend the default `Data` type. It’s up to you to be super strict… or not.
+
+Now, how do we use this custom interface? Well we also have to extend the `Route` type of Angular:
+
+<Gist gistLink="dsebastien/b32d41d3c0a45dfa7739c40e3216d26e" />
+
+We’re almost there. This time we’ve just replaced the default `data` property of the `Route` interface with our own. Next up is indeed the `Routes` type:
+
+```
+export type CustomRoutes = CustomRoute[];
+```
+
+Now that we have it, we can use it to define our route arrays in the root and child/lazy-loaded modules:
+
+<Gist gistLink="dsebastien/389a142378bcaaea5c0f7feb7cea2c3b" />
+
+As you can see, there’s nothing complicated with all this and the benefits are rather obvious:
+
+* Clear expectations
+* Standardization
+* Fool-proof
+
+## Conclusion
+
+In this article, I’ve quickly reviewed the major data types of the Angular router and have shown you how to strongly type your route definitions.
+
+If you take time to do this, then the compiler will help you out whenever you forget something or need to refactor router configuration.
+
+Gotta love TypeScript! ;-)
+
+That’s it for today!
+
+<BlogPostSignature />
