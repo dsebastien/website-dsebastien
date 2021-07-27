@@ -81,3 +81,16 @@ h6:hover {
 .gist tr {
   @apply border-none;
 }
+
+.stylistic-quote-mark {
+  font-size: 0rem;
+  @apply mr-0 text-pink-500 absolute top-0 leading-none;
+}
+
+@screen md {
+  .stylistic-quote-mark {
+    font-size: 5rem;
+    right: 100%;
+    @apply block mr-4;
+  }
+}
