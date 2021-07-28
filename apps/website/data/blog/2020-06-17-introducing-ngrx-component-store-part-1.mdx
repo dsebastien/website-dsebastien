@@ -1,0 +1,114 @@
+---
+title: "Introducing NGRX component-store"
+summary: "Part 1: Component-store is an upcoming reactive library of the NGRX family. Let’s discover it and see what it’s all about!"
+publishedAt: '2020-06-17'
+image: '/static/images/blog/2020/jump-over.jpeg'
+slug: 'introducing-ngrx-component-store-part-1'
+categories: [angular, ngrx, state management, web development, programming]
+keywords: [angular, ngrx, state management, web development, software development, programming, coding]
+published: true
+---
+
+**Update 2020–06–18**: [Part two is now available](https://medium.com/@dSebastien/ngrx-component-store-deep-dive-947c0a5be6dc)!
+
+<Image
+  alt={`Change`}
+  src={`/static/images/blog/2020/change.jpeg`}
+  width={700}
+  height={394}
+  priority
+/>
+
+The upcoming component-store module of NGRX has been designed by two members of the Firebase Console team over at Google. Kevin Elko (who came up with the idea/original design), and [Alex Okrushko](https://twitter.com/AlexOkrushko), one of the core maintainers of NGRX, who has refined it and integrated it into NGRX.
+
+In this first article, I’ll give you an overview of this new NGRX module. I’ll tell you why you might want to use it (i.e., what problems it is designed to solve) and present its high level API.
+
+### What is component-store all about?
+
+The [design document of component-store](https://okrushko.dev/component-store-dd) describes a few scenarios that this new NGRX module aims to help with. I’ll go over these in the next sections.
+
+If you just want the gist of it, then think about component-store as a means to create reusable reactive state stores that are independent of the global NGRX store and tied either to a subset of your application or even to a specific component.
+
+As I’ll explain in a moment, component-store aims to help us avoid mixing concerns (e.g., polluting the global NGRX store with state that doesn’t belong in it) while isolating business logic and state from your components, allowing those to remain simple, easy to test/refactor/maintain.
+
+In practice, component-store provides us with an additional way of implementing push-based reactive services that manage “local” state. It is effectively a more powerful alternative to simple services exposing BehaviorSubject instances. Thanks to component-store, we should be able to more easily reuse complex components.
+
+Moreover, we’ll also be able to easily create multiple instances of components that rely on state management. Thanks to this, it should become easier to integrate complex presentational components into [Storybook](https://storybook.js.org/) stories for example. At least that’s something that I’m interested in doing ;-)
+
+Last but not least, the API is of course fully reactive and thus push-based.
+
+Let’s go through some uses cases that component-store is designed for.
+
+### Use case 1: module state
+
+Component-store aims to provide a way to isolate module-specific local state (not necessary in the Angular sense) instead of having to pollute the global NGRX store with it for cases where it doesn’t make sense.
+
+Sometimes, we do indeed add state to the global NGRX store that doesn’t really belong into it.
+
+Thanks to component-store, we’ll be able to create more self-contained modules, keeping a good separation of concerns and removing clutter from the global store; keeping it exclusively for _actual_ global shared state.
+
+### Use case 2: large/complex components
+
+The second major use case that component-store aims to support is large/complex components.
+
+Often, some page components in our Angular applications tend to orchestrate many dumb components. When you have 5–10 of these, each having 4–5 inputs + as many outputs, you have a lot of local state to maintain/align between those components and many outputs to handle.
+
+When that happens, there are different things that you can try to keep your code clean.
+
+First of all, you can try and make sure that the granularity of your components is sufficient.
+
+If the complexity is there and you can’t avoid it, then the best thing that you can do is to extract the business logic and state management outside of the component and into services/facades (e.g., using the [Presenter pattern](https://indepth.dev/presenters-with-angular/)). By doing this, you’ll make the component simpler/easier to maintain and you’ll avoid mixing concerns/responsibilities.
+
+The component-store module is also designed to help us improve such situations. With component-store, we can create push-based (reactive) services that are bound to the lifecycle of a component.
+
+Each instance of that component will have its own component-store-based service instance, allowing us to reuse complex components that have their own state, without depending/relying on the global NGRX store.
+
+This will not only help us extract business logic and state from those components, but will also make it much easier to share/reuse those components.
+
+### When to use component-store
+
+Based on the use cases we’ve gone through above, you should already have a good idea about this.
+
+The real question is how to determine what belongs in the global NGRX store and what belongs in a component-store based service?
+
+As usual, you need to think about whether that state needs to be shared with other parts of the application and/or persisted/re-hydrated. Everything that you consider local to a specific component or module may be better placed in a “local” store created using component-store.
+
+Consider the fact that the data managed by component-store-based services will usually be erased when the user navigates to other parts of the application. If that’s a no-no for your use case then maybe you do need to rely on the global store or another mechanism.
+
+Usually, component-store-based service instances are tied to the lifecycle of the elements they’re used in. So if you’re using a component-store service in a component, then that service will be destroyed when your component is destroyed. It’s not necessarily the case, but I imagine that this will be the norm rather than the exception.
+
+### Goals and no-goals
+
+Component-store has a clear set of goals and no-goals:
+
+Goals:
+
+* Can be used without ngrx/store
+* Helps component to clear its local state
+* Reactive/push-based solution
+* Type-safe
+* No “magic strings” that assume presence of any properties
+* Keeps state immutable
+* Makes it performant
+* Keeps testing simple
+
+No Goals:
+
+* Does not try to keep the data in a single storage, as it’s meant for local state.
+* Not meant to be replacement for Global Store (ngrx/store)
+* Not meant to be tied to app-level component (which would effectively be Global Store)
+* Does not need to be attached to Redux dev tools
+
+I don’t have much to say about this list; all of the points are pretty self-explanatory. I don’t know about you, but when I read the list of goals, I’m already in love with it ;-)
+
+### Conclusion
+
+In this first article about component-store, I’ve quickly explained where it comes from and what problems it tries to solve.
+
+In the next article, we’ll dive into some code together, so that we start to get a feel of how it works and how simple it is to use.
+
+I initially wanted to do it in this article, but the “Publish” button itches and it’s getting late already ;-)
+
+Stay tuned for the next part!
+
+<BlogPostSignature />
