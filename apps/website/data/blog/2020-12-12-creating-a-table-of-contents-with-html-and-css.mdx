@@ -1,0 +1,101 @@
+---
+title: "Creating a table of contents with HTML and CSS"
+summary: "Learn how to use HTML and CSS to build a table of contents"
+publishedAt: '2020-12-12'
+image: '/static/images/blog/2020/open-book.jpeg'
+slug: 'creating-a-table-of-contents-with-html-and-css'
+categories: [html, css, web development, programming]
+keywords: [html, css, web development, programming, coding]
+published: true
+---
+
+<Image
+  alt={`Picture courtesy of https://unsplash.com/@lalainemacababbad`}
+  src={`/static/images/blog/2020/open-book.jpeg`}
+  width={700}
+  height={525}
+  priority
+/>
+
+In this article, I’ll explain how to generate a table of contents with automatic numbering using pure HTML and CSS.
+
+### CSS counters to the rescue
+
+In the past, I imagine that quite a lot of JavaScript code has been written for this purpose. Luckily, nowadays, the Web platform is more powerful than ever. We can do wonderful things with HTML and CSS alone. For one, counting things!
+
+With [CSS counters](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Lists_and_Counters/Using_CSS_counters), we can use and increment variables maintained transparently for us by CSS; allowing us to customize the appearance of our content easily.
+
+The value of a CSS counter can be displayed using `counter()` or `counters()` in a [content](https://developer.mozilla.org/en-US/docs/Web/CSS/content) property.
+
+Let’s walk through the example provided on MDN:
+
+```
+body {
+  counter-reset: section;
+}
+
+h3::before {
+  counter-increment: section;
+  content: "Section " counter(section) ": ";
+}
+...
+<h3>Introduction</h3>
+<h3>Body</h3>
+<h3>Conclusion</h3>
+```
+
+With the above, each time an `h3` tag is added to the document, the CSS counter called `section` is incremented using `counter-increment`. The first occurrence thus has a value of `1`, the second a value of `2`, etc.
+
+Secondly, the value of that counter is displayed using `counter(section)` in the `content` property.
+
+Note that `counter-reset` allows resetting the value of a specific counter.
+
+But CSS counters are cooler than that!
+
+### Nesting CSS counters
+
+CSS counters support nesting. As a matter of fact, a nested counter instance is created automatically for each child element, so there’s no additional configuration needed. How cool is that?
+
+Using the `counters` CSS function, we can display all the nested counter values at once and decide which character to use to separate each value.
+
+Check out [the example on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Lists_and_Counters/Using_CSS_counters).
+
+### Table of contents example
+
+Since nested CSS counters do exactly what I needed, I’ve decided to use those to create my table of contents.
+
+Here’s the gist of it:
+
+<Gist gistLink="dsebastien/b03b605691a27c9945a12b64445890d5" />
+
+As you can see, this is a simple `ol` & `ul` nested HTML structure.
+
+To style it, we only need to use the following:
+
+<Gist gistLink="dsebastien/d40bfe5981b59c755f6e8e735394ac73" />
+
+The above uses a CSS counter that I’ve called `item`, whose value is reset/incremented when needed and rendered using `content`.
+
+This results in the following:
+
+<Image
+  alt={`Table of contents example`}
+  src={`/static/images/blog/2020/table-of-contents-example.png`}
+  width={705}
+  height={697}
+  priority
+/>
+
+Which is pretty much what I wanted, styling details aside. You can indeed go further, use responsive Web design techniques and adapt the margins and whatnot depending on the available space.
+
+You can find the working example here: [https://stackblitz.com/edit/html-css-table-of-contents?file=index.html](https://stackblitz.com/edit/html-css-table-of-contents?file=index.html)
+
+You can also [take a look at the table of contents of my book](https://www.dev-concepts.dev/table-of-contents/) to see it in action!
+
+### Conclusion
+
+In this article, I’ve quickly introduced CSS counters and explained that they support nesting, making it really straightforward to create a table of contents with automatic numbering using pure HTML and CSS.
+
+That’s it for today!
+
+<BlogPostSignature />
