@@ -1,0 +1,413 @@
+---
+title: 'Angular 11 in Depth'
+summary: 'Everything you need to know about Angular 11'
+publishedAt: '2020-11-15'
+image: '/static/images/logos/angular.svg'
+slug: 'angular-11-in-depth'
+categories: [angular, javascript, typescript, programming]
+keywords: [angular, lazy loading, javascript, typescript, programming, coding]
+published: true
+---
+
+**Update**: Angular 12 is out. Check out my article about it: https://javascript.plainenglish.io/angular-12-in-depth-7741e759c72
+
+Angular 11 has just been released. Time to discover what's new!
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Angular`}
+    src={`/static/images/logos/angular.svg`}
+    width={400}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+In this article, I’ll go over (almost) _everything_ noteworthy in this brand new release. I’ll also highlight what’s changed _around_ Angular, just like I did with [my Angular 10 in depth article](https://medium.com/javascript-in-plain-english/angular-10-in-depth-a48a3a7dd1a7).
+
+If you want a helicopter view of what’s new, then check out the [official Angular blog](https://blog.angular.io/version-11-of-angular-now-available-74721b7952f7). Here, I’ll try to dig much deeper into the release notes.
+
+As a reminder, the Angular team tries to release two major versions per year; so Angular 12 should arrive early next year.
+
+If you’re missed the [previous article about Angular 10](https://medium.com/javascript-in-plain-english/angular-10-in-depth-a48a3a7dd1a7), then go check it out too.
+
+## Operation “byelog” progress
+
+As I’ve mentioned a while ago in my [analysis of the Angular roadmap](https://itnext.io/angular-roadmap-analysis-b924e034089f), one of the goals of the Angular team in recent months has been to reduce the size of the Angular backlog.
+
+With Angular 11, the Angular team has triaged, reviewed their whole backlog (which is quite impressive), and [resolved tons of issues](https://github.com/angular/angular/blob/master/CHANGELOG.md#bug-fixes).
+
+Just over the last month, 341 issues have been closed:
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Operation byelog`}
+    src={`/static/images/blog/2020/operation-byelog.png`}
+    width={1162}
+    height={597}
+    priority
+  />
+</BlogPostCenteredContent>
+
+As I’m writing this, there are now ~2.5K open issues, 19K closed ones, as well as ~500 open PRs.
+
+As mentioned in the release blog post, going forward, the Angular team commits to triage all new issues within two weeks, which is a huge improvement over what we’ve seen in the past with some long-standing issues that didn’t get much attention.
+
+With Angular 11, major issues such as the ones below have been resolved:
+
+* [https://github.com/angular/angular/issues/18469](https://github.com/angular/angular/issues/18469)
+* [https://github.com/angular/angular/issues/13011](https://github.com/angular/angular/issues/13011)
+* [https://github.com/angular/angular/issues/14542](https://github.com/angular/angular/issues/14542)
+* [https://github.com/angular/angular/issues/11405](https://github.com/angular/angular/issues/11405)
+
+## Faster builds
+
+Angular 11 brings speed improvements (which we’re always happy to hear about).
+
+NGCC, which [was particularly painful for CI](https://medium.com/javascript-in-plain-english/angular-10-in-depth-a48a3a7dd1a7), is now _much_ faster (2–4x!).
+
+In addition, the upgrade to [TypeScript 4.0](https://dsebastien.medium.com/whats-new-with-typescript-4-0-rc-9e5a3d5efdaa) also brings faster compilation times.
+
+## TypeScript 4.0
+
+As stated in the previous section, Angular 11 supports TypeScript 4.0. Along with that, support for TypeScript 3.9 has been dropped, which is great. We all need to stay up to date with the awesomeness of TypeScript! ;-)
+
+If you haven’t read about TS 4.0 yet, then check out [my article about it](https://dsebastien.medium.com/whats-new-with-typescript-4-0-rc-9e5a3d5efdaa).
+
+## Automatic font inlining
+
+Angular 11 introduces automatic inlining of fonts. The Angular CLI will now download and inline the fonts used/linked by the application.
+
+This new feature will be enabled by default, going forward, which is pretty cool; especially for commercial Websites/applications, which benefit the most from having better [“Web vitals”](https://twitter.com/dSebastien/status/1278637908539424770) ;-)
+
+Of course, it’s the kind of improvement that doesn’t change all that much for applications that already integrate well-configured service workers, but it’s still great to have out of the box.
+
+You can find more details about this new feature [over here](https://indepth.dev/angular-11-towards-type-safety#inline-google-fonts-and-icons).
+
+## Improved reporting and logging
+
+Angular 11 brings cool improvements to our development consoles. The CLI output now includes much more user-friendly/readable information as shown in the official blog post:
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Build log`}
+    src={`/static/images/blog/2020/build-log.png`}
+    width={607}
+    height={355}
+    priority
+  />
+</BlogPostCenteredContent>
+
+## NG CLI support Hot Module Replacement (HMR)
+
+With Angular 11, HMR support has been added to the Angular CLI, making it much easier to enable HMR when starting an Angular application using `ng serve --hmr`.
+
+Once started, the console clearly indicates that HMR is active:
+
+`NOTICE: Hot Module Replacement(HMR) is enabled for the dev server`
+
+HMR is a feature that has been supported by Webpack for a long time; you can find more information about it here: [https://webpack.js.org/guides/hot-module-replacement/](https://webpack.js.org/guides/hot-module-replacement/)
+
+What’s cool with HMR is that once enabled, changes to components, templates, and styles are immediately applied to the running application, without requiring a full page refresh. For instance, if you’ve filled in a form, make changes to some styles, then those get applied to the page, and your page/form stays in its current state. The same is true for the state of the controllers, scroll position, and other things.
+
+HMR is certainly not perfect (there are some gotchas), but it makes for a smoother developer experience.
+
+## Experimental support for Webpack 5
+
+While we’re onto Webpack… As some of you might know, version 5 of Webpack has been released a few weeks back and has brought many changes, including major breaking ones.
+
+On the positive side, Webpack 5 brings:
+
+* Improved build performance with persistent caching
+* Improved long term caching with better algorithms/defaults
+* Improved bundle sizes with better tree shaking/better code generation
+* Improved compatibility with the Web platform
+
+On the “negative” side, Webpack 5 has also removed the automatic Node.js polyfills that has been there for so long.
+
+As explained in the [Webpack 5 release notes](https://webpack.js.org/blog/2020-10-10-webpack-5-release/), in the early days, Webpack’s aim was to allow running most Node.js modules in the browser. But, since then, the ecosystem has evolved a lot, and many modules are now written specifically for the Web. Because of that, the Webpack maintainers have decided to remove the automatic polyfills, which added (often) unnecessary bloat to our bundles.
+
+Unfortunately, this means that modules that we took for granted will now cease to work on the front-end, unless they are updated or unless we chose alternatives that do work in Web browsers.
+
+Since this is still early on, I suppose that the Angular team wants to limit the impact for us, which is why this support is still experimental at this point and why the Angular team does not recommend enabling this for production just yet.
+
+If you want to give it a try, then you simply need to add the following to your package.json file:
+
+```
+"resolutions": {
+  "webpack": "5.4.0"
+}
+```
+
+Note that this only works with `yarn` at the moment.
+
+## Deprecation of TSLint
+
+As you probably know by now, [TSLint is on the way out](https://github.com/palantir/tslint/issues/4534). It has been deprecated months ago by Palantir and the recommendation is to switch to [ESLint](https://eslint.org/).
+
+During the last few months, some members of the Angular community grew a bit worried that Angular didn’t take care of the migration, but the waiting is over.
+
+With Angular 11, TSLint and Codelyzer are officially deprecated, meaning that they’ll be removed in future versions.
+
+So, it is time for all of us to migrate to ESLint (or at least prepare for it). Fortunately for us, [James Henry](https://twitter.com/mrjameshenry) and a few others have worked on a migration path for the rest of us.
+
+For more details, check out the following links:
+
+* [Migration guide](https://github.com/angular-eslint/angular-eslint#migrating-from-codelyzer-and-tslint)
+* [typescript-eslint](https://github.com/typescript-eslint/typescript-eslint)
+* [angular-eslint](https://github.com/angular-eslint/angular-eslint)
+* [tslint-to-eslint-config](https://github.com/typescript-eslint/tslint-to-eslint-config)
+
+In addition, fortunately for us, alternatives for popular TSLint rule sets are now being ported to ESLint as well:
+
+* [rxjs-tslint-rules](https://github.com/cartant/rxjs-tslint-rules) → [eslint-plugin-rxjs](https://github.com/cartant/eslint-plugin-rxjs)
+* [ngrx-tslint-rules](https://github.com/timdeschryver/ngrx-tslint-rules) → [eslint-plugin-ngrx](https://github.com/timdeschryver/eslint-plugin-ngrx)
+
+And this means that the transition should be pretty smooth for most of us thanks to the awesome work of the OSS community!
+
+## IE9/IE10/IE Mobile are out
+
+I’ve told you many times, but Internet Explorer is dead. And it’s not useful to keep the dead around for too long. Otherwise, you end up with zombie apocalypse; trust me ;-)
+
+Angular 11 has finally removed support for IE9/IE10 and IE Mobile. For obscure corporate reasons, support for IE 11 is still supported, but please don’t count on that staying true for long.
+
+Now that we have Edge chromium, there’s no reason to let IE linger any longer in corporate environments.
+
+## And more…
+
+### Stricter types built-in pipes
+
+The typings for the `DatePipe` and number pipes (i.e., `CurrencyPipe`, `DecimalPipe`, `PercentPipe`), as well as other common ones (e.g., `AsyncPipe`, `I18nPluralPipe`) have been improved and are stricter. Previously, the types didn’t state explicitly which types are accepted.
+
+This change might cause compilation errors (so can be considered a breaking change), but it actually uncovers invalid usages.
+
+The less I see the `any` type being used, the better I feel.
+
+### ISO week-numbering year formats support
+
+The `formatDate` function now supports ISO 8601 week-numbering year formats (i.e., `'r'`, `'rr'`, `'rrrr'`).
+
+Details here: [https://github.com/angular/angular/pull/38828/files](https://github.com/angular/angular/pull/38828/files)
+
+### Trusted Types support progress
+
+As I’ve previously explained in [my analysis of the Angular Roadmap](https://itnext.io/angular-roadmap-analysis-b924e034089f), the Angular team is busy adding support for the “new” [Trusted Types API](https://web.dev/trusted-types/).
+
+In this release, there are a number of improvements related to Trusted Types. First of all, [the development mode is now compatible](https://github.com/angular/angular/pull/39209), meaning that there’s a special Trusted Types policy available/enabled during development. That policy allows arbitrary/unsafe conversions to Trusted Types. Take a look at the PR if you’re interested in “dark magic” ;-)
+
+Secondly, this release includes an internal module that provides a Trusted Types policy for internal use by Angular: [https://github.com/angular/angular/pull/39207](https://github.com/angular/angular/pull/39207)
+
+There’s not much in “userland” so far, but it’s understandable is this is a major change that will probably take some time/effort, but we’ll probably hear soon about this.
+
+Ultimately it should help us build safer applications.
+
+### Parse and recover on incomplete opening HTML tags
+
+Previously, the Angular compiler failed to correctly pinpoint the source of an error like this:
+
+`div<span>123</span>`
+
+As of Angular 11, the compiler will recover from such errors and interpret the above as follows:
+
+`<div></div><span>123</span>`
+
+While it will recover from such errors, the compiler will also emit an error clearly indicating that there’s something wrong with the opening tag. As such, this will give us clearer errors, which is cool!
+
+Details over here: [https://github.com/angular/angular/pull/38681](https://github.com/angular/angular/pull/38681)
+
+### New automated migrations & schematics
+
+Angular 11 includes some new automatic migrations, which are cool since they make it easier to move away from deprecated features/functions:
+
+* One that finds all imports/calls to the deprecated `async` function from `@angular/core/testing` and replaces them with `waitForAsync`
+* One that replaces usages of `ViewEncapsulation.Native` (which has been removed!) with `ViewEncapsulation.ShadowDom`
+* One that appends non-null assertions (i.e., `!` ) to existing unsafe accesses to the `Abstractcontrol#parent` property: [https://github.com/angular/angular/pull/39009](https://github.com/angular/angular/pull/39009)
+* One that updates `RouterModule` configurations to use the default`relativeLinkResolution` value to use an explicit value (i.e., the old default: `legacy`). Note that the new default as of Angular is: `corrected`
+* One that update calls to `navigateByUrl` and `createUrlTree` with invalid parameters and fixes those calls. This will get rid of (previously accepted) unsupported properties, which is good, right?!
+
+There’s also a new `initialNavigation` schematic, allowing us to update our code to the new`initialNavigation` options for the `RouterModule`. This schematic replaces the deprecated/removed `true`, `false`, `legacy_disabled` and `legacy_enabled` options with the newer `enabledBlocking` and `enabledNonBlocking` options. Reference: [https://github.com/angular/angular/pull/36926](https://github.com/angular/angular/pull/36926)
+
+### Service worker improvements
+
+NG SW now allows us to configure a `navigationRequestStrategy`, which we can use to force the service worker to always create a network request for navigation requests.
+
+As [mentioned in the PR](https://github.com/angular/angular/pull/38565), this enables server redirects while retaining the offline behavior.
+
+In addition, NG SW now has a new state: `UnrecoverableStateError`, which can be raised when there’s a missing asset in the cache and on the server. When that condition is true, then the client is broken and it gets notified of the issue. This means that we can now react to that specific problem.
+
+References:
+
+* [https://github.com/angular/angular/pull/36847](https://github.com/angular/angular/pull/36847)
+* [https://github.com/angular/angular/issues/36539](https://github.com/angular/angular/issues/36539)
+* [https://github.com/angular/angular/commit/036a2fa](https://github.com/angular/angular/commit/036a2fa)
+
+### Lazy loading support for named outlets
+
+As mentioned by [Santosh](https://twitter.com/SantoshYadavDev), we can now use lazy loading with named outlets: [https://indepth.dev/angular-11-towards-type-safety#support-lazy-loading-with-named-outlets](https://indepth.dev/angular-11-towards-type-safety#support-lazy-loading-with-named-outlets)
+
+### Angular CLI generator for resolvers
+
+The Angular CLI can now generate resolve guards:
+
+`ng g r/resolver <name>`
+
+I didn’t see this in the release notes, but it’s also been mentioned by Santosh (thanks for letting us know!).
+
+## Breaking changes
+
+As usual, major releases include breaking changes. And there are quite a few with Angular 11.
+
+As [the official release notes](https://github.com/angular/angular/blob/master/CHANGELOG.md#breaking-changes) are pretty clear, I’m just copy/pasting those here:
+
+* platform-server: If you use `useAbsoluteUrl` to setup `platform-server`, you now need to also specify `baseUrl`. We are intentionally making this a breaking change in a minor release, because if `useAbsoluteUrl` is set to `true` then the behavior of the application could be unpredictable, resulting in issues that are hard to discover but could be affecting production environments.
+* compiler: TypeScript 3.9 is no longer supported, please upgrade to TypeScript 4.0.
+* router: \* The `initialNavigation` property for the options in `RouterModule.forRoot` no longer supports `legacy_disabled`, `legacy_enabled`, `true`, or `false` as valid values. `legacy_enabled` (the old default) is instead `enabledNonBlocking`
+* `enabled` is deprecated as a valid value for the `RouterModule.forRoot` `initialNavigation` option. `enabledBlocking` has been introduced to replace it
+* router: preserveQueryParams has been removed, use queryParamsHandling=”preserve” instead
+* router: If you were accessing the `RouterLink` values of `queryParams`, `fragment` or `queryParamsHandling` you might need to relax the typing to also accept `undefined` and `null`. ([#39151](https://github.com/angular/angular/issues/39151))
+* core: \* `ViewEncapsulation.Native` has been removed. Use `ViewEncapsulation.ShadowDom` instead. Existing usages will be updated automatically by `ng update`.
+* compiler-cli: Expressions within ICUs are now type-checked again, fixing a regression in Ivy. This may cause compilation failures if errors are found in expressions that appear within an ICU. Please correct these expressions to resolve the type-check errors.
+* forms: Directives in the `@angular/forms` package used to have `any[]` as a type of `validators` and `asyncValidators` arguments in constructors. Now these arguments are properly typed, so if your code relies on directive constructor types it may require some updates to improve type safety.
+* forms: Type of AbstractFormControl.parent now includes null. `null` is now included in the types of .parent. If you don't already have a check for this case, the TypeScript compiler might complain. A v11 migration exists which adds the non-null assertion operator where necessary. In an unlikely case your code was testing the parent against undefined with strict equality, you'll need to change this to `=== null` instead, since the parent is now explicitly initialized with `null` instead of being left `undefined`.
+* packaging: In v10, IE 9, 10, and IE mobile support was deprecated. In v11, Angular framework removes IE 9, 10, and IE mobile support completely. Supporting outdated browsers like these increases bundle size, code complexity, and test load, and also requires time and effort that could be spent on improvements to the framework. For example, fixing issues can be more difficult, as a straightforward fix for modern browsers could break old ones that have quirks due to not receiving updates from vendors.
+* platform-webworker: @angular/platform-webworker and @angular/platform-webworker-dynamic have been removed as they were deprecated in v8
+* common: The `slice` pipe now returns `null` for the `undefined` input value, which is consistent with the behavior of most pipes. If you rely on `undefined` being the result in that case, you now need to check for it explicitly.
+* common: The typing of the `keyvalue` pipe has been fixed to report that for input objects that have `number` keys, the result will contain the string representation of the keys. This was already the case and the code has simply been updated to reflect this. Please update the consumers of the pipe output if they were relying on the incorrect types. Note that this does not affect use cases where the input values are `Map`s, so if you need to preserve `number`s, this is an effective way.
+* common: The signatures of the number pipes now explicitly state which types are accepted. This should only cause issues in corner cases, as any other values would result in runtime exceptions.
+* common: The signature of the `date` pipe now explicitly states which types are accepted. This should only cause issues in corner cases, as any other values would result in runtime exceptions.
+* common: The async pipe no longer claims to return `undefined` for an input that was typed as `undefined`. Note that the code actually returned `null` on `undefined` inputs. In the unlikely case you were relying on this, please fix the typing of the consumers of the pipe output.
+* common: The case conversion pipes no longer let falsy values through. They now map both `null` and `undefined` to `null` and raise an exception on invalid input (`0`, `false`, `NaN`) just like most "common pipes". If your code required falsy values to pass through, you need to handle them explicitly.
+* router: While the new parameter types allow a variable of type `NavigationExtras` to be passed in, they will not allow object literals, as they may only specify known properties. They will also not accept types that do not have properties in common with the ones in the `Pick`. To fix this error, only specify properties from the `NavigationExtras` which are actually used in the respective function calls or use a type assertion on the object or variable: `as NavigationExtras`.
+* router: This commit changes the default value of `relativeLinkResolution` from `'legacy'` to `'default'`. If your application previously used the default by not specifying a value in the `ExtraOptions` and uses relative links when navigating from children of empty path routes, you will need to update your `RouterModule` to specifically specify `'legacy'` for `relativeLinkResolution`. See [https://angular.io/api/router/ExtraOptions#relativeLinkResolution](https://angular.io/api/router/ExtraOptions#relativeLinkResolution) for more details.
+* core: If you call `TestBed.overrideProvider` after TestBed initialization, provider overrides are not applied. This behavior is consistent with other override methods (such as `TestBed.overrideDirective`, etc) but they throw an error to indicate that, when the check was missing in the `TestBed.overrideProvider` function. Now calling `TestBed.overrideProvider` after TestBed initialization also triggers an error, thus there is a chance that some tests (where `TestBed.overrideProvider` is called after TestBed initialization) will start to fail and require updates to move `TestBed.overrideProvider` calls before TestBed initialization is completed.
+* router: This change corrects the argument order when calling RouteReuseStrategy#shouldReuseRoute. Previously, when evaluating child routes, they would be called with the future and current arguments would be swapped. If your RouteReuseStrategy relies specifically on only the future or current snapshot state, you may need to update the shouldReuseRoute implementation’s use of “future” and “current” ActivateRouteSnapshots.
+* common: The locale data API has been marked as returning readonly arrays, rather than mutable arrays, since these arrays are shared across calls to the API. If you were mutating them (e.g. calling `sort()`, `push()`, `splice()`, etc) then your code will not longer compile. If you need to mutate the array, you should now take a copy (e.g. by calling `slice()`) and mutate the copy.
+* common: When passing a date-time formatted string to the `DatePipe` in a format that contains fractions of a millisecond, the milliseconds will now always be rounded down rather than to the nearest millisecond. Most applications will not be affected by this change. If this is not the desired behaviour then consider pre-processing the string to round the millisecond part before passing it to the `DatePipe`.
+* core: CollectionChangeRecord has been removed, use IterableChangeRecord instead
+* forms: Previously if FormControl, FormGroup and FormArray class instances had async validators defined at initialization time, the status change event was not emitted once async validator completed. After this change the status event is emitted into the `statusChanges` observable. If your code relies on the old behavior, you can filter/ignore this additional status change event.
+
+Phew, quite a lot, but one thing that strikes me is the beginning of type safety improvements in @angular/forms, which is simply _awesome_!
+
+## Roadmap update
+
+The Angular team has updated the [official roadmap](https://angular.io/guide/roadmap), but I haven’t had the chance to look at the details of the changes.
+
+In the blog post, the Angular team mentions that [Lukas Ruebbelke](https://twitter.com/simpulton) has participated in the effort, which is great, as he was also the one who shouted the loudest the discontent of many in the Angular community.
+
+I’ll probably review the changes in the coming weeks and update [my analysis post about the roadmap](https://itnext.io/angular-roadmap-analysis-b924e034089f).
+
+## Preview of the Language Service improvements
+
+The [Angular Language Service](https://angular.io/guide/language-service) still uses ViewEngine which is bound to go away soon_ish_ to be replaced by an Ivy version.
+
+In the blog post, the Angular team has included a sneak peek of the Ivy-based language service. As you can guess, once finalized, it will have a big impact on developer experience and type safety.
+
+Once based on Ivy, the language service will (at least) be able to infer generic types in Angular component templates, which will be a huge improvement.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Ivy`}
+    src={`/static/images/blog/2020/ivy-ts.png`}
+    width={875}
+    height={526}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Hopefully, this should be included in the next major version of Angular!
+
+## Angular CDK improvements
+
+Version 11 of the Angular CDK, has been released.
+
+### Component Test Harnesses
+
+The Component Test Harness API, part of the [Angular CDK](https://material.angular.io/cdk/test-harnesses/overview) was released with Angular 9. That API allows us to write more readable & more maintainable Angular component tests.
+
+First of all, Angular Material now includes test harnesses for all of its components, which makes it a breeze for us to test components that make use of Angular Material components.
+
+Along with that, the API itself has been improved quite a bit.
+
+We can now use the `parallel` function to easily parallelize asynchronous actions against components under test. That function works similarly to `Promise.all`. This is useful when you want to perform multiple actions simultaneously rather than sequentially. Note that this function also takes care of change detection and only triggers it just about enough ;-)
+
+We can use `manualChangeDetection` to control change detection more precisely in our tests. This should help verify more complicated scenarios. As stated in [the official doc](https://material.angular.io/cdk/test-harnesses/overview), by default, test harnesses will run Angular’s change detection before reading the state of a DOM element and after interacting with one. Most of the time, that’s enough, but sometimes it isn’t (e.g. if you want to check the state of a component while an asynchronous operation is pending). Here’s an example from the official doc:
+
+<Gist gistLink="dsebastien/bedbcc69bb5f839c7df8bd71ce2520ee" />
+
+You can learn more about those new functions over here: [https://github.com/angular/components/pull/20464](https://github.com/angular/components/pull/20464)
+
+In addition:
+
+* Related to scrolling, the `CdkVirtualForOf` now supports Sets. Now it is in line with `NgForOf` in that it supports both arrays and iterables in general
+* Related to overlays, the `connected-overlay` directive now has `disableClose` input, which can be used to configure whether the overlay can be closed by user interaction or not (clicks on the backdrop or escape keypress)
+* The CDK table now supports a fixed layout, which can be enabled through the aptly called `fixedLayout` input. Enabling this option enforces consistent column widths and optimize rendering sticky styles for native tables (and is ignored for flex tables). You can read more about it here: [https://github.com/angular/components/pull/20258](https://github.com/angular/components/pull/20258)
+* The CDK table now has an API that we can use to programmatically configure the “no data” row: `this.table.setNoDataRow(...)`
+
+Another cool new feature is the introduction of new type coercion utility: `coerceStringArray`, which can be used to improve code quality; type coercion utilities of the CDK are definitely on my recommended list. Here’s an example:
+
+<Gist gistLink="dsebastien/188affdc5785a86130403a4f460809e6" />
+
+If you’re curious about those utilities, then check this out; there are a few additional ones included in the CDK: [https://github.com/angular/components/tree/master/src/cdk/coercion](https://github.com/angular/components/tree/master/src/cdk/coercion)
+
+At the beginning of this section, I’ve mentioned the major testing improvements, but there are a few more:
+
+* We can now dispatch arbitrary events through `TestElement` using the `dispatchEvent` method. This is useful for events that can’t be simulated easily and also for custom DOM event handlers to be triggered. You can find some examples [over there](https://github.com/angular/components/pull/20714/files)
+* We can now right-click within a `TestElement` (e.g., to open a context menu): `rightClick?(relativeX: number, relativeY: number): Promise<void>;`
+* We can now get a reference to the native DOM element corresponding to a given `TestElement` using the `getNativeElement(el: TestElement)` static method
+* We can select options inside of a native `<select>` element (by their index) using the `selectOptions(...optionIndexes: number[])` method
+* `MatButtonHarness` now extends `ContentContainerComponentHarness`, which allows nesting of elements
+
+There are also a number of “experimental” features:
+
+* menus can be opened from stand-alone triggers: [https://github.com/angular/components/issues/20363](https://github.com/angular/components/issues/20363)
+* menus include a “smart aim”; which ensures that when a user is mousing through menus, the target submenu the user is mousing into isn’t closed prematurely: [https://github.com/angular/components/issues/20442](https://github.com/angular/components/issues/20442)
+
+Finally, the release includes a [number of bug fixes](https://github.com/angular/components/blob/master/CHANGELOG.md#1100-nitrite-trilobite-2020-11-11), which you can see on the detailed release notes: [https://github.com/angular/components/blob/master/CHANGELOG.md#cdk](https://github.com/angular/components/blob/master/CHANGELOG.md#cdk)
+
+## Angular Material improvements
+
+Angular Material also continues to improve. With this release, as I’ve mentioned in the previous section, test harnesses have been added for most components.
+
+In addition, there are a number of new features:
+
+* The select component now supports a global option to specify overlay panel class(es) (string or string array), through the `MatSelectConfig` interface’s `overlayPanelClass` option
+* For tabs, we can configure the `dynamicHeight` globally via `MAT_TABS_CONFIG`, as explained here: [https://github.com/angular/components/issues/19662](https://github.com/angular/components/issues/19662)
+* For autocomplete, the default options (i.e. `MatAutocompleteDefaultOptions`) may now include the `overlayPanelClass` option (string or string array): [https://github.com/angular/components/issues/20429](https://github.com/angular/components/issues/20429)
+* The calendar component now has a `viewChanged` output that we can use to react whenever the view changes between month, year & multi-year
+* The drag-drop component now has a `cdkDropListSortPredicate` input, that we can use to pass in a predicate function that determines whether an item can be sorted into a particular index of the list: [https://github.com/angular/components/pull/20389](https://github.com/angular/components/pull/20389)
+* We can pretty-print the structure of a tree using `getTreeStructure` in test harnesses: [https://github.com/angular/components/pull/20568](https://github.com/angular/components/pull/20568)
+* The stepper component now has (better?) theming support through the `color` input. This is true for `mat-step`, `mat-vertical-stepper`, and `mat-horizontal-stepper`. Thanks to the new input, we can now customize the color, which defaults to the primary one
+
+There are also a number of “experimental” features and bug fixes for the upcoming MDC-based version of the components.
+
+The specific release notes are here: [https://github.com/angular/components/blob/master/CHANGELOG.md#material](https://github.com/angular/components/blob/master/CHANGELOG.md#material)
+
+## Angular Flex Layout
+
+The flex-layout module of Angular has also been updated for Angular 11. Note that the version is in beta (11.0.0-beta.33), just like all of the previous ones; which is kind of funny given that it’s been in beta like forever.. What’s in a name, right? ;-)
+
+In any case, I can assure you that it works pretty fine for production.
+
+This new version brings support for Angular 11, CDK 11 and TypeScript 4, as well as a [small bug fix for fractional breakpoints](https://github.com/angular/flex-layout/pull/1308).
+
+## Angular Universal
+
+Angular Universal has also been updated, but I didn’t dive into its release notes as it isn’t a module I’m currently using / familiar with.
+
+The specific release notes are here: [https://github.com/angular/universal/releases/tag/v11.0.0](https://github.com/angular/universal/releases/tag/v11.0.0)
+
+## Upgrading
+
+As usual, there’s a complete upgrade guide available and ng update will help you out: [https://update.angular.io/?l=3&v=10.0-11.0](https://update.angular.io/?l=3&v=10.0-11.0)
+
+## Conclusion
+
+In this article, I’ve explored the new features of Angular 10, Angular CDK, Angular Material, and other modules of Angular.
+
+As usual, this is a solid release. In particular, I appreciate the type safety improvements for pipes, reactive forms, and what’s coming next with the Ivy-based language service. Hopefully, the next major version should bring us even more improvements in that vein.
+
+TypeScript 4.0 support is also excellent news for all of us and I can’t wait for Nrwl NX to bring us Angular 11 support; which shouldn’t take long ;-)
+
+That’s it for today!
+
+<BlogPostSignature />

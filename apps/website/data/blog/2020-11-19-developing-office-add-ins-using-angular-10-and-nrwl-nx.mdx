@@ -1,0 +1,146 @@
+---
+title: "Developing Office plugins using Angular and Nx"
+summary: "A modern way to develop Office plugins"
+publishedAt: '2020-11-19'
+image: '/static/images/blog/2020/word.jpeg'
+slug: 'developing-office-add-ins-using-angular-10-and-nrwl-nx'
+categories: [angular, typescript, javascript, programming, office]
+keywords: [office, angular, typescript, javascript, programming, coding]
+published: true
+---
+
+Office plugins (desktop & OWA) can be developed using standard Web technologies, but the templates of Microsoft are “dated”.
+
+<Image
+  alt={`Picture courtesy of https://unsplash.com/@ammar_sab3`}
+  src={`/static/images/blog/2020/word.jpeg`}
+  width={700}
+  height={455}
+  priority
+/>
+
+Using the Web platform to develop Microsoft office add-ins is pretty cool. Unfortunately, at least at this point in time, the template offered by Microsoft to generate Angular-based projects is quite “old-school” and not in phase with modern Angular/Web/TypeScript development.
+
+In this article, I’ll show you that we can do better and use a standard Angular project and integrate what’s needed to make it work as an Office add-in.
+
+Let’s get started!
+
+## TLDR;
+
+* **Forget** about the official Yeoman generator for now (yo no-thanks-office)
+* Clone the following repository: [https://github.com/dsebastien/office-plugins-nx-workspace-template](https://github.com/dsebastien/office-plugins-nx-workspace-template)
+* Install the dependencies using `npm install`
+* Start the Word plugin using `npm start`
+* Follow the README.md guidelines to side-load the plugin
+* Enjoy
+
+## Official approach and its issues
+
+The official approach to develop Office add-ins using Angular is to use a Yeoman generator provided by Microsoft, as [explained here](https://docs.microsoft.com/en-us/office/dev/add-ins/quickstarts/sso-quickstart).
+
+When you follow the guide, you end up with a project like [this one](https://github.com/OfficeDev/Office-Addin-TaskPane-Angular).
+
+The generated project includes a pretty basic (although outdated) Webpack build that:
+
+* transpiles TS to JS
+* copies some assets
+* allows to run a dev server with TLS using custom self-signed certificates
+* allows to process HTML templates
+
+In itself, that isn’t bad, but isn’t as powerful as what the Angular CLI has to offer.
+
+In addition to the Webpack build, the project includes a number of npm scripts:
+
+* a `build` script to create a production build (deployable)
+* a `build:dev` script to create a development build (also deployable)
+* a `start` script to develop locally
+
+The advantage of the `start` script is that it builds/serves the Office add-in, but also starts Word/Excel/etc and side-loads the plugin directly, based on the manifest.xml descriptor that is part of the project.
+
+So that part is actually quite nice as it makes it a breeze to get started and to see an app in action within an Office app (desktop or web).
+
+Now to the less shiny parts…
+
+The generated project does not include an angular.json file; probably because of the way they build/side-load the project. Unfortunately, this means that you can pretty much forget about the Angular CLI. This is unfortunate, as it makes it much harder for developers used to work with Angular.
+
+In addition, the version of Angular is quite outdated (5.x), which is quite bad.
+
+I did find a way to work around the Angular version issue and published a [first Github repo with a solution](https://github.com/dsebastien/word-plugin-angular-template), but wasn’t pleased with it at all because of the issues with TypeScript and Angular.
+
+For instance, installing Angular material wasn’t as easy as usual because there’s no angular.json file in the project; so I had to make one up and tweak files around. Also, I needed to fiddle with the Webpack build just to be able to load the Angular material stylesheet (meh).
+
+In addition, the Angular/TypeScript code is impacted by the fact that the Webpack build is rudimentary.
+
+For instance, the assets need to be imported directly in the components because of the way Webpack is used to package/build everything:
+
+```
+import { Component } from "@angular/core";
+import "../../../assets/icon-16.png";
+...
+const template = require("./app.component.html");
+@Component({  selector: "app-home",  template})
+export default class AppComponent {
+```
+
+As you can see, the same goes for the template of the component. Again, not bad, but rather annoying.
+
+Also, there’s a single CSS file for the whole project, which is a bummer; no style encapsulation possible.
+
+This all comes down to the fact that the standard Angular CLI build is not used.
+
+I suppose that it’s possible to work around those issues, but I didn’t want to go any further down that path.
+
+Fortunately, I found a much cleaner alternative.
+
+## My approach
+
+A bit after publishing my code on Github, I read again [the following article](https://medium.com/@ragavanrajan/building-office-add-in-using-angular-8-209624ba61ed) by Ragavan Rajan. He goes in the opposite direction than I took, by creating a standard Angular app using the NG CLI and adding the necessary office libraries/bootstrap code.
+
+This approach is about a gazillion times better than what the official Yeoman generator offers.
+
+The major difference with his approach is the way to side-load the plugin in Office, which is a bit more annoying but is a _one-time_ operation.
+
+Basically, it goes as follows:
+
+* Build/serve the app on localhost (http://localhost:4200)
+* Create a Windows share (so yes, only works on Windows, meh) containing the manifest.xml file (aka descriptor of the add-in)
+* Go through tons of click-click menus to add the shared folder’s UNC to the trusted locations
+* Load the add-in
+* Enjoy the rest of your day
+
+I’ve [described this process in detail here for Word](https://github.com/dsebastien/office-plugins-nx-workspace-template/blob/main/README.md#side-loading-the-word-plugin), but it’s the same for other Office products.
+
+So what did I do?
+
+* I’ve created a Nrwl NX workspace (because why not) to host the project(s); this is nice because you can then have a monorepo with 1-n office plugins depending on your needs
+* I’ve added [an Angular 10 application](https://github.com/dsebastien/office-plugins-nx-workspace-template/tree/main/apps/word) to it using the Nx CLI
+* I’ve added [the necessary Office libraries](https://github.com/dsebastien/office-plugins-nx-workspace-template/blob/main/package.json)
+* I’ve added [the necessary bootstrap code](https://github.com/dsebastien/office-plugins-nx-workspace-template/blob/main/apps/word/src/main.ts)
+* I’ve fiddled with [angular.json](https://github.com/dsebastien/office-plugins-nx-workspace-template/blob/main/angular.json) to copy the office.js scripts to the assets folder. I did this because the app I wanted to create does not use the CDN version. Then, the index.html loads it. If you want the CDN version then just adapt the index.html file
+* I’ve [configured TypeScript](https://github.com/dsebastien/office-plugins-nx-workspace-template/blob/main/tsconfig.base.json) to use strict mode goodies, as well as Angular strict templates
+* I’ve added a sample manifest.xml file
+* I’ve added a few utility scripts to compile the whole monorepo at once
+* I’ve tested it and also with Angular Material just for fun; all fine!
+
+## Benefits
+
+The benefits are clear: a standard/normal Angular development workflow, clearer code, and a much better developer experience with auto-reloading, support for the normal way of using templates, CSS, modules and whatnot in an Angular app.
+
+The only drawback is the increased difficulty to side-load the plugin, although the Yeoman generator’s way wasn’t that much better as it crashed more often than not; failing to start the Web server.
+
+So with this, it’s also possible to leverage the Angular and NX CLI, which is a big improvement for anyone willing to develop Office plugins with Angular.
+
+This way, anyone used to working with Angular can also easily create Office add-ins with Angular 10+ and without falling back to the stone age ;-)
+
+## Conclusion
+
+In this article, I’ve explained the issues with the official way to develop Office add-ins using Angular.
+
+I’ve presented my alternative (FOSS) solution and its benefits.
+
+If you want to start developing office add-ins using Angular (or React btw); then try this out and you’ll thank me later.. ;-)
+
+That’s it for today!
+
+
+<BlogPostSignature />
