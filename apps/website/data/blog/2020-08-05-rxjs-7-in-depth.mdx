@@ -23,7 +23,7 @@ In this article, we’ll discover the changes that RxJS 7 will bring. We will lo
 
 Let’s get started!
 
-### New `lastValueFrom` and `firstValueFrom` methods
+## New `lastValueFrom` and `firstValueFrom` methods
 
 When I first learned about RxJS back in 2016, I immediately knew that it rendered Promises completely bogus. So far, unfortunately, Observables still didn’t make it into the EcmaScript specification and there are thousands of promise-based libraries out there. Also, many people still don’t know about observables and are only learning about Promises. This is a sad state of things! So, for the time being, we still have to deal with that and go from Observables to Promises and vice-versa.
 
@@ -49,7 +49,7 @@ Take a look at the [merged PR](https://github.com/ReactiveX/rxjs/pull/5295) for 
 
 This will hopefully make our lives easier. Note that `toPromise` will probably be deprecated.
 
-### Renamed operators
+## Renamed operators
 
 This “new” `combineLatestWith` operator is actually a [renamed version](https://github.com/ReactiveX/rxjs/pull/5251) of the now deprecated `combineLatest` operator.
 
@@ -59,7 +59,7 @@ Another operator that [has been renamed](https://github.com/ReactiveX/rxjs/pull/
 
 Refactoring our code to use the new operators should be easy enough ;-)
 
-### Retry operator configuration
+## Retry operator configuration
 
 We can now pass a configuration option to the retry operator in order to reset the counter upon success:
 
@@ -67,7 +67,7 @@ We can now pass a configuration option to the retry operator in order to reset t
 
 Neat!
 
-### Selector support for fromFetch
+## Selector support for fromFetch
 
 The `fromFetch` operator now lets us [define a selector function](https://github.com/ReactiveX/rxjs/pull/5306) to extract the information that we want out of the response (or arbitrary data if we want to).
 
@@ -83,7 +83,7 @@ Finally, we can also return arbitrary data:
 
 <Gist gistLink="dsebastien/50946c17f024b82221d1cc404c2d31c2" />
 
-### Type guards support for groupBy
+## Type guards support for groupBy
 
 We can now use [TypeScript type guards](https://basarat.gitbook.io/typescript/type-system/typeguard) with the `groupBy` operator:
 
@@ -91,7 +91,7 @@ We can now use [TypeScript type guards](https://basarat.gitbook.io/typescript/ty
 
 This is super powerful for type inference as it allows to use custom type guards like the `isNumber` guard above. Note that it is of course also possible to define inline type guards.
 
-### Support for observable dictionaries with combineLatest
+## Support for observable dictionaries with combineLatest
 
 Starting with RxJS 7, we will be able to pass in a dictionary to the `combineLatest` operator. When we do so, we will receive the same dictionary structure back:
 
@@ -99,7 +99,7 @@ Starting with RxJS 7, we will be able to pass in a dictionary to the `combineLat
 
 This is a super useful addition and matches what is also possible with the `forkJoin` operator. Thanks to this, we will be able to write more readable code, but also to combine `combineLatest` with the `pluck` [operator](https://www.learnrxjs.io/learn-rxjs/operators/transformation/pluck).
 
-### One timeout to rule them all
+## One timeout to rule them all
 
 With RxJS 7, we will get improved support for timeouts.
 
@@ -118,7 +118,7 @@ Thanks to this new configuration type, the `timeout` operator can be configured 
 
 Check out [this commit](https://github.com/reactivex/rxjs/commit/def1d346b43008bc413a3ac985e1611bbbf62003) for more details.
 
-### TestScheduler improvements
+## TestScheduler improvements
 
 The `TestScheduler` now has an animate “run mode” helper, which can be used to specify when requested animation frames will be “painted”.
 
@@ -126,13 +126,13 @@ The `animate` helper accepts a marble diagram and each value emission in the dia
 
 You can [learn more about it here](https://github.com/reactivex/rxjs/commit/edd67313814bfc32e8a5129d8049e4d4678cd35d).
 
-### Better memory usage
+## Better memory usage
 
 Memory usage should be improved in RxJS 7 because [the majority of operators no longer retain outer values](https://github.com/ReactiveX/rxjs/commit/bff18272dca23938a5f5b57cec6eb8d8be5bfddf).
 
 For example, every inner subscription in `mergeMap` previously retained the outer value and, if the outer value was a large array, that could quickly be problematic for memory usage.
 
-### Bug fixes galore
+## Bug fixes galore
 
 RxJS 7 brings a ton of bug fixes. I won’t go over each in detail as it would take quite a while, but here’s the list so far:
 
@@ -188,7 +188,7 @@ source$.pipe(
 
 With RxJS 6, after the filter, the inferred type still includes `null | undefined` even though we filtered those values out. With RxJS 7, it should be fine.
 
-### Breaking changes
+## Breaking changes
 
 On to the less awesome news.
 
@@ -207,7 +207,7 @@ As you can guess, since this is a major release, there are… breaking changes! 
 * `Notification.createNext(undefined)` will no longer return the exact same reference everytime
 * `ajax` has dropped support for IE10 and lower. Time to let go of the past!
 
-### No interoperability with AsyncIterables after all
+## No interoperability with AsyncIterables after all
 
 The first beta of RxJS 7 introduced [first-class interoperability for AsyncIterables](https://github.com/reactivex/rxjs/commit/4fa9d016a83049d014d77b89c56301e42db16b4d). Unfortunately, this support was removed in the most recent beta versions because there were too many edge cases. Still, if you’re interested in this feature, you should take a look at the [rxjs-for-await](https://github.com/benlesh/rxjs-for-await) library of [Ben Lesh](https://twitter.com/BenLesh).
 
@@ -225,7 +225,7 @@ This is possible thanks to asynchronous iterators and asynchronous iterables. Th
 
 But what about observables? Well with rxjs-for-await, we can do the same, using different strategies; each having pros and cons. Those pros and cons are certainly the reason why this feature will not make it into RxJS for the time being…
 
-### Conclusion
+## Conclusion
 
 In this article, I’ve listed the different things I could learn by looking at the [changelog](https://github.com/ReactiveX/rxjs/blob/master/CHANGELOG.md) for the different RxJS 7 beta versions.
 

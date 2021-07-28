@@ -1,0 +1,226 @@
+---
+title: "Angular roadmap analysis"
+summary: "Exploring the roadmap of Angular"
+publishedAt: '2020-08-06'
+image: '/static/images/logos/angular.svg'
+slug: 'angular-roadmap-analysis'
+categories: [angular, programming]
+keywords: [angular, web development, programming, coding]
+published: true
+---
+
+<Image
+  alt={`Angular`}
+  src={`/static/images/logos/angular.svg`}
+  width={400}
+  height={400}
+  priority
+/>
+
+In this article, I’ll go through the [newly announced Angular roadmap](https://blog.angular.io/a-roadmap-for-angular-1b4fa996a771?source=collection_home---4------0-----------------------). I’ll share my opinion and my hopes about everything that has just been announced.
+
+From now on, the [official Angular roadmap](https://angular.io/guide/roadmap) should be updated quarterly, which will give us a better view of what is coming our way.
+
+## Trigger and motivations
+
+In recent months/weeks, there’s been quite some sad news around Angular. [Many awesome people have left the Angular team](https://dev.to/layzee/angular-struggles-in-2020-1po4) and the community has been wondering why. [Lars Gyrup Brink Nielsen](https://twitter.com/LayZeeDK) has [shared his thoughts about it](https://dev.to/layzee/no-i-don-t-want-to-become-an-angular-gde-2576). Those departures don’t mean that Angular is out of talent (far from it), but those who left certainly added a lot of value and will be missed by the community!
+
+Because of this, many started to wonder about what to expect for the future of Angular.
+
+When I went to Angular Connect a few years back, there was a ton of positive energy in the air about Angular and we could sense how involved Google was in making sure that Angular would be used by as many people as possible. There was a real strong focus on the community.
+
+Now, a few years later, the community is still vast and vibrant, but I personally _feel_ much less energy and engagement from Google. But I’m probably wrong :)
+
+We were also _a bit_ disappointed by the evolutions of Angular in recent times. I don’t want to bash because as a framework architect/maintainer (albeit on a tiny framework in comparison), I can understand how extraordinarily hard this all is, compared to what everyone sees on the surface. Tools like the Angular CLI may feel “basic”, but require so much engineering that it’s almost frightening once you realize ;-)
+
+By publishing the roadmap, the Angular team tries to get back in touch with us in a more open way. Of course, the goal is also to reassure us that Angular is still alive and kicking and that the future is bright. And I sure hope it is! ;-)
+
+Angular has rock-solid foundations and still has a card to play in the front-end “wars”. It has its specificities, pros, and cons and a ton of clear advantages for enterprises. If Google keeps investing in it, then it’ll continue to benefit everyone.
+
+Anyway, there no doubt that, while being open source, Angular is also the engine underneath many Web apps of Google, so the project is under strict control and cannot go in ways that would not benefit Google’s interests.
+
+Let’s dive into the roadmap!
+
+## In progress
+
+### Operation Bye Bye Backlog
+
+As I’ve discussed [my article about Angular 10](https://medium.com/javascript-in-plain-english/angular-10-in-depth-a48a3a7dd1a7), the Angular team has been putting a lot of effort into the resolution of many issues. With the roadmap, we now have a clearer view of the investment that it represents for Google. Half of the engineering capacity of the Angular team is now dedicated to triaging issues / PRs.
+
+Thanks to this ongoing work, the team will have a clearer view of the situation, important issues, and community requests. We’ll have to wait until the next roadmap update to see what impact this work has had on the priorities and next milestones of the framework.
+
+### Support for TypeScript 4.0
+
+The Angular team is already busy adding support for [TypeScript 4.0](https://medium.com/javascript-in-plain-english/whats-new-with-typescript-4-0-beta-a2e674846ef3).
+
+This is not much of a surprise, but it’s awesome to know that we should quickly get support for it once it’s released. Having our main framework up-to-date with TypeScript is great for productivity.
+
+By the way, make sure to check out [my article about TypeScript 4](https://medium.com/javascript-in-plain-english/whats-new-with-typescript-4-0-beta-a2e674846ef3); I’ve covered everything you need to know about it.
+
+### Update of the e2e testing strategy
+
+When Angular came out, Protractor was the de-facto choice for end-to-end testing. Since then, [Cypress](https://www.cypress.io/) has gained a lot of popularity and is (afaik) currently the best option out there for this. In addition, there’s now awesome support from tools like [Nrwl NX](https://nx.dev/angular), which make it a breeze to introduce and use it in our projects.
+
+In the meantime, I didn’t notice many evolutions on the side of Protractor (but I didn’t follow closely, so don’t hesitate to correct me.
+
+The good news is that the Angular team is going to evaluate the state of Protractor, look at the rest of the ecosystem, and explore new possibilities. Hopefully, this should lead to improvements in this area in the future.
+
+### Angular libraries and Ivy
+
+The Angular team is investing in the design and development of a distribution plan for Ivy libraries. As stated in the roadmap, this will include an update of the library package format so that it uses Ivy compilation and finally let them deprecate the View Engine library format as well as [NGCC](https://angular.io/guide/glossary#ngcc).
+
+I don’t know about you, but I “hate” NGCC. It feels clunky and is painful to look at when the CI pipeline runs. Hopefully, we should be able to forget about that in the near future ;-)
+
+There’s a public RFC about this subject here: [https://github.com/angular/angular/issues/38366?s=09](https://github.com/angular/angular/issues/38366?s=09)
+
+### Evaluate future RxJS changes
+
+As you know, [RxJS](https://rxjs-dev.firebaseapp.com/) is at the core of Angular and been a huge win for us all. Still, there are different parts of the framework that would benefit from better usage/support of RxJS (e.g., component templates). This is why we’re seeing libraries like [NGRX Component](https://ngrx.io/guide/component) pop up.
+
+Hopefully, over time, Angular should improve in this area. Unfortunately for us, now that hat [Ben Lesh](https://twitter.com/BenLesh) has left the Angular team (meh), it’s probably a bit harder to get there.
+
+The Angular team is looking at what’s coming with [RxJS v7](https://medium.com/@dSebastien/rxjs-7-in-depth-32cc7bf3e5c). Having covered that in my previous article, I think that there shouldn’t be huge changes to expect for Angular, but the team is also looking beyond that.
+
+In any case, we’ll at least get support for RxJS 7 when or soon after it comes out, which is cool in itself.
+
+### Angular language service switch to Ivy
+
+Currently, as stated in the roadmap, the language service still uses the View Engine compiler and type checking; even for Ivy applications.
+
+As you can guess, this is far from ideal. By switching the Angular Language service to the Ivy template parser, we should gain further improved [type checking for templates](https://medium.com/javascript-in-plain-english/angular-template-type-checking-e2c99c50f999). And, as you know (heh), I love it when we get [better type checking](https://medium.com/javascript-in-plain-english/angular-template-type-checking-e2c99c50f999)!
+
+By the way, if you haven’t enabled [strict template type checking](https://medium.com/javascript-in-plain-english/angular-template-type-checking-e2c99c50f999), then I really advise you do so right now. Stop reading and go do it! I’ve got you covered ;-)
+
+### Expand component-harness best practices
+
+Along with the [release of Angular 10](https://medium.com/javascript-in-plain-english/angular-10-in-depth-a48a3a7dd1a7), the Angular CDK introduced the [component test harness API](https://material.angular.io/cdk/test-harnesses).
+
+That new API aims to help us write and maintain component tests more easily. Of course, it’s still early, so patterns and best practices have to be identified and consolidated.
+
+The Angular team has the first-hand experience has it uses the component test harness for Angular Material components. Based on that, they’re going to improve the APIs and clarify the best practices for us all.
+
+As mentioned in the roadmap, they’re also pushing towards more adoption of this approach within Google.
+
+### Support for native Trusted Types
+
+In the roadmap, it was also announced that Google is now busy adding support for the new [Trusted Types API](https://web.dev/trusted-types/), which is part of the Web platform. This is really exciting news!
+
+This new API aims to help us prevent DOM-based Cross-Site Scripting (XSS) attacks. Hopefully, you’re all aware that this type of attack ranks high on the OWASP top 10, even in 2020.
+
+The Trusted Types API was introduced in Chrome 83 and not supported by many other ones, but a polyfill is available. Still, adoption is bound to improve over time. As it’s a win-win for everyone.
+
+You can learn more about this here:
+
+* [https://web.dev/trusted-types/](https://web.dev/trusted-types/)
+* [https://github.com/w3c/webappsec-trusted-types](https://github.com/w3c/webappsec-trusted-types)
+* [https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Security-Policy/trusted-types)
+
+### Integrate MDC Web into Angular Material
+
+For quite a while now, the Material Design team at Google has been busy creating its own [Material Design implementation in pure CSS](https://material.io/develop/web).
+
+Of course, this creates discrepancies between what the Angular Material does (i.e., its best to follow the specs) and the MDC Web implementation (which should actually be on par with the specs since it is developed by the Material Design team itself).
+
+In addition, duplicating and maintaining duplicate styles based on the same specs is obviously a waste of resources for Google, so it makes sense for them to try and align Angular Material with the default implementation.
+
+Although, I imagine that this requires a huge amount of work for the Angular Material team and I wonder about the impact that it will have on existing projects. There will probably be quite a few issues to resolve for people who have tweaked the styles according to their needs (depending on how they did it).
+
+Still, this change is for the better!
+
+### Angular versioning and branching
+
+The Angular team is busy consolidating the release management tooling between the existing repositories. This will allow them to reuse infrastructure, unify the approach, and simplify processes.
+
+Of course, it should also improve the reliability of the release process of Angular.
+
+## Future
+
+So, this long list actually covers the current and short term activities of the Angular team. But there’s more for us to discuss: the FUTURE.
+
+### Refresh the introductory documentation
+
+The introductory documentation will be redefined and should better emphasize the benefits of Angular, how to explore its capabilities and provide guidance.
+
+As it stands, the Angular documentation is already pretty solid, so I’m enthusiastic about what is to come!
+
+### Strict typing for Reactive forms
+
+This one makes me feel a bit sad. Of course, we can’t get it all today; engineering takes time, we know it. Moreover, making such an API evolve is no task for the light-hearted. Still, I would’ve hoped to see this one higher in the list ;-)
+
+Angular Reactive forms’s lack of strong typing has been one of the most problematic parts of Angular for years.
+
+Hopefully, the situation should improve in the future. In the meantime, we can temporarily switch to libraries such as [ngneat/reactive-forms](https://github.com/ngneat/reactive-forms), which can save us from weak typing hell for the time being.
+
+### Webpack 5 support
+
+As I wrote in my article about [Angular 10](https://medium.com/javascript-in-plain-english/angular-10-in-depth-a48a3a7dd1a7), Webpack is here to stay in the Angular landscape. This is reassuring for all of us, especially those who have had to customize their builds.
+
+In the coming months, the Angular team will migrate to Webpack 5, which improves build speed and decreases bundle size.
+
+### Commit message standardization
+
+This is a subject that I intend to write about in the future. Commit message standardization is awesome for clarity and an enabler for release notes & changelog generation.
+
+Angular has done a great job with that overall, but the team intends to go further and improve their commit messages to bring even more consistency.
+
+### Optional zone.js
+
+Libraries like NGRX component, which I’ve mentioned earlier in the article can help us move towards zone-less applications. That is Angular applications that don’t need [Zone.js](https://github.com/angular/angular/tree/master/packages/zone.js/) to function.
+
+Without diving into details, if we simplify, Zone.js is the library that helps Angular to detect changes. It does so by monkey-patching many APIs so that Angular is notified when things happen.
+
+Unfortunately, Zone.js has a few drawbacks, including the fact that it does not support the async/await syntax and hast an impact on bundle size.
+
+In the future, the Angular team would like to make Zone.js optional for Angular applications.
+
+Nice!
+
+### Remove the legacy View Engine
+
+As you can imagine, as soon as Ivy is finally the one and only required engine, both for apps and libraries, Angular will finally be able to let go of the legacy View Engine.
+
+Again, this will lighten the codebase and lead to smaller bundle sizes.
+
+### Angular DevTools
+
+One area where Angular hasn’t been on par with React or Vue is development tools. Of course, we have the awesome CLI, but once our browser is opened, there’s not much for us.
+
+As far as I know, [Augury](https://augury.rangle.io/) is almost the only tool out there for us, and it’s not compatible with Angular 10 (at least it wasn’t the last time I checked). Also, it isn’t maintained by the Angular team.
+
+In the future, we might finally get better tools in our hands. It would really be awesome to have cool tools like the [React Dev Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi?hl=en) and the [Vue.js dev tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en).
+
+### Optional NgModules
+
+This one is again a big announcement. NgModules were introduced soon after Angular “2" came out, in order to help us better structure our apps and allow for lazy loading scenarios, performance improvements, etc.
+
+Of course, NgModules represent additional complexity and thus added mental overhead.
+
+In the future, the team apparently wants to make NgModules optional. This design change could pave the way for a different (and simpler) development experience and I’m quite curious to see what it’ll mean for the existing APIs and applications.
+
+### Ergonomic component level code-splitting APIs
+
+The Angular team plans on trying to help us further improve the initial load times. To achieve that, they want to look at providing us with means to apply more granular code-splitting on a component level.
+
+Again, I’m curious to see what this will look like in practice.
+
+### Migration to ESLint
+
+I’m glad to see this last point appear on the short term roadmap. As you know, TSLint has been deprecated and will be out of support at the end of the year.
+
+It’ll continue to work but won’t evolve after that point. The way forward is indeed [ESLint](https://eslint.org/).
+
+The Angular team will prepare the migration strategy for existing Angular applications and introduce support for ESLint in the CLI.
+
+Even if the transition is not necessarily 1:1 and fully automated, this consolidation of JS/TS linters will be beneficial to us all.
+
+## Conclusion
+
+In this article, I went through the freshly announced Angular roadmap.
+
+As we’ve seen, there’s quite a lot going on right now and many ideas to further improve Angular in the near future. This is a very positive signal for the Angular community at large.
+
+On a more personal note, I’m a bit disappointed that nothing was mentioned regarding the Angular team itself, its organization, the many departures in the team (and newcomers??), and, quite simply, the human aspect. I imagine that business is business (Hello Oracle), but compared to what I saw back in 2017, this is a disappointment. But maybe it’s just me? ;-)
+
+That’s it for today!
+
+<BlogPostSignature />
