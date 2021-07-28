@@ -23,7 +23,7 @@ The upcoming component-store module of NGRX has been designed by two members of 
 
 In this first article, I’ll give you an overview of this new NGRX module. I’ll tell you why you might want to use it (i.e., what problems it is designed to solve) and present its high level API.
 
-### What is component-store all about?
+## What is component-store all about?
 
 The [design document of component-store](https://okrushko.dev/component-store-dd) describes a few scenarios that this new NGRX module aims to help with. I’ll go over these in the next sections.
 
@@ -39,7 +39,7 @@ Last but not least, the API is of course fully reactive and thus push-based.
 
 Let’s go through some uses cases that component-store is designed for.
 
-### Use case 1: module state
+## Use case 1: module state
 
 Component-store aims to provide a way to isolate module-specific local state (not necessary in the Angular sense) instead of having to pollute the global NGRX store with it for cases where it doesn’t make sense.
 
@@ -47,7 +47,7 @@ Sometimes, we do indeed add state to the global NGRX store that doesn’t really
 
 Thanks to component-store, we’ll be able to create more self-contained modules, keeping a good separation of concerns and removing clutter from the global store; keeping it exclusively for _actual_ global shared state.
 
-### Use case 2: large/complex components
+## Use case 2: large/complex components
 
 The second major use case that component-store aims to support is large/complex components.
 
@@ -65,7 +65,7 @@ Each instance of that component will have its own component-store-based service 
 
 This will not only help us extract business logic and state from those components, but will also make it much easier to share/reuse those components.
 
-### When to use component-store
+## When to use component-store
 
 Based on the use cases we’ve gone through above, you should already have a good idea about this.
 
@@ -77,7 +77,7 @@ Consider the fact that the data managed by component-store-based services will u
 
 Usually, component-store-based service instances are tied to the lifecycle of the elements they’re used in. So if you’re using a component-store service in a component, then that service will be destroyed when your component is destroyed. It’s not necessarily the case, but I imagine that this will be the norm rather than the exception.
 
-### Goals and no-goals
+## Goals and no-goals
 
 Component-store has a clear set of goals and no-goals:
 
@@ -101,7 +101,7 @@ No Goals:
 
 I don’t have much to say about this list; all of the points are pretty self-explanatory. I don’t know about you, but when I read the list of goals, I’m already in love with it ;-)
 
-### Conclusion
+## Conclusion
 
 In this first article about component-store, I’ve quickly explained where it comes from and what problems it tries to solve.
 
