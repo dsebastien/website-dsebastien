@@ -183,7 +183,7 @@ So, you have the proxy settings; now what?
 
 Well it all depends on how/where you want to be using those. I’ll give you a few examples, but for the rest you’ll need to dig into the documentation of your tools ;-)
 
-### Bash
+## Bash
 
 If you want to access the Web from you [Bash terminal](https://itnext.io/bash-aliases-are-awesome-8a76aecc96ab) (and oh I [feel you](https://itnext.io/bash-aliases-are-awesome-8a76aecc96ab)!), then you need to configure (some or all of) the following environment variables:
 
@@ -199,7 +199,7 @@ export NO_PROXY="localhost,127.0.0.1, <whatever else>"
 
 As you can see above, you can also define the credentials to use to authenticate against the proxy. For some environments, you have to use your Windows domain credentials.
 
-### Git
+## Git
 
 If you use Git from your Bash terminal (haha), then you’re good to go.
 
@@ -215,7 +215,7 @@ These settings will be stored in your home folder’s “.gitconfig” file.
 
 Don’t hope too much if you want to use git over SSH though..
 
-### npm
+## npm
 
 With npm, it’s also straightforward to configure the proxy to use:
 
@@ -226,7 +226,7 @@ npm config set https-proxy http.proxy http://<username>:<password>@<host>:<port>
 
 These settings will be stored in your home folder’s “.npmrc” file.
 
-### Maven
+## Maven
 
 With Maven, everything goes through the “settings.xml” file, as usual:
 
