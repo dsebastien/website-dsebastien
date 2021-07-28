@@ -1,0 +1,117 @@
+---
+title: "Introduction to TypeScript"
+summary: "Here’s a real quick introduction to the TypeScript programming language."
+publishedAt: '2020-07-18'
+image: '/static/images/logos/typescript.svg'
+slug: 'iterating-on-a-typescript-enum'
+categories: [typescript, javascript, programming]
+keywords: [typescript, javascript, software development, programming, coding]
+published: true
+---
+
+Here’s a real quick introduction to the TypeScript programming language.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`TypeScript`}
+    src={`/static/images/logos/typescript.svg`}
+    width={400}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+In this article, I’ll explain what TypeScript is, in just a few paragraphs. Note that this is an excerpt from the introduction chapter of [my book](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860/).
+
+## What is TypeScript?
+
+The [TypeScript](http://www.typescriptlang.org) programming language has been created by Microsoft and later open sourced under the [Apache 2.0 License](https://www.apache.org/licenses/LICENSE-2.0). The source code of the language is available on GitHub over at [https://github.com/Microsoft/TypeScript](https://github.com/Microsoft/TypeScript)
+
+## A safe investment
+
+At the time of writing, TypeScript now has ~62K stars on Github. This is 25K more than the last time I checked, around the end of 2019. TypeScript keeps gaining traction and its popularity continues to rise as shown here: [https://redmonk.com/sogrady/2018/08/10/language-rankings-6-18/](https://redmonk.com/sogrady/2018/08/10/language-rankings-6-18/)
+
+In the 2019’s edition of the State of JavaScript survey, TypeScript made it to the top of the “JavaScript flavors” list: [https://2019.stateofjs.com/javascript-flavors/](https://2019.stateofjs.com/javascript-flavors/)
+
+And, believe me, this language is bound to continue rising. I strongly believe that investing your time and energy to learn TypeScript is worth it. It’s a programming language that is here to stay and that can be used with all major frameworks/libraries of the JavaScript ecosystem.
+
+Whether you use React, Angular, Vue.js, NestJS or other things, TypeScript can be used and will help you write higher quality and more maintainable code.
+
+## A superset of JavaScript that transpiles to JavaScript
+
+As stated on the [official Website of the language](https://www.typescriptlang.org/):
+
+> TypeScript is a typed superset of JavaScript that compiles to plain JavaScript.
+
+This simple definition actually says _a lot_ about TypeScript. Let’s analyze it piece by piece.
+
+The first thing to realize is that TypeScript code compiles to JavaScript. This means that the output of the TypeScript compiler can run wherever JavaScript code can run, which actually means, nowadays, basically everywhere; since JavaScript can run…
+
+* in the browser
+* in the back-end (e.g., with node.js)
+* on the desktop (e.g., with Electron)
+* on mobile with frameworks like React Native, NativeScript, Ionic and many others
+* in the cloud with platforms such as Azure Functions, Google Cloud Functions, Firebase, etc
+* …
+
+As stated above, TypeScript is _compiled_ and not interpreted like JavaScript is. Actually, people often talk about _transpilation_ rather than compilation in the case of TypeScript, since the TypeScript compiler actually does a source-to-source transformation.
+
+The second key point is that TypeScript is a _superset_ of JavaScript. This means that any valid JavaScript code is also valid TypeScript code. This is great because it means that it is very easy to introduce TypeScript into an existing JavaScript codebase. It does not stop there though! As I’ve [shown in my book](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860), TypeScript adds _a lot_ over vanilla JavaScript/EcmaScript.
+
+## Optionally typed
+
+A third takeaway is that TypeScript is (optionally) typed.
+
+If you’re familiar with JavaScript then you probably know that it is a _dynamically_ and _weakly_ typed language. As any JavaScript code is also valid TypeScript code, it also means that you can declare variables without specifying their type and later assign different types to them (e.g., numbers, strings, …).
+
+Although the fact that defining types is optional by default in TypeScript does not mean that you should avoid defining types. Instead, TypeScript shines when you make _clever_ use of its type system.
+
+TypeScript allows you to clearly specify the type of your variables and functions. In addition, it also has very powerful type inference, support for interfaces/custom types, classes, generics, enums, mixins, and many other cool things that I’ve covered in [my TS book](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860).
+
+The best use of the language is made when the strict mode is enabled, which enforces stricter rules on what needs to be typed and when. But in any case, it’s often possible to let the compiler infer types for us.
+
+## Supports static and structural typing
+
+One of the coolest things about TypeScript is its support for _structural typing_.
+
+In TypeScript, if something quaks like a duck, then TypeScript considers that it’s a duck. Duck typing as it is called is baked into the language..
+
+TypeScript considers the _compatibility_ of types.
+
+For instance, if some function expects to receive an object of a `Foo` type and it is instead called with an object of the `Bar` type, then TypeScript will not complain as long as `Bar` has the same structure (i.e., is structually the same) as `Foo`. That is to say, a `Bar` object can be considered to be a`Foo` if it exposes (at least) the expected properties/methods, with the expected types. This is a simplification, but it’s not far away from the truth.
+
+Structural typing is super useful as it helps to avoid writing quite some boilerplate code. In programming languages that don’t support duck typing, you often have to waste time converting objects to different data structures. In TypeScript, if the form is compatible, then you’re good to go.
+
+Note that TypeScript also supports some nominal typing (i.e., non-structural), which is interesting if you want to distinguish between objects with different types, even if their structure is the same. Basarat has an [excellent section about this in his book](https://basarat.gitbook.io/typescript/main-1/nominaltyping).
+
+## Versatile
+
+There’s not _one_ single way to use TypeScript. You can mix and match approaches.
+
+Of course, the best is to use TypeScript all the way and, right from the start.
+
+But you can also add it into an existing JS codebase without having to convert everything at once. You can also make use of it even without converting your code to TypeScript at all; just benefiting from the compiler’s help.
+
+In fact, you may already be using TypeScript without knowing; for instance if you’re using Visual Studio Code (which is built in TypeScript); since it uses TypeScript to help you out (auto completion, etc).
+
+## Types for JS libraries
+
+The community around TypeScript is growing and has contributed TypeScript type definitions for [thousands of JavaScript libraries](https://github.com/DefinitelyTyped/DefinitelyTyped).
+
+This means that you can benefit from strong(er) typing while using many libraries.
+
+It’s not always perfect, but it does a great job! Having types for existing libraries is great, as it helps to more easily understand the APIs, make less mistakes and, most importantly, avoid many bugs.
+
+## Conclusion
+
+In this short introductory article, I’ve explained what TypeScript is. Hopefully, it should give you an idea about why this language is interesting to learn.
+
+I’ve dived into TypeScript around 2015–2016 and really ain’t looking back. I’ve used it to develop [a front-end framework for the National Bank of Belgium](https://github.com/nationalBankBelgium/stark/) and to write back-end as well as front-end applications, with a lot of success. I’m now also using it as the backbone of my upcoming SaaS startup and couldn’t be happier.
+
+I’ve mentioned it already in the article, but I also wrote [an 800+ pages book about this language](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860) (this tells how much I like it :p), covering from the very basic to the most advanced concepts as well as its usage in combination with multiple modern frameworks/libraries like React, Angular, Vue, NestJS, etc.
+
+If you’re interested, then I’ll continue posting introductory material about TypeScript. There’s a ton more to know!
+
+That’s it for today!
+
+<BlogPostSignature />
