@@ -1,0 +1,297 @@
+---
+title: "Input validation with NestJS"
+summary: "Validating incoming data is of the utmost importance for security. Let’s explore why and how to handle this concern with NestJS and class-validator"
+publishedAt: '2020-07-23'
+image: '/static/images/blog/2020/input-validation.jpeg'
+slug: 'input-validation-with-nestjs'
+categories: [security, nestjs, backend, typescript, javascript, programming]
+keywords: [input validation, security, nestjs, back-end, typescript, javascript, software development, programming, coding]
+published: true
+---
+
+Validating incoming data is of the utmost importance for security. Let’s explore why and how to handle this concern with [NestJS](https://nestjs.com/).
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`TypeScript`}
+    src={`/static/images/blog/2020/input-validation.jpeg`}
+    width={700}
+    height={1050}
+    priority
+  />
+</BlogPostCenteredContent>
+
+
+[NestJS](https://nestjs.com/) is one of the most popular Node-based back-end frameworks around. It is currently at [rank #198 of the most popular Github repositories](https://gitstar-ranking.com/nestjs/nest) (based on stars); quite an achievement. And it is deserved; this framework does a great job at structuring larger back-end systems; just like Spring does in the Java ecosystem.
+
+In this article, we’ll explore how to handle input validation with [NestJS](https://nestjs.com/). I will cover the most frequent use case: RESTful APIs, but most of what I’ll explain also applies to GraphQL APIs and WebSockets.
+
+Let’s dive right in!
+
+## Validation? Why?
+
+Injection attacks are still part of the [OWASP Top 10](https://owasp.org/www-project-top-ten/); a list of the most critical security threats to Web applications.
+
+As [the 2019 report mentions](https://github.com/OWASP/API-Security/blob/develop/2019/en/dist/owasp-api-security-top-10.pdf), injection flaws are very prevalent and can result in data loss, corruption or disclosure of data to unauthorized parties or even complete host takeover (aka oopsie doopsie).
+
+If the data that your application handles is not important, then you probably don’t care, but most often this is only true of toy projects. For most real world applications, data is critical and must be protected adequately. Failing to do so can lead to devastating business impacts.
+
+But what does this have to do with validation? Well validation is one of the main ways to circumvent injection attacks. All client/user-supplied data MUST be validated, filtered and properly sanitized by the applications.
+
+By validating incoming data, you can ensure that:
+
+* The data has the expected shape
+* The data has the expected types/formats
+* The data is valid from a business point of view
+* The data is valid for the intended purpose
+
+That way, if an attacker tries to manipulate inputs so as to pollute your data or break into your systems, then you’ll _at least_ _try_ to fight against it.
+
+Validation alone is unfortunately not sufficient, but we’ll focus solely on it in this article. I strongly encourage you to read the [full report here](https://github.com/OWASP/API-Security/blob/develop/2019/en/dist/owasp-api-security-top-10.pdf) to learn more about how to protect yourself against the most prevalent threats to application security (even if there are many more those those critical ones).
+
+By the way, the OWASP also maintains a [nice cheatsheet about input validation](https://cheatsheetseries.owasp.org/cheatsheets/Input_Validation_Cheat_Sheet.html) which you should take a look at.
+
+In the next sections, I’ll explain what NestJS has to offer regarding validation and we’ll dive in an example together, demonstrating how to configure validation support and how to enforce validations.
+
+## NestJS support for validation
+
+Being a framework, NestJS does a great job at providing us with many tools, bells and whistles out of the box. Two of those tools are the support for [Pipes](https://docs.nestjs.com/pipes) and [Validation](https://docs.nestjs.com/techniques/validation).
+
+As you probably know, NestJS is heavily inspired by Angular, so it’s no wonder that it has support for pipes like Angular does.
+
+NestJS pipes have two main use cases:
+
+* _transformation_ of input data
+* _validation_ of input data
+
+When used for validation, pipes either let the data through unchanged or throw an exception if the data is incorrect/invalid. But, of course, it’s also possible to combine validation and transformation in a single pipe.
+
+Out of the box, NestJS includes a number of pipes; some of which are dedicated to validation:
+
+* ValidationPipe (which we’ll explore in this article)
+* ParseIntPipe
+* ParseBoolPipe
+* ParseArrayPipe
+* ParseUUIDPipe
+
+There are multiple ways to bind pipes to route handler methods (again, we’re focusing on RESTful APIs here, but I’ll mention other types of APIs later on).
+
+Here’s a first one, taken from the official documentation:
+
+```
+@Get(':id')
+async findOne(@Param('id', ParseIntPipe) id: number) {
+  return this.catsService.findOne(id);
+}
+```
+
+In the example above, the built-in `ParseIntPipe` is associated with the `findOne` route handler method. Before the method is called, the pipe will be invoked to validate that the `id` parameter is indeed an integer. Easy as pie, right?
+
+The nice thing about NestJS validation pipes is that when the method is invoked, then you can consider that the data you have received is structurally valid (shape and form); otherwise an exception would’ve been thrown (and automagically converted into an HTTP 4xx error for the client). That is of course not enough for input validation, but it goes a long way already.
+
+If inputs fail to pass validation checks, then the client will receive an error such as this one:
+
+```
+{
+  "statusCode": 400,
+  "message": "Validation failed (numeric string is expected)",
+  "error": "Bad Request"
+}
+```
+
+To me, it is a _good enough_ default for client errors, even if I prefer the structure proposed by [RFC 7807 (problem details for HTTP APIs)](https://github.com/NationalBankBelgium/REST-API-Design-Guide/wiki/Error-handling-Error-details), but that’s another subject.
+
+This means that your RESTful route handler methods can respect the [Single Responsibility Principle (SRP)](https://en.wikipedia.org/wiki/Single-responsibility_principle) and concentrate on forwarding the requests to some other places in the system, where they can be further validated/processed/handled.
+
+Note that it is also possible to create and use a specific instance of a NestJS pipe:
+
+```
+@Get(':id')
+async findOne(
+  @Param('id', new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }))
+  id: number,
+) {
+  return this.catsService.findOne(id);
+}
+```
+
+Here, a custom instance of the `ParseIntPipe` with a specific configuration was associated with the injected`id` param. This is interesting because it means that you can rely on the default behavior, but also customize it when you need to.
+
+You can of course create your own pipes, to perform any validation you’d like; we’ll look at that a bit later in this article.
+
+Another way to define pipes is to add the `UsePipes()` decorator:
+
+```
+@Post()
+@UsePipes(new JoiValidationPipe(createCatSchema))
+async create(@Body() createCatDto: CreateCatDto) {
+  this.catsService.create(createCatDto);
+}
+```
+
+With the above, the `JoiValidationPipe` (which is not a built-in pipe) will validate the input data against the provided Joi schema (more on this in the next section).
+
+## Supported validation types
+
+NestJS supports different means of [validating data](https://docs.nestjs.com/techniques/validation). In this article, I’ll only discuss the solution using [class-validator,](https://github.com/typestack/class-validator) as it covers my needs perfectly, but I’ll still mention the other ones for the sake of completeness.
+
+### Schema-based validation with Joi
+
+The first approach discussed in the [Pipes documentation](https://docs.nestjs.com/pipes) is using schema-based validation, for instance using the [Joi](https://github.com/sideway/joi) library:
+
+<Gist gistLink="dsebastien/b1c5b9da351e9c23242fe5198c0ff269" />
+
+The above is a custom NestJS pipe. As you can see, it is quite simple to create one: it’s just a class implementing `PipeTransform` and its `transform` method, which receives the raw value sent to the server, as well as metadata.
+
+In this case, the custom pipe makes use of Joi to validate that the input data respects the configured Joi schema. Each instance of this pipe expects a schema to be passed into the constructor.
+
+This is how the schema is passed in by the route handler methods:
+
+```
+@UsePipes(new JoiValidationPipe(createCatSchema))
+```
+
+In my current project, I chose not to use this approach because, unfortunately, I couldn’t find an easy/maintainable way to keep my validation schemas _strongly aligned_ with my TypeScript interfaces. I _did_ find libraries that could’ve helped: [typesafe-joi](https://github.com/hjkcai/typesafe-joi) and [joi-extract-type](https://github.com/TCMiranda/joi-extract-type), but both of those were either unmaintained/abandoned or only compatible with legacy versions of Joi, so it felt like a risky bet to make.
+
+### Schema based validation with JSON schema
+
+Another approach for schema-based validation is to use [JSON schemas](https://json-schema.org/) and validate data against those using libraries such as the [ajv](https://ajv.js.org/) JSON schema validator.
+
+This also requires the creation of custom validation pipes for NestJS as there is no built-in support.
+
+I’ve rejected this option for my project because of the complexity/overhead; again related to keeping the data model and the validation schemas in sync.
+
+I _did_ find the following library to generate JSON schemas from TypeScript code, but didn’t look into it in detail: [https://github.com/YousefED/typescript-json-schema](https://github.com/YousefED/typescript-json-schema)
+
+If you’re interested in that approach, then take a look at the following articles:
+
+* [https://medium.com/javascript-in-plain-english/how-to-test-json-schema-with-ajv-in-typescript-bd0361e0c03e](https://medium.com/javascript-in-plain-english/how-to-test-json-schema-with-ajv-in-typescript-bd0361e0c03e)
+* [https://levelup.gitconnected.com/typescript-validation-with-ajv-1b70a76dd678](https://levelup.gitconnected.com/typescript-validation-with-ajv-1b70a76dd678)
+
+### class-validator
+
+The last approach, which is also the one that’s (IMO) currently best supported by NestJS, uses [class-validator](https://github.com/typestack/class-validator).
+
+class-validator is a very popular TypeScript validation library that provides [many validation decorators](https://github.com/typestack/class-validator#validation-decorators).
+
+In order to co configure validation with class-validator, you simply have to add decorators on fields that need validation. Here’s an example taken from the official docs:
+
+<Gist gistLink="dsebastien/a00305861ce4cae948f35528f7b990d8" />
+
+As you can see, expressing the validation rules is pretty straightforward.
+
+Note that while class-validator expect you to be using classes. It [does actually support schema-based validation](https://github.com/typestack/class-validator#defining-validation-schema-without-decorators) as well, but I wasn’t convinced by the maturity of that approach. The `ValidationSchema` type provided out of the box is [weakly typed](https://github.com/typestack/class-validator/issues/462) (goodbye refactoring!) and there are [unfixed bugs](https://github.com/typestack/class-validator/issues/611) around it, so I wouldn’t recommend it.
+
+In my project, it was a bit frustrating because I could manage without classes so far (and felt pretty happy about it!), but validation kind of forced me to create classes after all. Still, it felt like the safest bet at this point, given the low maturity of JS/TS validation (just my opinion of course!), compared to other languages/platforms (I sometimes miss bean validation :p).
+
+Also, this approach has great support out of the box by NestJS, through its `ValidationPipe`, which we’ll explore next.
+
+### Other options
+
+In this section, I’ve covered the different solutions mentioned in NestJS’s documentation, but it’s far from all that you can do.
+
+There are a myriad of options for runtime type checking/validation, such as [io-ts](https://github.com/gcanti/io-ts), which I wrote about in [my TS book](https://www.amazon.com/gp/product/B081FB89BL), [zod](https://github.com/vriad/zod), [runtypes](https://github.com/pelotom/runtypes), [vest](https://github.com/ealush/vest), and many more. You can find a [nice article about this subject here](https://2ality.com/2020/06/validating-data-typescript.html).
+
+As a side note, a NestJS maintainer also recommended [Marshall](https://github.com/super-hornet/super-hornet.ts/tree/master/packages/marshal) to me as an alternative to class-validator, as it is apparently much more performant and provides a custom NestJS pipe for ease of use. Still, I chose class-validator for now as it is supported right out of the box and battle tested. If NestJS switches over, then I’ll probably follow along. Anyhow, to me, maintainability and support trump performance… until performance really becomes a bottleneck ;-)
+
+## ValidationPipe
+
+As I’ve mentioned, NestJS provides a built-in `ValidationPipe`. That pipe actually uses [class-validator](https://github.com/typestack/class-validator) and [class-transformer](https://github.com/typestack/class-transformer) (two libraries that go hand in hand) underneath the cover.
+
+The interesting thing about this built-in pipe is that it handles validation as well as transformation of input data into class instances. Thus, if you use it, then your request handlers will receive class _instances_ with properly validated data.
+
+For the validation pipe to kick in, you need to refer to classes in your route handler arguments. If you use “any” or an interface, then the validation pipe won’t be able to help! In my project, it was annoying because it forced me to introduce classes _just_ for the sake of validation, but I known that I’ll ultimately benefit from those for other purposes with NestJS.
+
+The `ValidationPipe` of NestJS can be tweaked according to your needs; you can make it more or less strict, you can disable or enable data transformation, etc.
+
+To use this pipe, you have multiple options. Just like I showed earlier, you can declare it locally on a route handler (e.g., through `@UsePipes`), but you can also enable it globally for your application. The advantage of declaring it as a global pipe is that it’ll _always_ be there (at least for HTTP route handlers); no need to think about it, so it’s a safer route (pun intended). Less to think about = less potential mistakes.
+
+To configure this pipe globally, open your “main.ts” file and add the following:
+
+```
+app.useGlobalPipes(new ValidationPipe({ ... }));
+```
+
+Here’s how I’ve configured this pipe for my current project:
+
+<Gist gistLink="dsebastien/65e8e57aca0279987c42ac96409af2e5" />
+
+As you can see, I’ve tweaked the configuration a bit; let me explain:
+
+* `whitelist: true` tells NestJS to strip the validated (i.e., returned) object of any properties that do not use any validation decorators. This of course means that all fields in your class should be annotated with class-validator decorators; otherwise the fields will be removed. The good news is that it ensures that you will never receive unexpected fields. This is especially important to avoid injecting data silently
+* `forbidNonWhitelisted: true` instructs NestJS to throw an exception if there are unexpected fields. This is stricter, but even clearer. At least the client will know if/when it provides invalid/unexpected data
+* `forbitUnknownValues` unknown objects are immediately rejected
+* `validationError: { value: false }` tells NestJS not to reflect the value at fault in the error responses. This lightens the responses and might limit sensitive data exposure in some cases
+* `transform: true` tells NestJS to return the validated class instance
+
+With this global configuration in place, all the route handlers that depend on classes will have validation in place; assuming that those classes are all properly annotated with class-validator decorators. Neat!
+
+## ValidationPipe example
+
+Here’s a concrete example using the `ValidationPipe` of NestJS.
+
+<Gist gistLink="dsebastien/c37eb65c167fd1151c6428fdab5e5b68" />
+
+This is the controller that should receive validated data. Here, let’s first concentrate on the `@Body()`. As you can see, we inject the body of the POST request, and expect it to be an instance of the `MeetingPartialUpdate` class.
+
+If the `ValidationPipe` is enabled/configured globally (cfr. last section), and if `MeetingPartialUpdate` is a class annotated with class-validator decorators, then the `ValidationPipe` will handle validations for us. The same is true for the injected parameters (I’ll come back to this later).
+
+Here’s what the body class looks like:
+
+<Gist gistLink="dsebastien/508651003ef965b38392bc2755a01c09" />
+
+This is standard class-validator usage, so nothing special to mention here if you’re already familiar with class-validator. If you’re not, then notice that we use quite a few validators here, some of which are marked as optional. We’re also leveraging nested validation support, Regex matching, etc.
+
+There are many more validators included in the library, so it’s quite powerful. You can also easily create [custom validators](https://github.com/typestack/class-validator#custom-validation-classes) ([classes](https://github.com/typestack/class-validator#custom-validation-classes) and [decorators](https://github.com/typestack/class-validator#custom-validation-decorators)) if needed.
+
+With the above, the `ValidationPipe` will ensure that the received data matches our expectations (shape and content).
+
+This is a strong first step forward good input validation. But we can do better!
+
+## Validating resource handler parameters
+
+In the previous section, I’ve focused on the validation of the body. But, as I’ve mentioned, the other input parameter that is injected is _also_ validated.
+
+I think that it’s important to mention that the `ValidationPipe` validates _everything_ that is class-based (and correctly annotated). Based on this, I really recommend you to create classes for all of the inputs (body, query parameters, URL parameters, etc) and use those so that you get strict input validation for everything. And I mean this also for single string parameters; even if it means introducing a class with a single field. It’s clearly worth it.
+
+In the previous example, the `MeetingsControllerInputParams` class only contains two fields, corresponding to the two URL parameters:
+
+<Gist gistLink="dsebastien/fa78cbe3a96ee56b1875081717d2c938" />
+
+That way, the URL parameters are also validated. Quite cool if you ask me!
+
+## One step further
+
+As I’ve said, validation is more complex than that. Fields must be valid (structure/shape), but they also need to match. For instance, when updating a resource, the resource identifier is mentioned once in the URL, but it is also present in the body of the request. Both values must be the same for the update request to be considered valid and class-validator can’t help with such scenarios as the data is decoupled.
+
+The same goes for other things, but it’s a point to keep in mind: don’t consider that simple/basic input validation will cut it, security wise. Then there’s also of course optimistic concurrency handling, authentication, authorization and quite a lot of additional things to take care of.. ;-)
+
+To go further with input validation in my project, I’ve used a guard because it matched my requirements but, depending on which validations you need to perform, a pipe might be more adequate. Through this generic guard, I could implement checks such as:
+
+* matching between URL parameters and body values
+* presence of the If-Match header and matching with the body values
+* etc
+
+Note that business services that sit behind REST controllers, lower in the architecture, perform additional validations (business-wise!) and authorization. I’ll write about that another day.
+
+## GraphQL & WebSockets
+
+As with RESTful APIs, GraphQL APIs and WebSocket “tunnels” also need proper validation.
+
+For GraphQL, the good news is that it is apparently possible to declare the validation pipe along with the `@Args` decorator, as shared here by John Niomair: [https://github.com/nestjs/nest/issues/819#issuecomment-480247274](https://github.com/nestjs/nest/issues/819#issuecomment-480247274)
+
+Finally, the built-in validation pipe is supposed to work all the same for WebSocket gateways, so you should be able to add the `UsePipes` decorator on the gateway methods and go from there (I don’t think it works with the global pipes). Although I didn’t test this myself so far…
+
+## Conclusion
+
+In this article, I’ve explained why input validation matters so much for security. Then, I’ve described the built-in validation support of NestJS.
+
+Finally, I’ve walked you through an example and shared some thoughts about how to properly validate your inputs.
+
+Thanks to the whole setup, the route handlers of our NestJS controllers can focus solely on passing commands/queries around and don’t have to worry about input validation, which is great for separation of concerns.
+
+Once again, this is just the tip of the iceberg. Validation is required across many layers, in different shapes and forms. In addition, validation is only a small part of the overall picture; many other aspects must be taken care of to ensure a good security posture (e.g., authentication, authorization, business validations, error handling, audit logging, monitoring, etc).
+
+That’s it for today!
+
+<BlogPostSignature />
