@@ -1,0 +1,87 @@
+---
+title: "Iterating on a TypeScript string enum"
+summary: "Here are a few useful tips showing how to loop over TypeScript enum keys and values"
+publishedAt: '2020-07-18'
+image: '/static/images/blog/2020/go-this-way.jpeg'
+slug: 'iterating-on-a-typescript-enum'
+categories: [typescript, javascript, programming]
+keywords: [typescript, javascript, web development, software development, programming, coding]
+published: true
+---
+
+Enums are awesome. Let’s learn about a cool trick today.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Picture courtesy of https://unsplash.com/@kirisrini`}
+    src={`/static/images/blog/2020/spiral.jpeg`}
+    width={700}
+    height={341}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Enums are cool, but string enums are even better. I’m using those quite a lot in my projects because they allow to write clear & readable code.
+
+In this article, I’ll show you how to iterate over the keys & values of a string enum in TypeScript.
+
+## Example
+
+Let’s assume that we have the following string enum:
+
+<Gist gistLink="dsebastien/3689140e6be88e2bec85b1a6c8ef9245" />
+
+This is a basic enum that represents the possible states of some action (welcome back to the Todo app wonderland!).
+
+## Iterating over the values
+
+In order to iterate over the values of this enum, we can use the [Object.values()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Object/values) built-in function, which returns an array whose elements are the enumerable property values found on the object.
+
+Note that, as stated in the MDN documentation, the order is the same as that given by looping over the property values of the object manually.
+
+<Gist gistLink="dsebastien/fee47f483c9bb3b327d78fb7dc172de9" />
+
+Here I’ve used the functional style, but you can also use a `for..of` loop, which is more efficient:
+
+<Gist gistLink="dsebastien/3b8aa3f240e005bf14dc3ceb9e273e3f" />
+
+With both, you should get the following:
+
+```
+console.log src/database/services/database.service.spec.ts:207
+To do
+
+console.log src/database/services/database.service.spec.ts:207
+In progress
+
+console.log src/database/services/database.service.spec.ts:207
+Done
+```
+
+Neat!
+
+String enums are great because they are easy to refactor and easily “findable” in the code base. This is why I usually prefer string enums over string unions. Although, as [pointed out by Frédéric Camblor](https://twitter.com/fcamblor/status/1284437287565250560), it all depends on what you need to be able to do; if you want to iterate over the values at runtime then prefer enums; if you want to iterate over the values at compile time only, then you can use unions strings with mapped types.
+
+## Iterating over the keys
+
+Of course, it’s also possible to loop over the keys of a string enum, using [Object.keys()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys).
+
+<Gist gistLink="dsebastien/8cb4471290471371383568cbfdee4698" />
+
+## References
+
+Here are a few references about this:
+
+* [https://github.com/Microsoft/TypeScript/issues/20813](https://github.com/Microsoft/TypeScript/issues/20813)
+* [https://github.com/microsoft/TypeScript/issues/4753](https://github.com/microsoft/TypeScript/issues/4753)
+* [https://stackoverflow.com/questions/39372804/typescript-how-to-loop-through-enum-values-for-display-in-radio-buttons](https://stackoverflow.com/questions/39372804/typescript-how-to-loop-through-enum-values-for-display-in-radio-buttons)
+
+## Conclusion
+
+In this small article, I’ve shown you how to easily loop over keys and values of your string enums in TypeScript.
+
+As I’ve [explained in my book](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860), string enums are really useful for many use cases. I wish there were as powerful as Java/Kotlin enums, but maybe that’ll come later… ;-)
+
+That’s it for today!
+
+<BlogPostSignature />
