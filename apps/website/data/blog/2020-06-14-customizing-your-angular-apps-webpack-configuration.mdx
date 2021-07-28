@@ -1,0 +1,119 @@
+---
+title: "Customizing your Angular app’s Webpack configuration"
+summary: "In this article, I’ll explain why you might need to customize the Webpack configuration of your Angular applications and I’ll of course also show you how to do so using angular-builders webpack-config."
+publishedAt: '2020-06-14'
+image: '/static/images/blog/2020/jump-over.jpeg'
+slug: 'customizing-your-angular-apps-webpack-configuration'
+categories: [angular, web development, programming]
+keywords: [angular, web development, software development, programming, coding]
+published: true
+---
+
+In this article, I’ll explain _why_ you might need to customize the Webpack configuration of your Angular applications and I will also show you _how_ to do so.
+
+<Image
+  alt={`Under the hood`}
+  src={`/static/images/blog/2020/under-the-hood.jpeg`}
+  width={700}
+  height={467}
+  priority
+/>
+
+It’s actually something that I’ve covered already in a [previous article](https://medium.com/javascript-in-plain-english/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e), but here I want to concentrate on the Webpack part (the why and the how).
+
+## Why not?
+
+Usually, there’s no need to fiddle with the build system of Angular, and that’s a _good thing_.
+
+Around 2016, I was the initiator, PM & technical lead of a set of projects aiming to modernize the way the National Bank of Belgium creates Web applications and APIs. As part of that project, I wanted to create a good solution to build our apps.
+
+In my spare time, I’ve spent dozens of hours creating a [gulp-based modern build system for Web applications](https://github.com/dsebastien/modernWebDevBuild). At the time, I saw a lack of integration for many cool tools on the Web and wanted a simple to use solution to solve recurring issues.
+
+My project had quite a lot going for it: ES2015 & TypeScript support, SASS support, live reloading and cross-device synchronization (using BrowserSync) with CORS, sourcemaps, CSS optimization/minification, JS minification/bundling, HTML minification, images optimization, JS/TS/CSS code quality and code style checks, etc. I had even created a [Yeoman generator for it](https://github.com/dsebastien/modernWebDevGenerator). The idea was quite appealing to me: define the build system once and reuse it, instead of having one-off build systems to maintain in each application.
+
+The thing is that, as I made progress on that side project, I immersed myself in an ocean of complexity (which was fun TBH). Then, Webpack became super popular (for good reason) because it made many things much simpler. I quickly realized that Gulp was a thing of the past. Then, over time, the Angular CLI made tons of progress and, at some point, it became pretty obvious that the CLI was the way to go.
+
+Long story short, unless you’ve dived into the integration issues that the CLI’s build system tackles, you probably have no idea how complicated it is to create something similar that does more than just transpile your code or bundle it. There are countless technical challenges hidden in there. And it’s not only creating it once; it’s also keeping it functional over time, as all of pieces of the puzzle continue to evolve. You just don’t want to have to do all of that work.
+
+Want an example? I suppose that you’ve heard that [TSLint is being abandoned](https://github.com/palantir/tslint/issues/4534) in favor of [ESLint](https://eslint.org/). This is great for the TS community. But TSLint is still the default with the Angular CLI, and countless applications now depend on it, sometimes without even knowing. Well the Angular team is now [preparing for the phase-out and migration towards ESLint](https://github.com/angular/angular-cli/issues/13732). And it [isn’t that easy](https://github.com/angular/angular-cli/issues/13732#issuecomment-575796158). Luckily for us, they’re taking care of it, while we can focus on building cool Web apps. Ignorance is bliss as they say…
+
+In the past, the only option to customize the build system managed by the Angular CLI was to use the `ng eject` command, but this isn’t supported anymore [since Angular 6](https://github.com/angular/angular-cli/issues/10618). Anyway, the problem with eject is that it was a one-way train. If you used it , then there was no (easy) way back and you inherited all of the complexity and maintenance burden. So “ejecting” was mostly a no no (apart for larger organizations with enough resources).
+
+Another reason to try and avoid customizing your build is the fact that Angular is closer and closer to be able to support [Bazel](https://bazel.build/), which should have an important impact on performances for everyone. When Bazel support becomes widely available, if you’re knee-deep in customization-land, then [you’ll probably regret it](https://medium.com/@martindzejky/from-custom-webpack-build-to-angular-cli-9d87c3da6925) as you’ll be stuck with the “old”.
+
+## Why
+
+Ok, you have an idea about why you shouldn’t customize the build. But what if you really need to? There are a number of scenarios where customizing/extending the build does make sense and even is the only way to fix some issues.
+
+If you want/need to use tools like [Tailwind](https://tailwindcss.com/), which have to be [integrated with the build](https://medium.com/javascript-in-plain-english/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e), then you don’t have much choice.
+
+Last week for instance, another thing that required me to customize the build was the fact the [MomentJS](https://momentjs.com/) locales were all added to the JS bundle of my application even though I only needed 2–3. I could’ve ignored it, but the impact on the bundle size was too big.
+
+So while you want to be cautious and not go overboard, there are valid reasons to customize the build from time to time. You just have to be careful not to go too far.
+
+## Approaches
+
+As you probably know, the Angular CLI still uses [Webpack](https://webpack.js.org/) under the hood.
+
+To customize the build system, there are two main solutions out there:
+
+* The [ngx-build-plus](https://github.com/manfredsteyer/ngx-build-plus) utility created/maintained by [Manfred Steyer](https://twitter.com/ManfredSteyer?ref_src=twsrc%5Egoogle%7Ctwcamp%5Eserp%7Ctwgr%5Eauthor)
+* The [angular-builders custom-webpack](https://github.com/just-jeb/angular-builders) utility created/maintained by [“JeB” Barabanov](https://twitter.com/_Just_JeB_)
+
+Both projects support extending the default build with a custom Webpack configuration, which is what we’re mainly after. ngx-build-plus provides a few schematics and support for Angular Elements; if you’re after that then you know what to use ;-)
+
+In my case, I’ve chosen angular-builders custom-webpack and am a happy user so far. The coolest thing (that is actually also supported by ngx-build-plus, afaik) is the fact that it doesn’t _replace_ the default build of the CLI. Instead, the project allows you to _extend_ it and even use different merging strategies against different parts.
+
+## How
+
+Okay, let’s see how to customize the build using angular-builder custom-webpack.
+
+First of all, you need to install the following dependency:
+
+```
+npm install --save-dev @angular-builders/custom-webpack
+```
+
+Of course I’m saving it as a `devDependency` since it’s only required during development. Once done, you need to modify the **angular.json** file in your project in order to use the custom builders and provide the path to your custom Webpack configuration:
+
+<Gist gistLink="dsebastien/edd2d2196ddb05f93a84621f1aeb9b4d" />
+
+Here, I’ve reused the same **webpack.config.js** file both for the `build` and the `serve` targets, but nothing stops you from using different ones if needed. It all depends on what you’re trying to achieve.
+
+Next up is of course the **webpack.config.js** file:
+
+<Gist gistLink="dsebastien/bd9ce45afd8dd3a39da884702b4f545b" />
+
+As you can see, it’s quite simple. You simply have to export a standard Webpack configuration object. Easy peasy. From here on, it’s just a matter of knowing how Webpack works. And you should definitely learn more about Webpack if you’re not familiar with it already. It’s a good time investment.
+
+By default, angular-builders webpack-config uses [https://github.com/survivejs/webpack-merge](https://github.com/survivejs/webpack-merge) and its options to automatically merge your configuration with the default one(s) of the CLI.
+
+This works quite well and can be tweaked using the `mergeStrategies` and `replaceDuplicatePlugins` options. Thanks to those, you can decide whether your custom configuration is appended to the default one (the default behavior), prepended or if it should completely replace the defaults. The `replaceDuplicatePlugins` option let’s you replace plugins by your own definition.
+
+For more complex scenarios, you can also export a function rather than an object. When you do that, angular-builders custom-webpack will invoke the function with the default config, default options, etc and will let you decide what to do exactly to generate the final configuration. I wouldn’t recommend you to do this unless you are certain that you need to since you’ll lose the default behavior and support for automatic configuration merging.
+
+Check out the docs to learn more about all the bells and whistles! JeB has also written an interesting post about his tool in [Angular in Depth](https://medium.com/angular-in-depth/customizing-angular-cli-build-an-alternative-to-ng-eject-v2-c655768b48cc).
+
+## TypeScript support
+
+As you probably know, I’m a big fan of TypeScript (so much that I’ve even written [a bloody book about it](https://www.amazon.fr/Learn-TypeScript-Building-Applications-understanding-ebook/dp/B081FB89BL)). I was quite happy to discover that the custom Webpack config file for angular-builders webpack-config can be written in TypeScript. Neat!
+
+So here’s a TS version of the earlier custom Webpack configuration file:
+
+<Gist gistLink="dsebastien/ee0231acbc975329c908ed4cffe73669" />
+
+You just need to adapt its name to `webpack.config.ts` and update your `angular.json` file accordingly.
+
+Isn’t life beautiful? ;-)
+
+## Conclusion
+
+In this article, I’ve given you a few reasons to try and avoid customizing your Angular app’s build. Nevertheless, since there are quite a few cases where customizations really are required, I’ve presented different means that you can use to extend or even to override some parts of the default build pipeline provided by the Angular CLI.
+
+As we’ve seen, it is quite easy to do in practice and can even be written in TypeScript.
+
+In any case, try and avoid this if you can, so that you don’t become stuck with an hard to maintain homemade build system once Angular and its CLI pivot to Bazel.
+
+That’s it for today!
+
+<BlogPostSignature />
