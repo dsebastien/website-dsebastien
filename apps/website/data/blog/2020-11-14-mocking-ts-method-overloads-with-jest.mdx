@@ -1,0 +1,98 @@
+---
+title: "Mocking TS method overloads with Jest"
+summary: "Here's how to mock TypeScript method overloads with Jest"
+publishedAt: '2020-11-14'
+image: '/static/images/blog/2020/mirror.jpeg'
+slug: 'mocking-ts-method-overloads-with-jest'
+categories: [typescript, javascript, jest, testing, programming]
+keywords: [typescript, javascript, jest, testing, programming, coding]
+published: true
+---
+
+Mocking overloaded TS methods with Jest is not hard per se, but you have to know how to do it.
+
+<Image
+  alt={`Picture courtesy of https://unsplash.com/@ammar_sab3`}
+  src={`/static/images/blog/2020/mirror.jpeg`}
+  width={700}
+  height={435}
+  priority
+/>
+
+In this article, I’ll explain the “issue” and how to work around it.
+
+## The “issue”
+
+Method overloading is a very familiar concept for any developer used to Object-Oriented Programming (one of many that I’ll explain in my [upcoming book](http://dev-concepts.dev/) by the way).
+
+With method overloading, you can define multiple methods/functions with the same name but with different signatures. Overloading can be nice to use as a specific implementation is called depending on the parameters that you pass.
+
+Of course, method overloading is a useful concept and not an issue on its own at all. While testing though, it can prove a bit difficult to mock overloaded methods with TypeScript.
+
+The issue is that when we ask TypeScript to give us the parameters of an overloaded method, we get those of the last overload. Because of that, we can have issues where the compiler complains about the mock implementation not accepting the right parameters or not returning the expected type. It is one of the limitations of `ReturnType` and conditional types.
+
+This can be a bit confusing at first.
+
+The problem is then of course: how to tell TypeScript that we want to mock this or that version of the function?
+
+## An example
+
+Here’s an example showing the issue.
+
+In my current project, I use the [nano](https://www.npmjs.com/package/nano) library to connect to a [CouchDB](https://couchdb.apache.org/) database. In particular, I use nano in so-called repository classes, which are responsible for interacting with the database.
+
+While writing unit tests for a new “bulk delete” operation, we needed to ensure that the bulk delete was doing what it needed to. Since we’re talking about unit tests, we indeed wanted to mock the nano database connection as well as the bulk operation database call.
+
+With nano, when we establish a database connection, we get back an object of type `DocumentScope<D>`. Among many other functions, the interface includes a `bulk` function, which can be used to perform bulk operations.
+
+That function actually exists with two variants:
+
+<Gist gistLink="dsebastien/1a81a2456bb131dec3729f5be525abc2" />
+
+As you can see, depending on the way it gets called, we get back a `Promise<DocumentBulkResponse[]>` or a `Promise<DocumentInsertResponse[]>;` .
+
+The second variant corresponds to a bulk insertion operation, while the first (the one that we needed to mock) corresponds to the bulk delete.
+
+Usually, when we mock functions using Jest, we do it as follows:
+
+<Gist gistLink="dsebastien/2ce8e9ba749e4980dc41a988a10ea889" />
+
+That works fine for cases where there’s a single variant, but in our case, we need to be able to tell TypeScript which variant we’re mocking; otherwise, we get a compilation error that can be a bit misleading at first:
+
+<Gist gistLink="dsebastien/3cd65a1b729d4619dc931a2acad64a5b" />
+
+Now that you know about the two variants of the function, you can understand where this error comes from; TypeScript expects us to respect the signature (and thus also the return type) of the second variant.
+
+Meh!
+
+So how to we work around this issue?
+
+## The solution
+
+The solution to this testing issue is actually quite simple:
+
+* Define a custom type matching the signature of the variant that you want to mock
+* Cast the type to use the one you’ve just defined before creating the mock
+
+Here’s an example:
+
+<Gist gistLink="dsebastien/2560ac9f8899b6d85488a33ac844ea43" />
+
+With this in place, TypeScript doesn’t complain anymore. Of course, it’s just a workaround that might sometimes cause issues (e.g., if signatures of the mocked functions change), but it’s a useful trick to move forward with testing.
+
+References:
+
+* [https://stackoverflow.com/questions/61752367/how-to-mock-overload-method-in-jest](https://stackoverflow.com/questions/61752367/how-to-mock-overload-method-in-jest)
+* [https://github.com/marchaos/jest-mock-extended/issues/20](https://github.com/marchaos/jest-mock-extended/issues/20)
+* [https://stackoverflow.com/questions/52760509/typescript-returntype-of-overloaded-function/52761156#52761156](https://stackoverflow.com/questions/52760509/typescript-returntype-of-overloaded-function/52761156#52761156)
+* [https://github.com/DefinitelyTyped/DefinitelyTyped/issues/34889](https://github.com/DefinitelyTyped/DefinitelyTyped/issues/34889)
+
+## Conclusion
+
+In this article, I’ve explained how to deal with overloads while mocking functions using Jest and TypeScript.
+
+There are other ways to deal with this, but this approach is pretty straightforward (albeit ‘weak’). The official recommendation of the TS team is for the more general overloads to be defined last, but some libraries don’t always respect that (mostly because it’s not that well known I guess).
+
+That’s it for today!
+
+<BlogPostSignature />
