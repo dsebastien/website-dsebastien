@@ -1,0 +1,83 @@
+---
+title: "Avoid the Pyramid of Doom"
+summary: "Here's how to avoid nesting code needlessly."
+publishedAt: '2020-10-29'
+image: '/static/images/blog/2020/pyramid.jpeg'
+slug: 'avoid-the-pyramid-of-doom'
+categories: [typescript, javascript, programming, code quality]
+keywords: [code quality, typescript, javascript, web development, software development, programming, coding]
+published: true
+---
+
+<Image
+  alt={`Time. Picture courtesy of https://unsplash.com/@neonbrand`}
+  src={`/static/images/blog/2020/pyramid.jpeg`}
+  width={700}
+  height={466}
+  priority
+/>
+
+Often, when I look at code written by juniors, I see a lot of nested code. In this article, I’ll try to articulate why it is problematic and what to do instead.
+
+
+## A trivial illustration of the issue
+
+Let’s look at a trivial example together:
+
+<Gist gistLink="dsebastien/b42651dd1eaa9f40df00ce7f2b1e59fe" />
+
+This function is simple enough; it either receives an input, or it does not. As it stands, almost all of the code of this function is “protected” by an `if` statement. That is, almost none of the code will execute if the condition is not met. If it isn’t, then there’s a single log statement to execute.
+
+For such a simple function, this isn’t a _big_ issue, but it is an issue nevertheless. Why?
+
+## The fundamental issue
+
+Functions such as the previous one are problematic because they nest code that doesn’t need to be nested. Nested code is harder to read/understand.
+
+Whenever you have the opportunity to remove needless nesting, do it, you’ll reduce the complexity of the code.
+
+There’san interesting code quality metric called [Cyclomatic Complexity](https://en.wikipedia.org/wiki/Cyclomatic_complexity) that evaluates the complexity of a program based on the control flow graph. If there are no conditional statements / decision points, then the complexity is “1”, since there’s a single path through the code.
+
+If there’s an `if`, then there are now two different paths and the complexity rises to “2”. And if there’s a conditional statement or decision point within that `if`, then the complexity goes up to “3”, etc.
+
+So, fundamentally, the idea is that the less “nesting” there is, the less complex the code is. And, to me, less complex code is almost _always_ a win, whether a function is small/simple or not.
+
+The example that I gave may be trivial, but the principle already applies. The more complex parts of a codebase will certainly have two levels of nesting or more, leading to the infamous [pyramid of doom](https://en.wikipedia.org/wiki/Pyramid_of_doom_%28programming%29). The same happens when you chain callbacks for example, so there are different occurrences of the same basic issue: as nesting levels increase, so does the complexity.
+
+So what can we change to reduce the complexity of such code?
+
+> Tip: Both [TSLint](https://palantir.github.io/tslint/rules/cyclomatic-complexity/) and [ESLint](https://eslint.org/docs/rules/complexity) have built-in rules that can check the cyclomatic complexity of your code, so make sure that those are enabled.
+
+## Simpler code using guard statements
+
+Here’s a slightly better version of our toy example:
+
+<Gist gistLink="dsebastien/5e7fdade948b82d5209db47f16c48815" />
+
+Here, I’ve removed one level of nesting for most of the code and eliminated the `else` branch altogether.
+
+The `if (!noteContent) { ... return; }` check is what [Martin Fowler](https://martinfowler.com/) calls a _guard statement_ in his [Refactoring](https://martinfowler.com/books/refactoring.html) book. Guard statements, as hinted by their name, are there to protect the rest of the code.
+
+In this case, if there’s no input (`null` argument), then there’s no point in going any further; hence the `return`. Since we simply leave the function if the minimum expectations are not meant, then the rest of the code doesn’t need to remain nested.
+
+## But there should be a single return statement?!
+
+[Code Complete](https://www.amazon.com/Code-Complete-Practical-Handbook-Construction/dp/0735619670) and other sources sometimes recommend against having multiple return statements in a single function. Generally speaking, I concur and adhere to that as it usually simplifies debugging, but in simple cases like this, I firmly believe that the best approach is to just return immediately and simplify the rest of the code.
+
+As explained in a few [StackOverflow questions](https://stackoverflow.com/questions/36707/should-a-function-have-only-one-return-statement), having a single return can sometimes lead to nightmarish code like the following:
+
+<Gist gistLink="dsebastien/345f3581b4af91438111df3c4ac4e626" />
+
+I don’t know about you, but if I stumble upon code like this, I pack my things and fly as far as I can without ever turning back ;-)
+
+## Conclusion
+
+In this small article, I’ve explained why nesting is problematic, even for simple functions. Cyclomatic complexity is an important code quality metric to keep in check and simple tricks like this do help a lot to simplify code.
+
+I’ve also given you an example of what to do to improve the code quality and thus the maintainability of your code.
+
+Whenever you want to introduce nesting, think about this and also try other tactics (like introducing fit-to-purpose functions) to avoid needless complexity; the world is already complex enough ;-)
+
+That’s it for today!
+
+<BlogPostSignature />
