@@ -1,0 +1,238 @@
+---
+title: "RxJS 7 in Depth"
+summary: "Exploring everything new with RxJS 7"
+publishedAt: '2020-08-05'
+image: '/static/images/logos/rxjs.svg'
+slug: 'rxjs-7-in-depth'
+categories: [rxjs, programming]
+keywords: [rxjs, web development, programming, coding]
+published: true
+---
+
+<Image
+  alt={`RxJS`}
+  src={`/static/images/logos/rxjs.svg`}
+  width={400}
+  height={400}
+  priority
+/>
+
+[RxJS](https://rxjs-dev.firebaseapp.com/) is one of the coolest libraries in the JavaScript/TypeScript ecosystem. It revolutionized the way we handle data flows within our applications.
+
+In this article, we’ll discover the changes that RxJS 7 will bring. We will look at the upcoming features, the bug fixes, and the breaking changes.
+
+Let’s get started!
+
+### New `lastValueFrom` and `firstValueFrom` methods
+
+When I first learned about RxJS back in 2016, I immediately knew that it rendered Promises completely bogus. So far, unfortunately, Observables still didn’t make it into the EcmaScript specification and there are thousands of promise-based libraries out there. Also, many people still don’t know about observables and are only learning about Promises. This is a sad state of things! So, for the time being, we still have to deal with that and go from Observables to Promises and vice-versa.
+
+In RxJS 7 two new methods will become available: `lastValueFrom` and `firstValueFrom`. They’re being added because, as it stands, the `toPromise` method that we’re all familiar with is [flawed](https://github.com/ReactiveX/rxjs/issues/5075).
+
+Promises provide a strict guarantee that an operation will either result in a value, or will error out. With `toPromise`, we don’t know for sure what happened. Here’s are two examples, taken from the issue:
+
+<Gist gistLink="dsebastien/613a98aa4b01bb18d0e8da28b0f8a47c" />
+
+In the first case, we cannot distinguish between the situation where no value was emitted before completion and the situation where an undefined value was emitted last.
+
+With RxJS 7, we will be able to more clearly state which value we want to extract out of the source observable.
+
+The `firstValueFrom` method converts an observable to a promise by subscribing to the observable and returning a promise that will resolve as soon as the first value arrives from the observable. Then, the subscription gets closed. If the observable stream completes before any values were emitted, then the returned promise will get rejected with an `EmptyError`. If the observable stream emits an error, then the returned promise will reject with that error instead.
+
+Here’s an example:
+
+<Gist gistLink="dsebastien/f989179c932469c3cd70232f6a8adf75" />
+
+The `lastValueFrom` works very much the same, except that it waits for the observable to complete and resolves the returned promise with the last value from the observed stream. Again, if the observable stream completes before any values were emitted, then the returned promise will reject with an `EmptyError` and if the observable stream emits an error, then the returned promise will reject with that error.
+
+Take a look at the [merged PR](https://github.com/ReactiveX/rxjs/pull/5295) for more examples.
+
+This will hopefully make our lives easier. Note that `toPromise` will probably be deprecated.
+
+### Renamed operators
+
+This “new” `combineLatestWith` operator is actually a [renamed version](https://github.com/ReactiveX/rxjs/pull/5251) of the now deprecated `combineLatest` operator.
+
+This new name indeed makes it clearer: it creates an observable that combines the latest values from all passed observables and the source into arrays and emits them. When you subscribe to the observable returned by this operator, a subscription is made to the source observable as well as all the sources provided as arguments. Once all sources emit at least one value, then all of the latest values will be emitted as an array.
+
+Another operator that [has been renamed](https://github.com/ReactiveX/rxjs/pull/5249) is the `zip` operator, which is now called `zipWith`. The same goes for `race`, which is now called `raceWith`.
+
+Refactoring our code to use the new operators should be easy enough ;-)
+
+### Retry operator configuration
+
+We can now pass a configuration option to the retry operator in order to reset the counter upon success:
+
+<Gist gistLink="dsebastien/09accbefda35a50bf8cbca15c2119646" />
+
+Neat!
+
+### Selector support for fromFetch
+
+The `fromFetch` operator now lets us [define a selector function](https://github.com/ReactiveX/rxjs/pull/5306) to extract the information that we want out of the response (or arbitrary data if we want to).
+
+If no selector is defined, then `fromFetch` simply returns the response as-is (just like before):
+
+<Gist gistLink="dsebastien/31469b5ace610a2ab1a7cad62fe2dd03" />
+
+Now, we can also extract what we want:
+
+<Gist gistLink="dsebastien/d9bd223f4c84ebb1423bf3130af11a02" />
+
+Finally, we can also return arbitrary data:
+
+<Gist gistLink="dsebastien/50946c17f024b82221d1cc404c2d31c2" />
+
+### Type guards support for groupBy
+
+We can now use [TypeScript type guards](https://basarat.gitbook.io/typescript/type-system/typeguard) with the `groupBy` operator:
+
+<Gist gistLink="dsebastien/76bfa093a9a77a29f33586f96d7d4d36" />
+
+This is super powerful for type inference as it allows to use custom type guards like the `isNumber` guard above. Note that it is of course also possible to define inline type guards.
+
+### Support for observable dictionaries with combineLatest
+
+Starting with RxJS 7, we will be able to pass in a dictionary to the `combineLatest` operator. When we do so, we will receive the same dictionary structure back:
+
+<Gist gistLink="dsebastien/66c2e6625dbb0326e40ee41544a6b381" />
+
+This is a super useful addition and matches what is also possible with the `forkJoin` operator. Thanks to this, we will be able to write more readable code, but also to combine `combineLatest` with the `pluck` [operator](https://www.learnrxjs.io/learn-rxjs/operators/transformation/pluck).
+
+### One timeout to rule them all
+
+With RxJS 7, we will get improved support for timeouts.
+
+First of all, we will be able to pass it a more powerful `TimeoutConfig` :
+
+<Gist gistLink="dsebastien/a1fa21dec125088e05103f11cac9f7cc" />
+
+As you can see, this config supports different options to finely control the timeouts:
+
+* `each`: time allowed between the emissions from the source, before a timeout is triggered
+* `first`: a deadline for the first emission from the source
+* `with`: a factory that we can pass in to create the observable to switch to when a timeout occurs. This allows the `timeout` operator to be used exactly like the other(now deprecated) `timeoutWith` operator
+* …
+
+Thanks to this new configuration type, the `timeout` operator can be configured quite precisely. Before, it was not possible to configure timeout to have a different “first” timeout check and subsequent “each” timeout checks, or to timeout if only the first value did not arrive in time, etc.
+
+Check out [this commit](https://github.com/reactivex/rxjs/commit/def1d346b43008bc413a3ac985e1611bbbf62003) for more details.
+
+### TestScheduler improvements
+
+The `TestScheduler` now has an animate “run mode” helper, which can be used to specify when requested animation frames will be “painted”.
+
+The `animate` helper accepts a marble diagram and each value emission in the diagram indicates when a “paint” occurs.
+
+You can [learn more about it here](https://github.com/reactivex/rxjs/commit/edd67313814bfc32e8a5129d8049e4d4678cd35d).
+
+### Better memory usage
+
+Memory usage should be improved in RxJS 7 because [the majority of operators no longer retain outer values](https://github.com/ReactiveX/rxjs/commit/bff18272dca23938a5f5b57cec6eb8d8be5bfddf).
+
+For example, every inner subscription in `mergeMap` previously retained the outer value and, if the outer value was a large array, that could quickly be problematic for memory usage.
+
+### Bug fixes galore
+
+RxJS 7 brings a ton of bug fixes. I won’t go over each in detail as it would take quite a while, but here’s the list so far:
+
+* ajax: Partial observers passed to progressSubscriber will no longer error ([25d279f](https://github.com/reactivex/rxjs/commit/25d279f0b45d07f39bfb87b19bc7e2279df8b542))
+* ajax: Unparsable responses will no longer prevent full AjaxError from being thrown ([605ee55](https://github.com/reactivex/rxjs/commit/605ee550e5efc266b5dc5d3a9756c7c3b3968a61))
+* animationFrames: emit the timestamp from the rAF’s callback ([#5438](https://github.com/reactivex/rxjs/issues/5438)) ([c980ae6](https://github.com/reactivex/rxjs/commit/c980ae65ee1b585e8ed66a366eb534ac3e50c205))
+* Ensure unsubscriptions/teardowns on internal subscribers are idempotent ([#5465](https://github.com/reactivex/rxjs/issues/5465)) ([3e39749](https://github.com/reactivex/rxjs/commit/3e39749a58ca663c17f5f0354b0f27532fb6d319)), closes [#5464](https://github.com/reactivex/rxjs/issues/5464)
+* timeout: defer error creation until timeout occurs ([#5497](https://github.com/reactivex/rxjs/issues/5497)) ([3be9840](https://github.com/reactivex/rxjs/commit/3be98404fafd5a8de758deb4e0d103a7b60aa31e)), closes [#5491](https://github.com/reactivex/rxjs/issues/5491)
+* perf: Ensure unsubscriptions/teardowns on internal subscribers are idempotent ([#5465](https://github.com/reactivex/rxjs/issues/5465)) ([3e39749](https://github.com/reactivex/rxjs/commit/3e39749a58ca663c17f5f0354b0f27532fb6d319)), closes [#5464](https://github.com/reactivex/rxjs/issues/5464)
+* timeout: defer error creation until timeout occurs ([#5497](https://github.com/reactivex/rxjs/issues/5497)) ([3be9840](https://github.com/reactivex/rxjs/commit/3be98404fafd5a8de758deb4e0d103a7b60aa31e)), closes [#5491](https://github.com/reactivex/rxjs/issues/5491)
+* dependencies: Move accidental dependency on typedoc to dev-dependencies. ([#5566](https://github.com/reactivex/rxjs/issues/5566)) ([45702bf](https://github.com/ReactiveX/rxjs/commit/45702bf6cd1b4a150f47b2a1d273f1ee31ca2482))
+* pluck: operator breaks with null/undefined inputs. ([#5524](https://github.com/reactivex/rxjs/issues/5524)) ([c5f6550](https://github.com/reactivex/rxjs/commit/c5f65508505cf1f90560e6be76425e09c455bec3))
+* shareReplay: no longer misses synchronous values from source ([92452cc](https://github.com/reactivex/rxjs/commit/92452cc20021141aa0f047c7e5af569a413143e5))
+* interop: chain interop/safe subscriber unsubscriptions correctly ([#5472](https://github.com/reactivex/rxjs/issues/5472)) ([98ad0eb](https://github.com/reactivex/rxjs/commit/98ad0eba6bc079851b44951f3963e8aae0abf861)), closes [#5469](https://github.com/reactivex/rxjs/issues/5469) [#5311](https://github.com/reactivex/rxjs/issues/5311) [#2675](https://github.com/reactivex/rxjs/issues/2675)
+* finalize: chain subscriptions for interop with finalize ([#5239](https://github.com/reactivex/rxjs/issues/5239)) ([04ba662](https://github.com/reactivex/rxjs/commit/04ba6621fe9e09238e1796217d04107e52dd36d5)), closes [#5237](https://github.com/reactivex/rxjs/issues/5237) [#5237](https://github.com/reactivex/rxjs/issues/5237)
+* animationFrameScheduler: don’t execute rescheduled animation frame and asap actions in flush ([#5399](https://github.com/reactivex/rxjs/issues/5399)) ([33c9c8c](https://github.com/reactivex/rxjs/commit/33c9c8cf7e247d4ad4d7318bfd02e8e5bedb0f40)), closes [#4972](https://github.com/reactivex/rxjs/issues/4972) [#5397](https://github.com/reactivex/rxjs/issues/5397)
+* iterables: errors thrown from iterables now properly propagated ([#5444](https://github.com/reactivex/rxjs/issues/5444)) ([75d4c2f](https://github.com/reactivex/rxjs/commit/75d4c2f33d2e2121b2a316849044ad17ab28dbaf))
+* finalize: callback will be called after the source observable is torn down. ([0d7b7c1](https://github.com/reactivex/rxjs/commit/0d7b7c14e34eed43fb2ad1386281800fa3ae8aec)), closes [#5357](https://github.com/reactivex/rxjs/issues/5357)
+* Notification: typing improvements ([#5478](https://github.com/reactivex/rxjs/issues/5478)) ([96868ac](https://github.com/reactivex/rxjs/commit/96868ac754c0147a9aa61182185f27224eb7f11a))
+* TestScheduler: support empty subscription marbles ([#5502](https://github.com/reactivex/rxjs/issues/5502)) ([e65696e](https://github.com/reactivex/rxjs/commit/e65696e2f7f7338659a873f6653026b33b9011a9)), closes [#5499](https://github.com/reactivex/rxjs/issues/5499)
+* expand: now works properly with asynchronous schedulers ([294b27e](https://github.com/reactivex/rxjs/commit/294b27eb6a96e8edee3af35e6aaaef50628376e4))
+* subscribeOn: allow Infinity as valid delay ([#5500](https://github.com/reactivex/rxjs/issues/5500)) ([cd7d649](https://github.com/reactivex/rxjs/commit/cd7d64901e82fd7fb5e8407f1f30828906fac420))
+* Subject: resolve issue where Subject constructor errantly allowed an argument ([#5476](https://github.com/reactivex/rxjs/issues/5476)) ([e1d35dc](https://github.com/reactivex/rxjs/commit/e1d35dc258edea0237ef49a31f7b34c058755969))
+* Subject: no default generic ([e678e81](https://github.com/reactivex/rxjs/commit/e678e81ba80f5bcc27b0e956295ce2fc8dfe4576))
+* defer: No longer allows () => undefined to observableFactory (#5449) ([1ae937a](https://github.com/reactivex/rxjs/commit/1ae937a8e594aef96b93313bb3c68ea910e6f528)), closes [#5449](https://github.com/reactivex/rxjs/issues/5449)
+* single: Corrected behavior for single(() => false) on empty observables. (#5325) ([27931bc](https://github.com/reactivex/rxjs/commit/27931bcfd2aa864e277d3e72128c57e807b28bb0)), closes [#5325](https://github.com/reactivex/rxjs/issues/5325)
+* take/takeLast: Properly assert number types at runtime (#5326) ([5efc474](https://github.com/reactivex/rxjs/commit/5efc474161c9196dbdf4803a9cc444a547067549)), closes [#5326](https://github.com/reactivex/rxjs/issues/5326)
+* mergeMapTo: remove redundant/unused generic ([#5299](https://github.com/reactivex/rxjs/issues/5299)) ([d67b7da](https://github.com/reactivex/rxjs/commit/d67b7dafbacb3aac8f4dd7f215fe2d2c602f0d36))
+* ajax: AjaxTimeoutErrorImpl extends AjaxError ([#5226](https://github.com/reactivex/rxjs/issues/5226)) ([a8da8dc](https://github.com/reactivex/rxjs/commit/a8da8dcc899342d3bb6d2d913247d9e734095287))
+* delay: emit complete notification as soon as possible ([63b8797](https://github.com/reactivex/rxjs/commit/63b8797fbeed09eb675ea64b0b83607cef1367a9)), closes [#4249](https://github.com/reactivex/rxjs/issues/4249)
+* endWith: will properly type N arguments ([#5246](https://github.com/reactivex/rxjs/issues/5246)) ([81ee1f7](https://github.com/reactivex/rxjs/commit/81ee1f72408854f4017615fe7949edf5dd50533b))
+* fetch: don’t leak event listeners added to passed-in signals ([#5305](https://github.com/reactivex/rxjs/issues/5305)) ([d4d6c47](https://github.com/reactivex/rxjs/commit/d4d6c47d8abccc8cbe17e46192fc1eaa42d2d023))
+* TestScheduler: Subclassing TestScheduler needs RunHelpers ([#5138](https://github.com/reactivex/rxjs/issues/5138)) ([927d5d9](https://github.com/reactivex/rxjs/commit/927d5d90ab5f12a79cd50f7290b4f8df1e83ecfc))
+* pipe: Special handling for 0-arg case. ([#4936](https://github.com/reactivex/rxjs/issues/4936)) ([290fa51](https://github.com/reactivex/rxjs/commit/290fa51c44881f25f2fe4cf9885028396c7fd74c))
+* pluck: fix pluck’s catch-all signature for better type safety ([#5192](https://github.com/reactivex/rxjs/issues/5192)) ([e0c5b7c](https://github.com/reactivex/rxjs/commit/e0c5b7c790bb9d99fa8bee26c805b5e70c1e456b))
+* pluck: param type now accepts number and symbol ([9697b69](https://github.com/reactivex/rxjs/commit/9697b695c23c3dcb614e6a70be63a94ffcd86ed9))
+* startWith: accepts N arguments and returns correct type ([#5247](https://github.com/reactivex/rxjs/issues/5247)) ([150ed8b](https://github.com/reactivex/rxjs/commit/150ed8b75909b0e0bb9dc8928287ebdc47e19c51))
+* combineLatestWith: and zipWith infer types from n-arguments ([#5257](https://github.com/reactivex/rxjs/issues/5257)) ([3e282a5](https://github.com/reactivex/rxjs/commit/3e282a58b1baf7aa03b17142f858bca09a542adf))
+* race: support N args in static race and ensure observable returned ([#5286](https://github.com/reactivex/rxjs/issues/5286)) ([6d901cb](https://github.com/reactivex/rxjs/commit/6d901cbb0c0f2aa3fc5a02ef895cc9e9a7a09243))
+* toPromise: correct toPromise return type ([#5072](https://github.com/reactivex/rxjs/issues/5072)) ([b1c3573](https://github.com/reactivex/rxjs/commit/b1c35738204b5b1a5d325a16e70cdbf25b523976))
+* fromFetch: don’t reassign closed-over parameter in fromFetch ([#5234](https://github.com/reactivex/rxjs/issues/5234)) ([37d2d99](https://github.com/reactivex/rxjs/commit/37d2d99762264ef5faabc0ce4f56d7aab51806dc)), closes [#5233](https://github.com/reactivex/rxjs/issues/5233) [#5233](https://github.com/reactivex/rxjs/issues/5233)
+
+I haven’t been hit by those (or did not realize it), but if you have then you’ll be glad to see that those are now fixed. Kudos to the team for the awesome work!
+
+By the way, there’s one “fix” that I didn’t see mentioned and couldn’t find back, but I believe that type inference for the filter operator will work better with RxJS 7:
+
+```
+source$.pipe(
+  filter((user) => isNotNullOrUndefined(user)),
+)
+...
+```
+
+With RxJS 6, after the filter, the inferred type still includes `null | undefined` even though we filtered those values out. With RxJS 7, it should be fine.
+
+### Breaking changes
+
+On to the less awesome news.
+
+As you can guess, since this is a major release, there are… breaking changes! Here’s a rundown of those:
+
+* The `toPromise` operator now returns `T | undefined`. This is more in line with reality but could probably break some apps (gently)
+* The `lift` method is no longer exposed. It was an internal implementation detail of RxJS that was exposed and thus accessible from user-land code. It has [multiple issues](https://github.com/ReactiveX/rxjs/issues/5431) and should not be used anyways. Workarounds include [rewriting your operators](https://rxjs.dev/guide/operators) so that they return `new Observable` or cast your observable as `any` and access `lift` anyway, but of course option #1 is preferred. Option 2 might be useful for a quick fix but will probably break in version 8 anyways
+* The `startWith` operator returns incorrect types when called with more than 7 arguments and a scheduler. Also, passing a scheduler to this operator is deprecated
+* The `timestamp` operator now accepts a `TimestampProvider`, which is any object with a `now()` method that returns a number. This [might cause issues](https://github.com/ReactiveX/rxjs/issues/5553) with the `TestScheduler` run mode
+* The `ReplaySubject` no longer schedules emissions when a scheduler is provided. If you currently rely on that behavior, then you need to combine it with the `observeOn` operator: `new ReplaySubject(2, 3000).pipe(observeOn(asap))`
+* The `takeLast` operator now throws `TypeError` for invalid arguments. For instance, calling it without arguments or with `NaN` will throw a `TypeError`
+* The `take` operator now throws a runtime error for arguments that are negative or `NaN`
+* The `single` operator will now throw for scenarios where values coming in are either not present, or do not match the provided predicate
+* `defer` does not allow factories to return `void` or `undefined` anymore. All factories passed to defer must now return a proper `ObservableInput` (e.g., `Observable` or `Promise` ). To get the same behavior as before, you can use `return EMPTY` or `return of()` from the factory
+* `Notification` and `dematerialize` have better type signatures, which might break existing code
+* `Notification.createNext(undefined)` will no longer return the exact same reference everytime
+* `ajax` has dropped support for IE10 and lower. Time to let go of the past!
+
+### No interoperability with AsyncIterables after all
+
+The first beta of RxJS 7 introduced [first-class interoperability for AsyncIterables](https://github.com/reactivex/rxjs/commit/4fa9d016a83049d014d77b89c56301e42db16b4d). Unfortunately, this support was removed in the most recent beta versions because there were too many edge cases. Still, if you’re interested in this feature, you should take a look at the [rxjs-for-await](https://github.com/benlesh/rxjs-for-await) library of [Ben Lesh](https://twitter.com/BenLesh).
+
+For the record, here’s a bit of background about what that feature could’ve allowed.
+
+As their name indicates, async iterables are things that we can iterate on.. asynchronously. Sounds good? Well it should! Since [ES2018](https://medium.com/@bramus/javascript-whats-new-in-ecmascript-2018-es2018-17ede97f36d5), we can write loops like this:
+
+```
+for **await** (variable of iterable) {
+  ...
+}
+```
+
+This is possible thanks to asynchronous iterators and asynchronous iterables. The `next()` method of asynchronous iterators [returns a promise](https://exploringjs.com/es2018-es2019/ch_asynchronous-iteration.html), which we can consume using the `await` keyword. Neat.
+
+But what about observables? Well with rxjs-for-await, we can do the same, using different strategies; each having pros and cons. Those pros and cons are certainly the reason why this feature will not make it into RxJS for the time being…
+
+### Conclusion
+
+In this article, I’ve listed the different things I could learn by looking at the [changelog](https://github.com/ReactiveX/rxjs/blob/master/CHANGELOG.md) for the different RxJS 7 beta versions.
+
+Hopefully, the final release should come soon. There are a few cool new features and I can’t wait to try those. Unfortunately, the support for interop with async iterables was abandoned, which is a bit sad, but I do understand why; better safe than sorry!
+
+Again, kudos to Ben and the awesome RxJS team for making our code feel so much nicer.
+
+That’s it for today!
+
+<BlogPostSignature />
