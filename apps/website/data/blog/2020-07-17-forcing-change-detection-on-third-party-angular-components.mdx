@@ -1,0 +1,72 @@
+---
+title: "Forcing change detection on third-party Angular components"
+summary: 'Let's see how to access the ChangeDetectorRef for any third party Angular component and use it to work around bugs!'
+publishedAt: '2020-07-17'
+image: '/static/images/blog/2020/go-this-way.jpeg'
+slug: 'removing-moment-js-locales-from-your-angular-app-js-bundles'
+categories: [angular, typescript, javascript, programming]
+keywords: [angular, typescript, javascript, web development, software development, programming, coding]
+published: true
+---
+
+Here’s a way to work around change detection issues with third party Angular components.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Picture courtesy of https://unsplash.com/@35mm`}
+    src={`/static/images/blog/2020/go-this-way.jpeg`}
+    width={700}
+    height={1050}
+    priority
+  />
+</BlogPostCenteredContent>
+
+In our applications, we should do our best to keep using the [OnPush change detection strategy](https://blog.angular-university.io/onpush-change-detection-how-it-works/). Unfortunately, sometimes we’re stuck with third party components that don’t detect changes appropriately.
+
+For instance, I’ve been regularly facing issues with change detection and PrimeNG components, which (at this point) still don’t use the OnPush strategy.
+
+Of course, change detection issues are often caused by bug lurking around, but we don’t always have the luxury to wait for fixes.
+
+In this article I’ll share a tip given by [Anthony Miller](https://twitter.com/nthonymiller/status/1283218988923682816) to force change detection on any component; whether it’s yours or a third party one.
+
+## Forcing change detection
+
+As you probably know, in Angular applications, we can force change detection using the [ChangeDetectorRef](https://angular.io/api/core/ChangeDetectorRef), which we can simply inject in our components.
+
+The ChangeDetectorRef has multiple methods such as `markForCheck` and `detectChanges` which can do what we want.
+
+As I’ve [explained in my book](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860/), there’s a change detector tree parallel to the component tree, so each component actually has its own change detector attached.
+
+The thing is that, depending on which one we use, we cause more or less work. For instance, when the App component forces change detection using it’s ChangeDetectorRef, then it forces change detection on a large tree.
+
+Obviously it is recommended to force change detection only on the specific component where you need it (ideally, nowhere, but real life happens).
+
+So, if there’s a change detection issue with a specific component, then we in fact want to force change detection through the change detector of that specific component, so that it only triggers it for that component (and its children).
+
+## Accessing other component’s injectors
+
+To get access to the ChangeDetectorRef instance of a component, we simply need to inject it through the constructor:
+
+```
+constructor(private changeDetectorRef: ChangeDetectorRef) { ... }
+```
+
+Once injected, we can simply use it. Of course there’s a catch: a component can only use its own [injector](https://angular.io/guide/dependency-injection)… or so you’d think!
+
+There’s actually a way to access another component’s injector to the [ViewContainerRef](https://angular.io/api/core/ViewContainerRef) of the target component:
+
+<Gist gistLink="dsebastien/412fd510987d244c0306e3561406441d" />
+
+In the example above, the `CoolComponent` uses the `Whatever` component. In order to access the change detector instance of the `Whatever` component, we first create a [template reference variable](https://angular.io/guide/template-syntax) in the template, then we make use of the [ViewChild](https://angular.io/api/core/ViewChild) decorator to get a hold of the `ViewContainerRef` of that component.
+
+Finally, in the `ngAfterViewInit` method of our component, we simply make use of the injector of the component, which we can access through the `ViewContainerRef` to retrieve the `ChangeDetectorRef` of the component. Neat!
+
+## Conclusion
+
+Thanks to [Anthony Miller](https://twitter.com/nthonymiller), we now have one more tool in our kit to help us work around nasty change detection bugs without resorting to ugly hacks.
+
+As I’ve explained in this article, we can access the injector of any component through its `ViewContainerRef`, and use it to retrieve its `ChangeDetectorRef` (or anything else by the way). That way, we can trigger change detection very precisely and avoid causing massive change detection cycles when it’s not needed.
+
+That’s it for today!
+
+<BlogPostSignature />
