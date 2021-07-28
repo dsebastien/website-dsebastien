@@ -1,0 +1,120 @@
+---
+title: "How to choose between constructor and ngOnInit in your Angular apps"
+summary: "Learn why ngOnInit is not always the best solution"
+publishedAt: '2020-05-26'
+image: '/static/images/blog/2020/choose-path.jpeg'
+slug: 'how-to-choose-between-constructor-and-ngoninit-in-your-angular-apps'
+categories: [angular, typescript, javascript, web development, programming]
+keywords: [angular, typescript, javascript, web development, programming]
+published: true
+---
+
+There are some things that you could be doing in the constructors of your classes rather than in the ngOnInit lifecycle methods. Let me tell you which ones and why.
+
+<Image
+  alt={`Git`}
+  src={`/static/images/blog/2020/choose-path.jpeg`}
+  width={700}
+  height={875}
+  priority
+/>
+
+Recently, I’ve read the [an article](https://medium.com/javascript-in-plain-english/ngoninit-vs-constructor-in-angular-75db8cfa0e17) that concluded by advising to _always_ use the ngOnInit method for initialization. Being a TypeScript fan, I beg to differ, or at least give another point of view on the matter.
+
+## About ngOnInit
+
+The [OnInit](https://angular.io/api/core/OnInit) interface is one of the most useful [lifecycle hooks](https://angular.io/guide/lifecycle-hooks) provided by Angular. You can use it to react/perform specific initialization tasks in your components/directives/etc.
+
+To respect the contract, you have to implement an [ngOnInit](https://angular.io/api/core/OnInit#ngOnInit) method in your class. Angular will call this method as soon as it has initialized all data-bound properties. More precisely, ngOnInit is called after the first [ngOnChanges](https://angular.io/api/core/OnChanges) call (but also if there are no input bindings).
+
+This means that when the ngOnInit method is called, you’re sure that you have everything you need at your disposal to fully initialize your class.
+
+At first glance, ngOnInit looks perfect to do all the initialization work. It is indeed perfect for _component_ initialization, but there’s a fundamental catch to keep in mind: type safety.
+
+Let’s go back to TypeScript basics to make this clear.
+
+## About constructors
+
+Constructors exist solely for initialization. They contain the very first lines of code that will get executed when a class is instantiated, before any other method can be called:
+
+<Gist gistLink="dsebastien/c3574e7b2e11603aa0820744078fcaff" />
+
+The main role of a constructor is indeed to ensure that all fields of the class are properly initialized. If we forget abstract classes, then fields that aren’t static or directly initialized at declaration time must either be initialized in the constructor, be marked as optional or marked with the [definite assignment assertion](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions) (i.e., `!`) operator. I’ll come back to this.
+
+Also, note that fields may only be marked as [readonly](https://www.typescriptlang.org/docs/handbook/classes.html#readonly-modifier) if they’re initialized either at their declaration or in the constructor.
+
+## TypeScript strict property initialization
+
+One of my regrets with [my book about TypeScript](https://www.amazon.com/gp/product/B081FB89BL) is not having dedicated more space to the strict mode of TypeScript. In retrospect, I feel like I should’ve dropped a few pages here and there to cover it more in detail, but since it hit 800 pages, my publisher was not too keen on adding more pages ;-)
+
+Enabling [TypeScript’s strict mode](https://mariusschulz.com/blog/the-strict-compiler-option-in-typescript) is actually one of the best things that you can do on your codebase to make it more robust.
+
+Behind this flag, there are in fact different sub-flags, which are all enabled when the `strict` option is set to `true`. You may be less audacious and enable/disable only some, but my advice is to **be bold and enable them all!**
+
+One of those sub-flags is called `strictPropertyInitialization`. As its name indicates, [strict property initialization](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#strict-class-initialization) ensures that each instance property of a class gets initialized either in the constructor or by a property initializer. It’s a great one to have as it helps eliminate a whole class of stupid bugs.
+
+## How ngOnInit hurts type safety
+
+If you’re in strict mode, or at least if you have strict property initialization enabled, then the following example won’t compile:
+
+<Gist gistLink="dsebastien/eb18bf5608e1b1e53a2127d4554c44e7" />
+
+This fails with:
+
+```
+TS2564: Property 'foo' has no initializer and is not definitely assigned in the constructor.
+```
+
+This code doesn’t compile in strict mode because the `foo` field is initialized _too late_. And, to me, this is really the key problem with `ngOnInit` for type safety. As I’ve stated in the last section, there are ways to work around this though; some better than others.
+
+## Alternatives overview
+
+As we saw right before, initializing fields through the `ngOnInit` method is problematic for type safety. Let’s already see how to make the previous code _compile_.
+
+First of all, you can use an initializer:
+
+<Gist gistLink="dsebastien/d9e5aa4fdf62cc9fa03036b8ca09ff43" />
+
+This is ideal, since it doesn’t depend on anything to initialize. You should use this approach whenever possible. Unfortunately if the initialization depends on other “things”, then it won’t be possible to use this approach.
+
+A second option is to take care of the initialization in the constructor:
+
+<Gist gistLink="dsebastien/a6886a083422ba1834f4d5c27143be2f" />
+
+Another alternative is to use the definite assignment operator:
+
+<Gist gistLink="dsebastien/d03e24c31d1dadee3b7793b00b535b53" />
+
+Finally, it’s also possible to add `null` or `undefined` to the allowed values:
+
+<Gist gistLink="dsebastien/e02d4623607ace111243d022a228ea78" />
+
+This is for instance useful for Angular component inputs, but forces explicit checks all around and allows you to put back null or undefined in the field, which might not be the best of ideas.
+
+There are other variants (e.g., declaration/initialization through the constructor arguments), but let’s ignore those.
+
+## What to use and when?
+
+When looking at the alternatives, you might be thinking that the definite assignment operator is the nicest solution, since it allows to always do late binding through the `ngOnInit` method. Truth be told, it’s just a _weak_ promise that you make to the compiler: “Hey don’t worry, I will initialize this at some point, trust me…” (famous last words).
+
+When you use the definite assignment operator, you tell TypeScript to treat the field as required, but not to check the initialization anymore. This is dangerous because you have no certainty that it actually gets initialized and if you fail to do so, then TypeScript won’t help you; you’ll only discover it through testing (whether that is automated tests or end users calling you because something broke).
+
+The general advice, even backed by [Misko Hevery](http://misko.hevery.com/code-reviewers-guide/flaw-constructor-does-real-work/) is to avoid doing heavy initialization work in the constructors. The main point is that it can make your classes inflexible and harder to test.
+
+Personally, I prefer to initialize whatever I can through the constructor, as long as it is possible and doesn’t make testing more complicated than it should.
+
+For instance, if I need to subscribe to some observable that I can access directly from the constructor, then I do so.
+
+Similarly, for reactive forms, I also favor the constructor if the form initialization doesn’t depend on inputs made available by the `ngOnInit` method.
+
+If initialization requires too many interactions with collaborators (and would thus make testing harder), depend on the component inputs, or requires interactions with the DOM through ViewChild and the like, then I accept to do late binding. Keep in mind that class initialization and component initialization are separate things. The former should generally be handled in the constructor; the latter in the ngOnInit method, unless it can be done more safely in the constructor.
+
+When doing so, I usually prefer to widen the field’s type to include `null` or `undefined`, rather than using the definite assignment operator. That way, I keep the code safer at compile time, even if it is more annoying than just telling the compiler to remain silent. I do use the definite assignment operator from time to time (when I really don’t want to allow null or undefined), but I’m not so fond of it…
+
+## Conclusion
+
+In this article, I’ve tried to give you a sense of why `ngOnInit` might not _always_ be the best place to do initialization work. This is a bit controversial and is certainly not a “do this 100% of the time” type of advice. Still, I think that it’s important to properly consider the pros and cons when choosing where to initialize certain things.
+
+That’s it for today!
+
+<BlogPostSignature />
