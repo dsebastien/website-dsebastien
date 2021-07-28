@@ -1,0 +1,88 @@
+---
+title: "Translating the MatPaginator Angular Material component"
+summary: "The MatPaginator component of Angular Material can be translated, but it requires a specific approach."
+publishedAt: '2020-07-26'
+image: '/static/images/blog/2020/flags.jpeg'
+slug: 'translating-the-matpaginator-angular-material-component'
+categories: [angular, angular material, internationalization, typescript, javascript, programming]
+keywords: [angular, angular material, internationalization, typescript, javascript, programming, software development, coding]
+published: true
+---
+
+The MatPaginator component of Angular Material can be translated, but it requires a specific approach.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Flags`}
+    src={`/static/images/blog/2020/flags.jpeg`}
+    width={700}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Internationalization and localization start to matter as soon as your application is not limited to a single community of users, all speaking the same language. Fortunately for us, Angular Material has great support for internationalization & localization.
+
+The MatPaginator component is often used in combination with lists / tables, in order to let end users control the number of items per page and allow them to easily navigate from page to page. Of course there are a few labels to translate (e.g., first page, items per page, last page, etc).
+
+In this article, I’ll explain how to translate the MatPaginator component, which is a bit more complicated to handle; it’s one of those “you have to know that to know that” cases.
+
+### MatPaginatorIntl
+
+To translate the MatPaginatorComponent, you need to use/extend the [MatPaginatorIntl](https://material.angular.io/components/paginator/api#MatPaginatorIntl) class
+
+The [built-in class](https://github.com/angular/components/blob/dd37ca57406412c1ebeaec56cab5a517f796d4b9/src/material/paginator/paginator-intl.ts) exposes static properties providing the different labels:
+
+* firstPageLabel
+* getRangeLabel
+* itemsPerPageLabel
+* lastPageLabel
+* nextPageLabel
+* previousPageLabel
+
+The [default implementation](https://github.com/angular/components/blob/dd37ca57406412c1ebeaec56cab5a517f796d4b9/src/material/paginator/paginator-intl.ts) does not translate those labels. It simply returns the english version statically. So we have to extend it in order to be able to translate the labels ourselves dynamically.
+
+Let’s see how.
+
+### Creating a custom implementation of the MatPaginatorIntl class
+
+Our custom MatPaginatorIntl implementation will extend the built-in class in order to dynamically replace the translations with the correct ones, depending on the active language. In order to do that, we’ll need to listen to language changes in the class and adapt the translations at that point, since those need to be stored in the class.
+
+For this example, we’ll use [ngx-translate](https://github.com/ngx-translate/core), but you can easily adapt the code to use another internationalization library of your choice.
+
+<Gist gistLink="dsebastien/0f4dee201de91d2633ae90a59b103fe8" />
+
+As you can see, our implementation simply extends the built-in class. So, by default, it inherits from the default english version of the labels.
+
+We inject the `TranslateService` of ngx-translate and use it to subscribe to language change events. Whenever the language changes, we call the `translateLabels` method of our class to translate the different labels and update the superclass properties. The `translateLabels` method finishes by emitting an event using `this.changes.next()`, which warns Angular Material that the labels have changed and may need to be refreshed on screen.
+
+In the constructor, we also immediately invoke the `translateLabels` method in order to directly get the correct translation, depending on the currently active language.
+
+The `getRangeLabel` method requires a bit more fiddling around because the translation is in the middle of a sentence. The default implementation is simply using concatenation. Here we mostly do the same, except that we translate the “of” word. You can get fancy and use more advanced solutions here. In my case, this fit the bill.
+
+With the above implementation, we simply need to add the following translation keys:
+
+```
+"I18N": {
+    "MAT_PAGINATOR": {
+    "FIRST_PAGE": "Première page",
+    "ITEMS_PER_PAGE": "Eléments par page",
+    "LAST_PAGE": "Dernière page",
+    "NEXT_PAGE": "Page suivante",
+    "PREVIOUS_PAGE": "Page précédente",
+    "OF": "sur"
+  }
+}
+```
+
+Finally, we need to add a provider to some shared module:
+
+<Gist gistLink="dsebastien/075560e8a24f456844c4b12986b54f0e" />
+
+### Conclusion
+
+In this short article, I’ve explained how you can translate the MatPaginator component of Angular Material. It’s not hard at all, but you just can’t guess it ;-)
+
+That’s it for today!
+
+<BlogPostSignature />
