@@ -1,0 +1,141 @@
+---
+title: "Configuring and using the Apollo client in a Next.js TypeScript application"
+summary: "Learn how to integrate the Apollo GraphQL client in a Next.js TypeScript application"
+publishedAt: '2021-02-24'
+image: '/static/images/logos/react-nextjs.png'
+slug: 'configuring-and-using-the-apollo-client-in-a-next-js-typescript-application'
+categories: [graphql, next.js, programming]
+keywords: [graphql, next.js, apollo, software development, programming, coding]
+published: true
+---
+
+Recently, I’ve been doing some research around [Next.js](https://nextjs.org/) & GraphQL.
+
+<Image
+  alt={`React + Next.js`}
+  src={`/static/images/logos/react-nextjs.png`}
+  width={700}
+  height={335}
+  priority
+/>
+
+After looking into the back-end side (which I’ll write about another day), I wanted to test drive some libraries for querying my GraphQL API.
+
+Of course, since I was using Apollo on the back-end, it made sense to go full-circle and use Apollo on the “client-side” too.
+
+In this article, I’ll explain how I’ve integrated it into my Next.js application. Since you know me, it should be obvious that the application uses TypeScript!
+
+Note that **I’m no Next.js specialist** (nor a React one :p) and thus, I might be wrong about quite a lot of things; you’ve been warned! :)
+
+Let’s go!
+
+#### Overview
+
+There are a few steps involved to get started with Apollo in a Next.js app:
+
+* Install dependencies
+* Write code to set-up the client (the hard-er part)
+* Wrap the components with the ApolloProvider (or not)
+* Query like crazy & profit!
+
+What makes the process a bit more complicated with Next.js is the fact that it [supports](https://nextjs.org/docs/basic-features/pages) different “rendering modes”: fully Static Site Generation (SSG), “incremental static regeneration” (doesn’t that sound epic?), Server-Side Rendering (SSR), etc. Some pages might fetch data once at build time, and be served statically at all times, while others will be dynamic, and rendered at runtime, once, or many times. It’s a bit tricky to get started, but it’s the coolest part of Next.js.
+
+Because the same code will be executed in different circumstances, we need to take that fact into account, as we’ll see in the Apollo client setup.
+
+Let’s see how this works…
+
+#### Dependencies
+
+There’s normally a single dependency that you need: `@apollo/client`. For this article, I’m using version 3.3.7.
+
+#### Apollo client setup
+
+One of the greatest strengths of Apollo is its documentation (next to its jaw-dropping features list): [https://www.apollographql.com/docs/react/get-started/](https://www.apollographql.com/docs/react/get-started/). If you’re not familiar with Apollo already, then start there, and come back later on ;-)
+
+Unfortunately (at this point in time), the docs focus only on React and don’t have specific official guidance for Next.js. I did find [a post on the Apollo blog](https://www.apollographql.com/blog/building-a-next-js-app-with-apollo-client-slash-graphql/) that helped me to get started, but it was written in JS, so it only got me so far. At least it helped me understand the different steps!
+
+Create an apollo.tsx file if you want to follow along. Here’s the full code that I’m using:
+
+<Gist gistLink="dsebastien/6423e854305255c8b005be76fb28a98c" />
+
+Now let me explain, step by step.
+
+The first interesting function is `createApolloClient` :
+
+<Gist gistLink="dsebastien/d8fc7b5aabe282e354a2670369ada9ac" />
+
+This function is the only one that actually creates an instance of the Apollo client. The return type could be improved, but it’s a start. Notice that the Server-Side Rendering mode is enabled only _when it makes sense_. The easiest way to know _where_ the code is currently running is to check whether the global `window` object is available or not. If it ain’t, then we can probably consider that we’re running on “the server-side” (i.e., build time or actually on the server).
+
+Notice that the client’s link is set using `createIsomorphicLink`. That function looks as follows:
+
+<Gist gistLink="dsebastien/75977cf2f66dc66e4a1a665681422cd6" />
+
+Once again, the code checks _where_ the code is currently running and creates the schema link differently based on the case we’re in. If the code runs on the server (again, either actually on the server or at build time), then the function uses `require` calls to load the GraphQL schema directly. If, on the contrary, the code is running on the client-side, then this function uses an `HttpLink` instead, loading the GraphQL schema using HTTP.
+
+Next up is the `initializeApollo` function:
+
+<Gist gistLink="dsebastien/8965ed3f4b28e016c102579115519d4d" />
+
+This function accepts some initial state and can use it to hydrate the Apollo client. First of all, it retrieves an instance of the `ApolloClient` if there isn’t one available already. This is important, as it avoids wasting time/resources re-creating new instances needlessly.
+
+If an initial state was passed in, then it is put into the Apollo cache.
+
+If the code is not running in a browser context, then the Apollo client instance is returned. Otherwise, a reference to the client is retained, so that it can be reused (and the cache).
+
+The next function, `useApollo`, is a hook that wraps the `initializeApollo` function from before with `useMemo`, which [might or might not be a good idea](https://kentcdodds.com/blog/usememo-and-usecallback) ;-)
+
+<Gist gistLink="dsebastien/4c42fe961f2f1a5b063f02def19bd5de" />
+
+Finally, the `withApollo` function is a HOC that can be used to wrap a Next.js page/component with an `ApolloProvider` to make the Apollo client available, without necessarily wrapping the whole application with it.
+
+This is basically the base “toolbox” for using the Apollo client library in Next.js applications. The TypeScript types could certainly be improved, but I’ll leave it at that here.
+
+#### Wrapping components with the ApolloProvider (or not)
+
+In the various examples that I could find, people seem to wrap their whole Next.js app with the `ApolloProvider` in the `_app.tsx` file, like this:
+
+<Gist gistLink="dsebastien/cbae10e772e8a632d796ace71829f9ed" />
+
+Notice that we’re using the `useApollo` hook that we saw earlier.
+
+Again, I’m not sure it is necessarily a good idea to do this in the `_app.tsx` file. It makes sense if you’re using Apollo everywhere and don’t want to worry about the details, but it feels dirty to me to add that around pages/components that don’t need GraphQL at all.
+
+Anyways, as I’ve explained earlier, you also have the option to use the HOC that I included and leave Apollo out of your `_app.tsx` file altogether.
+
+With this in place, you’re ready to query your GraphQL APIs!
+
+#### Query like crazy & profit!
+
+Now that the Apollo client is configured, and available where you need it, you’re ready to interact with GraphQL APIs.
+
+As we discussed at the beginning of this article, what makes Next.js really cool is the fact that you have control over _when_ you fetch data and how pages are built. You can decide to fetch data once at build time and have a super performant & SEO-friendly static page, you can choose to render the page once on the server-side at runtime, re-render it dynamically, etc.
+
+Depending on the scenario, you’ll either use the `useQuery` Apollo [hook](https://www.apollographql.com/docs/react/get-started/#request-data) to send queries (assuming that the `ApolloProvider` is wrapping your current page/component), use the `useApollo` hook to retrieve a client directly, or use the `getApolloClient` function (an alias of the `initializeApollo` function) inside of `getServerSideProps` or `getStaticProps` to retrieve _the_ Apollo client instance and use it.
+
+Here’s an example using `getServerSideProps`:
+
+<Gist gistLink="dsebastien/581c5f74369d92c3722b719d55a744a0" />
+
+In the above example, the query is executed on every request.
+
+By the way, notice the usage of the cool `InferGetServerSideProps` utility type [provided by Next.js](https://nextjs.org/docs/basic-features/data-fetching#typescript-use-getserversideprops). Thanks to this, the props of the component match the output of the `getServerSideProps` function. Neat!
+
+Here are a few useful/related links:
+
+* [https://www.freecodecamp.org/news/how-to-fetch-graphql-data-in-next-js-with-apollo-graphql/](https://www.freecodecamp.org/news/how-to-fetch-graphql-data-in-next-js-with-apollo-graphql/)
+* [https://www.youtube.com/watch?v=oxUPXhZ1t9I](https://www.youtube.com/watch?v=oxUPXhZ1t9I)
+* [https://nextjs.org/docs/basic-features/data-fetching](https://nextjs.org/docs/basic-features/data-fetching)
+
+#### Conclusion & next steps
+
+Voilà. You’re good to go. If you’re familiar enough with Next.js and Apollo, the rest should be pure FUN ;-)
+
+In this article, I’ve covered what I’ve learned recently about how to setup/configure Apollo client in a TS Next.js application.
+
+There’s a bit of jumping through hoops to initialize the Apollo client and hydrate it correctly, depending on where the code is executing. It’s far from straightforward if you aren’t used to how Next.js works (like me :p).
+
+Once this is in place, I think that it’s pretty okay, but it’s a bit too involved in my opinion. That why I’m going to continue my exploration and see how [urql](https://github.com/FormidableLabs/urql) and [SWR](https://github.com/vercel/swr) compare to Apollo client in Next.js applications.
+
+That’s it for today!
+
+<BlogPostSignature />
