@@ -1,0 +1,98 @@
+---
+title: "Never miss a switch case with TypeScript"
+summary: "Switch statements are sometimes considered a code smell, but when they do make sense to use, you’d better make sure you don’t forget a single case. Luckily, TypeScript can help."
+publishedAt: '2020-05-29'
+image: '/static/images/blog/2020/never-miss-one.jpeg'
+slug: 'never-miss-a-switch-case-with-typescript'
+categories: [typescript, web development, programming, code quality]
+keywords: [typescript, javascript, web development, software development, code quality]
+published: true
+---
+
+Switch statements are sometimes considered a code smell, but when they do make sense to use, you’d better make sure you don’t forget a single _case_. Luckily, TypeScript can help.
+
+<Image
+  alt={`Git`}
+  src={`/static/images/blog/2020/never-miss-one.jpeg`}
+  width={700}
+  height={464}
+  priority
+/>
+
+In this article, I won’t discuss the reasons why you should avoid switch statements in your applications (e.g., they may easily violate the DRY and Open/Closed principles, may introduce subtle bugs if you forget a break, etc) . It is pretty widely known that switch statements often leads to code that isn’t SOLID.
+
+I also won’t explain the alternatives to writing switch statements (e.g., the strategy pattern, the command pattern, higher-order functions, etc).
+
+Instead, I’ll assume that you know what you’re doing and that the switch statement is a _good_ solution for your use case.
+
+I’ll show you how to leverage TypeScript’s `never` type to ensure that you did cover all the possible cases, for instance when using a switch against an enumeration.
+
+### Starting point
+
+Let’s assume that we have the following enum as starting point:
+
+<Gist gistLink="dsebastien/f02ad839b7d12f62a0898edae345db6c" />
+
+The above enumeration describes the state of “something”. For now there are only a few possible states.
+
+Next, we have the following enumeration:
+
+<Gist gistLink="dsebastien/be45e08f5f301508426bd218efaafa8f" />
+
+This one describes the different user roles in the application.
+
+Now, assume that we need to create a basic permission system to determine who can do what based on a set of criteria, one being the state of the element, another being the current role of the user.
+
+As the application evolves, the enums will probably evolve too, requiring us to adapt the rules over time.
+
+### Unsafe solution
+
+If you aim to define a function to determine whether the user can edit an element or not, you may start like this:
+
+<Gist gistLink="dsebastien/be45e08f5f301508426bd218efaafa8f" />
+
+This looks _kind of_ clean, as it does cover all of the possible cases **at this point in time**.
+
+Can you spot the biggest problem in the code above? In fact there are many, but I want to concentrate on a single one: what if a new ElementState is added to the `ElementState` enumeration?
+
+The problem is that the code above will continue to compile fine since there’s a default case that will be hit if you’re not in any of the previous cases. This is likely to introduce bugs since the default always returns `false`, which might not be what you want for the new states. Note that the same is true for the other enumeration, but let’s ignore that for now.
+
+So what can we do to avoid this? Right off the bat, you might want to replace `retVal = false` in the default case by a throw statement, but that wouldn’t help at all at compile time.
+
+Can the compiler actually help us?
+
+### TypeScript’s Never type to the rescue
+
+The good news is that TypeScript can help us make that coder _much_ safer. One of [TypeScript’s basic types](http://typescriptlang.org/docs/handbook/basic-types.html) is called [never](https://www.typescriptlang.org/docs/handbook/basic-types.html#never). The `never` type can be used to represent values that _never_ occur.
+
+How can this help you may wonder?
+
+Well thanks to the `never` type, we can explain to the compiler that we should never ever end up in the default case of our switch statement. Let me show you how.
+
+First of all, let’s create a function that should never be called with an actual value:
+
+<Gist gistLink="dsebastien/3555afd08a53463bf9e4e01b5f28abb1" />
+
+As you can see, the function above accepts a single argument of type `never`. In practice, this function can never (pun intended) be called with an argument that is not of type `never` (i.e., with an actual value).
+
+Let’s revisit our function to take advantage of our super useful function:
+
+<Gist gistLink="dsebastien/5a7b6bb757b382f32749901b544fee42" />
+
+We’re now calling the `assertUnreachable`function in the default clause of our switch. For the moment, there is a case for each possible value of the `ElementState`enum. This code compiles fine since the default case may never be reached (since we consume all the possible values through the cases).
+
+Now, if we modify the `ElementState` enum and add a new element to it, the code above won’t compile anymore, until we add a case for the new possible value.
+
+And there we have it, a much safer version of the switch statement.
+
+### Conclusion
+
+In this article, I’ve shared a neat little trick that the `never` type of TypeScript enables. Thanks to our `assertUnreachable(never)` function, we were able to write an exhaustive switch statement and we are sure that the compiler will tell us whenever we forget to adapt the code in case the backing enumeration changes.
+
+This pattern drastically improves the compile-time safety by ensuring that we do cover all the possible cases.
+
+Of course, the general advice of being careful with switch statements remain; don’t abuse those in your code. But if you do need to use one, do it safely! :)
+
+That’s it for today!
+
+<BlogPostSignature />
