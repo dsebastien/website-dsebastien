@@ -1,0 +1,100 @@
+---
+title: "Angular Template Type Checking"
+summary: "In Angular, a neat new template type checking mode has been introduced, called strictTemplates. Let me tell your what it is and why you should enable it."
+publishedAt: '2020-06-16'
+image: '/static/images/blog/2020/zoom.jpeg'
+slug: 'customizing-your-angular-apps-webpack-configuration'
+categories: [angular, typescript, web development, programming]
+keywords: [angular, typescript, web development, software development, programming, coding]
+published: true
+---
+
+In Angular 9, a neat new template type checking mode has been introduced, called `strictTemplates`. Let me tell your what it is and why you should enable it.
+
+<Image
+  alt={`Zoom in`}
+  src={`/static/images/blog/2020/zoom.jpeg`}
+  width={700}
+  height={467}
+  priority
+/>
+
+In this article, we’ll look at an awesome new flag of Angular 9+, which you can enable and leverage to discover/fix issues before you ship code to production.
+
+## What is template type checking
+
+When you write TypeScript code, you know that the compiler will yell at you whenever you screw up. Forgot to define a type? Forgot to provide a parameter? Forgot to return a value? Don’t worry, the compiler has got your back. It won’t find everything (because compilation is only part of the story), but it will help you uncover the obvious issues in your code.
+
+Now, you might not all be aware of this, but Angular converts your templates into TypeScript code, whether those are separate HTML files or part of single file components.
+
+Of course, if templates are transformed into TypeScript code, then these can be type-checked like the rest of the codebase. Isn’t that awesome?
+
+Thanks to template type checking, we can discover issues with expressions embedded in our templates and avoid discovering those issues at runtime.
+
+## Template type checking modes
+
+With Angular 9 , there are three different [template type checking](https://angular.io/guide/template-typecheck#template-type-checking) “modes” or “levels”:
+
+* Basic
+* Full
+* Strict
+
+As you can guess, the basic mode is not very strict, which you might see as positive: “hey, leave me alone”. This mode mostly works in the same way as the previous versions of Angular; it will only check top-level expressions in your templates (e.g., fields & properties that you use exist on the component class). Honestly, this level of type checking is really _weak_. The basic mode is enabled when the `fullTemplateTypeCheck`flag is set to `false`.
+
+If you enable the “full” mode, then Angular will be more careful and it’ll also type check things like pipes and embedded views (created when you use things like ngIf, ngFor, ng-template, etc). Overall, this mode provides additional safety, but who likes half measures? To enable it, set the `fullTemplateTypeCheck`flag to `true`.
+
+Finally, the new “strict” mode enforces full template type checking and catches many more errors at build time. In strict mode, the “full” mode checks are enabled and, in addition, many more things are checked:
+
+* component bindings and assignability (obeying TypeScript’s `strictNullChecks`flag)
+* types of components and directives (including generics!)
+* context types (e.g., allowing to fully type check ngFor loops)
+* event objects (i.e., `$event`) for components, directives, DOM & animation bindings
+* type of references to DOM elements
+* safe navigation expressions
+* (and probably more)
+
+Before Angular 9, we needed to enable/use the [AOT](https://angular.io/guide/aot-compiler) mode to benefit from additional type checks. Now, it’s much simpler and much faster.
+
+To enable the strict mode, you just have to set the `strictTemplates` flag to `true`.
+
+Note that these flags are configured in your “tsconfig.json” file:
+
+<Gist gistLink="dsebastien/df18cd41892ff73366bfe04ebd0d9fd3" />
+
+In addition, I really recommend you to enable the strict mode of TypeScript, but that’s a story for another day.
+
+## To be strict or not to be?
+
+So which template type checking mode should you use?
+
+Well if you read my blog or tweets regularly, you probably know the answer already: strict mode of course! In any case, the strict mode will most probably become the default as of Angular 10!
+
+Indeed, depending on your project, you may need to increase the strictness step by step, resolving the unveiled issues as you go.
+
+The thing is that, for a large project, it can take a while to fix the errors noticed by the type checker. This is the same story for TypeScript’s strict mode.
+
+For new/young projects though, it’s really straightforward: enable the strictest mode for both Angular and TypeScript from the get go!
+
+BTW, the Angular team has written a nice guide to help you [troubleshoot template errors](https://angular.io/guide/template-typecheck#troubleshooting-template-errors). As the guide indicates, instead of fully disabling strict type checking, you can disable specific strict checks so that you can remain “mostly” in strict mode, while still benefiting from the other strict checks. That is, until you are able to go back to the full-blown strict mode of course.
+
+Check out the official docs for the full list of supported strict mode flags.
+
+## Benefits
+
+To me, the benefits are quite obvious: the sooner you discover potential bugs, the happier your end users will be, no matter what.
+
+Not only you deliver better quality software (which, as a software craftsman should make you feel good), but ultimately, you also spare time and avoid needless stress in production.
+
+Time that you save thanks to better type checking can be used to deliver more business value, which is much more rewarding than having to wake up in the middle of the night to fix something that the compiler could’ve noticed.
+
+Anything that can be caught at build time should be; anything that can’t should be caught by automated tests. The rest should be caught by code reviews. Enough said ;-)
+
+## Conclusion
+
+In this article, I’ve quickly introduced the different template type checking modes supported by Angular 9, including the awesome new “strict” mode.
+
+I’ve also tried to convince you to go ahead and enable the strict mode asap. If you’ve read thus far then please don’t disappoint me; go ahead and enable it right away. I’m curious to know how many bugs it catches for your codebase :D
+
+That’s it for today!
+
+<BlogPostSignature />
