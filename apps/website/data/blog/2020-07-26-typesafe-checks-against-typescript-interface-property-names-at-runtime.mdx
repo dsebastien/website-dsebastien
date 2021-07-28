@@ -79,7 +79,9 @@ So what can we do instead?
 
 Fortunately for us, since [TypeScript 2.1](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html), we can use the `keyof` keyword, also called Indexed Type Query. Using `keyof`, we can get the type of permitted property names for a type `T` :
 
+```
 type PartialUpdateKeys = keyof PartialUpdate<MeetingDto>; // "A" | "B" | "C" | ...
+```
 
 We’re almost there. Now the trick is to combine generics with `keyof` to have strong typing for property names, while still being able to compare against those property names at runtime.
 
