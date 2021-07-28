@@ -1,0 +1,131 @@
+---
+title: "Embedding translations in your JS bundles with ngx-translate"
+summary: "Embedding translations in your JS bundles can be useful to speed things up if you know that users need to switch between languages regularly. Here's how to do it"
+publishedAt: '2020-05-30'
+image: '/static/images/blog/2020/translate.jpeg'
+slug: 'embedding-translations-in-your-js-bundles'
+categories: [angular, i18n, typescript, web development, programming]
+keywords: [angular, internationalization, i18n, typescript, javascript, web development, software development]
+published: true
+---
+
+You may not always want to fetch your translations through additional HTTP requests. Let me show you how you can safely embed them in your JS bundles using TypeScript and [ngx-translate](http://www.ngx-translate.com/).
+
+<Image
+  alt={`Git`}
+  src={`/static/images/blog/2020/translate.jpeg`}
+  width={700}
+  height={525}
+  priority
+/>
+
+As far as I know, it seems that most people prefer to load translations for the current language at runtime, through HTTP requests as the application starts and even later on when the user decides to switch to another language. In my application though, I’ve chosen to include all of the translations in the main JS bundle.
+
+With this approach, there’s no need to load translations later on; everything is there right from the start. It does indeed put an additional weight on the initial load time, but since is this going to be an offline-first application, this is not a big issue for me. It can also be optimized, for instance by isolating translations in their own bundle, limiting the impact and allowing for longer term caching. I’m not going to cover that here though.
+
+In this article, I’ll describe how I’ve implemented this. In addition, I’ll also shared the types I’m using with TypeScript to prevent some mistakes.
+
+## Translation files
+
+First of all, let’s create two translations files. Here I’ll assume en\_US and fr\_BE:
+
+en\_US.json:
+
+<Gist gistLink="dsebastien/16b0c6f8df7623b217c514b00a638780" />
+
+fr\_BE.json:
+
+<Gist gistLink="dsebastien/57329257b184d4f93c11e4b259bd3bf7" />
+
+As you can see, nothing fancy here. I’m just wrapping all translations in an “I18N” object so that all translations are prefixed by “I18N.” whenever they’re used within the app; making it easy to locate them later on.
+
+## Safely importing the translations at compile time
+
+In order to include the translations in our bundle, we’re first going to load these using TypeScript:
+
+<Gist gistLink="dsebastien/ec08ee4f1ad280d80da64871adfe666f" />
+
+The import statements above takes advantage of a feature [introduced in TypeScript 2.9](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-9.html#new---resolvejsonmodule) called “resolveJsonModule”, which allow to import JSON files easily. This feature can be enabled by setting the corresponding property to `true` in tsconfig.json:
+
+```
+"resolveJsonModule": true,
+```
+
+The last line is interesting because it creates a custom type that represents the shape of a translations file. I’ll use this in a second to ensure that all of the translation files have the same exact shape, which allows me to ensure that I haven’t forgotten to translate something in one of the languages supported by the application. It’s not perfect, but it helps. What I do is that I write the “master” translation first (English), then I translate to the other supported languages.
+
+Once loaded, I add the translations into a map/dictionary structure:
+
+<Gist gistLink="dsebastien/58d1ff981a6a7eb6ac3f692d5842ae15" />
+
+Pay attention to the type associated with each key in the map; it is indeed the custom type that we have created based on the english translations file. This is how I ensure that all the translation files have the expected _shape_. This code will not compile if any of the translation files diverges from the “master”.
+
+Next up is the representation of a single language. I’ve taken this one 1:1 from my current project; you can enrich or simplify it as you wish:
+
+<Gist gistLink="dsebastien/b33d9680593ecaec8e341ff4efb708c8" />
+
+It simply gives the base information about a language:
+
+* An ISO (ISO 639–1 + ISO 3166–1 alpha-2) code
+* Each of its parts separately (code and region)
+* A translation key for the language: useful for language change components) (e.g., English)
+* A short translation key for the language: useful for condensed language change components (e.g., EN)
+
+We can also define a class to hold the list of languages:
+
+<Gist gistLink="dsebastien/e77216eed5995f509261116146848889" />
+
+This class is useful because it allows to get a specific language with a nice/readable syntax:
+
+```
+Languages.EN_US
+```
+
+In addition, thanks to the `supportedLanguages` array, we can easily implement a function that looks up a `Language` object based on its code or ISO code:
+
+<Gist gistLink="dsebastien/2a86105fbd2a51be7fca6455f817c524" />
+
+Great, now we have easy and type-safe means to access our languages and translations.
+
+## Bonus: noticing missing translations
+
+Sometimes, we’re so focused on getting to the next task that we forget to add the required translations. And, if we do, then we need to see that they’re missing.
+
+One way to make missing translations more apparent is to implement the `MissingTranslationHandler` interface of ngx-translate:
+
+<Gist gistLink="dsebastien/55dba97998b918c1ebf20477cb5130e1" />
+
+At least that won’t go unnoticed for long ;-)
+
+## Injecting our translations into ngx-translate
+
+Now, let’s see how to inject our translations into ngx-translate.
+
+Luckily for us, ngx-translate has the notion of a [TranslateLoader](https://github.com/ngx-translate/core/blob/master/projects/ngx-translate/core/src/lib/translate.loader.ts). The goal of this interface is to provide means retrieve translations for a given language.
+
+ngx-translate defaults to the [HTTP loader](https://github.com/ngx-translate/http-loader), which uses Angular’s HttpClient to retrieve the translations at runtime through HTTP requests. Since we want to skip that and embed our translations, we need a custom implementation:
+
+<Gist gistLink="dsebastien/f808a9c57af065519a0234718295bd51" />
+
+Since we have already imported our translations, there’s no need to fetch them; we simply need to extract the corresponding language from the translations map.
+
+To configure ngx-translate, we need to create a `TranslateModuleConfig` object:
+
+<Gist gistLink="dsebastien/3073bc84d60df543a4d314ef0eb22e27" />
+
+Finally, to make use of it, we need to pass it along when we import the module:
+
+<Gist gistLink="dsebastien/3c76a58292d925cbfd21307ea2faf657" />
+
+By the way, notice the calls that I make at the end to the `registerLocaleData` method of Angular. This is how we can load additional locale information provided by Angular, which is necessary if you use things like the `DatePipe`, `CurrencyPipe`, `DecimalPipe`or `PercentPipe`. By default, Angular only includes locale data for en-US. Since we have this codified in our application through the `Languages` class, we can easily reuse it here. Check out the [internationalization guide of Angular](https://angular.io/guide/i18n) if you want to know more.
+
+## Conclusion
+
+In this article, I’ve shared the code that I use in my current application to statically load the translations and include them as part of the main JS bundle.
+
+Then, I’ve explained how to integrate the static translations with ngx-translate using a custom loader. This should also be possible with libraries like [Transloco](https://ngneat.github.io/transloco/), but I didn’t dive into that one yet ;-)
+
+Finally, I’ve also explained how to avoid forgetting some translations by leveraging some cool TypeScript features.
+
+That’s it for today!
+
+<BlogPostSignature />

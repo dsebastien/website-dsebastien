@@ -27,7 +27,7 @@ Instead, I’ll assume that you know what you’re doing and that the switch sta
 
 I’ll show you how to leverage TypeScript’s `never` type to ensure that you did cover all the possible cases, for instance when using a switch against an enumeration.
 
-### Starting point
+## Starting point
 
 Let’s assume that we have the following enum as starting point:
 
@@ -45,7 +45,7 @@ Now, assume that we need to create a basic permission system to determine who ca
 
 As the application evolves, the enums will probably evolve too, requiring us to adapt the rules over time.
 
-### Unsafe solution
+## Unsafe solution
 
 If you aim to define a function to determine whether the user can edit an element or not, you may start like this:
 
@@ -61,7 +61,7 @@ So what can we do to avoid this? Right off the bat, you might want to replace `r
 
 Can the compiler actually help us?
 
-### TypeScript’s Never type to the rescue
+## TypeScript’s Never type to the rescue
 
 The good news is that TypeScript can help us make that coder _much_ safer. One of [TypeScript’s basic types](http://typescriptlang.org/docs/handbook/basic-types.html) is called [never](https://www.typescriptlang.org/docs/handbook/basic-types.html#never). The `never` type can be used to represent values that _never_ occur.
 
@@ -85,7 +85,7 @@ Now, if we modify the `ElementState` enum and add a new element to it, the code 
 
 And there we have it, a much safer version of the switch statement.
 
-### Conclusion
+## Conclusion
 
 In this article, I’ve shared a neat little trick that the `never` type of TypeScript enables. Thanks to our `assertUnreachable(never)` function, we were able to write an exhaustive switch statement and we are sure that the compiler will tell us whenever we forget to adapt the code in case the backing enumeration changes.
 
