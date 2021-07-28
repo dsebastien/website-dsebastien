@@ -1,0 +1,183 @@
+---
+title: "What's new with TypeScript 4.0"
+summary: 'Everything new with TypeScript 4.0'
+publishedAt: '2020-07-07'
+image: '/static/images/logos/typescript.svg'
+slug: 'whats-new-with-typescript-4-0'
+categories: [typescript, javascript, programming]
+keywords: [typescript, javascript, software development, programming, coding]
+published: true
+---
+
+We’ve just finished migrating to TS 3.9, and the 4.0 version is already here!
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Angular`}
+    src={`/static/images/logos/typescript.svg`}
+    width={400}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+In this article, I’ll go over everything that’s just been released as part of [TypeScript 4.0](https://devblogs.microsoft.com/typescript/announcing-typescript-4-0/).
+
+I’ll only cover the language features. I might write additional posts to cover what’s also coming regarding editor productivity, performance, and bug fixes.
+
+## Class property inference from constructors
+
+Currently, when `tsc` is configured in`noImplicitAny` mode, the following TS code doesn’t compile:
+
+<Gist gistLink="dsebastien/47f4caf69371aebbb9e42115dfe1cb10" />
+
+Now that [this PR](https://github.com/microsoft/TypeScript/pull/37920) has been merged and thus, as of TS 4.0, the code above _will_ compile and TypeScript will infer the type of `x` to be `string | boolean`.
+
+This is one more case where TypeScript’s type inference will help us out!
+
+## Short-circuiting assignment operators
+
+This [proposal](https://github.com/microsoft/TypeScript/issues/37255), introduced by Daniel Rentz, corresponds to a [TC39 proposal called “proposal-logic-assignment”](https://github.com/tc39/proposal-logical-assignment), which is now in Stage 3 (i.e., [almost good to go](https://tc39.es/process-document/)!).
+
+It aims to combine logical operators and assignment expressions. Combined with [nullish coalescing](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-7.html#nullish-coalescing), which we’ve got since TS 3.7, we will be able to write more condensed code.
+
+Here’s an example given in the proposal:
+
+```
+obj1.obj2.obj3.x ??= 42;
+```
+
+And the same code without those new short-circuiting operators:
+
+```
+obj1.obj2.obj3.x = obj1.obj2.obj3.x ?? 42;
+```
+
+As you can see, with support for this, we would have an even more expressive language, and we’d be able to combine checks and assignments, which would be great.
+
+As mentioned by Daniel Rosenwasser, we’d get one such operator for each of the logical operators, thus:
+
+```
+LeftHandSideExpression &&= AssignmentExpression
+LeftHandSideExpression ||= AssignmentExpression
+LeftHandSideExpression ??= AssignmentExpression
+```
+
+Corresponding to what we can currently do with:
+
+```
+LeftHandSideExpression && (LeftHandSideExpression = AssignmentExpression)
+LeftHandSideExpression || (LeftHandSideExpression = AssignmentExpression)
+LeftHandSideExpression ?? (LeftHandSideExpression = AssignmentExpression)
+```
+
+## Allow unknown on catch clause bindings
+
+Currently, if you try to add a type annotation to a catch clause, the compiler complains:
+
+<Gist gistLink="dsebastien/0cfc3b8528b2cb8e96b3b1043fa411a7" />
+
+The code above does not compile and it raises the following error: `TS1196: Catch clause variable cannot have a type annotation`
+
+At this point, we simply can’t add a type annotation to a catch clause, which is rather sad from a type safety perspective. The problem is that the errors are always considered to be `any`, which lets us do anything with the object within the catch block.
+
+This behavior is simply due to the fact that, originally, the `unknown` keyword didn’t exist. But now that it does, it would make much more sense to use it here.
+
+As pointed out in the comments of [this proposal](https://github.com/microsoft/TypeScript/issues/36775), we could get a new strict flag to let us enforce this by default (i.e., make all catch clause errors to be of type unknown). This would force us to correctly check the type before making use of it within the block.
+
+This is one improvement that I’m really interested about!
+
+## Variadic Tuple Types
+
+Barbaric name for an awesome new feature. If you don’t know about tuples yet, [go learn about those first](https://www.typescriptlang.org/docs/handbook/basic-types.html#tuple).
+
+I’m not the biggest fan of tuples (I generally prefer objects/custom types), but sometimes they can indeed prove useful, for instance while writing tests (or type definitions for weird libraries like React :p).
+
+TypeScript 4.0 improves type inference and now allows to correctly type functions dealing with tuples.
+
+First of all, it now supports generics when defining tuple types, allowing them to use generic types defined on a function for tuple elements. As the release notes state, this means that we can represent higher-order operations on tuples and arrays even when we don’t know the actual types we’re operating over.
+
+The release notes include a few examples:
+
+<Gist gistLink="dsebastien/d87a9b1a6a7a225318c6891e65fa7667" />
+
+As you can see above, the `tail` function returns an array, or elements of type `T`. That code is simple to write/understand, which is awesome. Thanks to this new feature, you can see that `r1` and `r2` are correctly typed.
+
+The other improvement is that spread elements can now appear anywhere in a tuple; not just at the end:
+
+<Gist gistLink="dsebastien/a7a8efdf4506f6417e113f4cdac7be93" />
+
+With TS 3.9.x and earlier, couldn’t compile. With TS 4.0, we will be able to do this and the compiler will happily flatten the spreads, wherever they are positioned.
+
+As explained in the release notes, by combining those two features, we can now better type things like the `concat` function:
+
+<Gist gistLink="dsebastien/31b40d3ef52b4bfa849ce6cd6fcb92f3" />
+
+Awesome!
+
+These new type inference improvements will have a great impact on the quality of our code and I can’t wait to use those in production.
+
+Check out the [complete release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-4-0-beta/) for more details. For instance, they also cover how this will improve use cases like function composition and partial argument application.
+
+## Labeled Tuple Elements
+
+Another [proposal](https://github.com/Microsoft/TypeScript/issues/28259), introduced by Brian Kim, aims to give us the capability of defining labels for tuple elements.
+
+Currently, tuples are declared like this:
+
+```
+// length, count
+type Segment = \[number, number\];
+```
+
+Since we can’t assign labels to the tuple elements, the simplest (but really ugly) solution is to rely on comments to remind us of what each element corresponds to.
+
+The other solution (cleaner) is to use custom types that have more useful names. Still, there’s room for improvement.
+
+Some languages such as [C#](https://docs.microsoft.com/en-us/dotnet/csharp/tuples#named-and-unnamed-tuples) and Python for instance support this.
+
+If this gets added to the language, then we would be able to create more expressive tuples much more simply:
+
+```
+type Segment = [length: number, count: number];
+```
+
+Here, by taking a look at the tuple, we directly know what each number corresponds to.
+
+This would be really useful to clearly understand what tuples are composed of. In addition, as mentioned in the proposal, it would also add more expressiveness to APIs that manipulate/return tuples.
+
+As stated by Daniel Rosenwasser, tuple element names won’t enforce anything in the type system; they’ll exist purely to communicate intent.
+
+## Adapt TypeScript’s support for React
+
+Just like TypeScript, React moves crazy fast.
+
+Since I’ve published [my book about TypeScript, React, Angular, and Vue](https://www.amazon.com/gp/product/B081FB89BL?pf_rd_r=F02ZS5HWMKCHHHY5N0JB&pf_rd_p=6fc81c8c-2a38-41c6-a68a-f78c79e7253f), things have continued to evolve. My chapter about React remains relevant, but the React.createElement API is [changing](https://github.com/reactjs/rfcs/blob/createlement-rfc/text/0000-create-element-changes.md).
+
+Since TypeScript supports JSX, it indeed needs to follow those evolutions. This is tracked in [this issue](https://github.com/microsoft/TypeScript/issues/34547) and a [PR has been opened already](https://github.com/microsoft/TypeScript/pull/39199). That modification should be included in TS 4.0.1.
+
+Next to that, support for custom JSX factories will land in TS 4.0, allowing us to customize the fragment factory through the `jsxFragmentFactory` option. Check out the release notes and the [following PR](https://github.com/microsoft/TypeScript/pull/38720) for details about this.
+
+## Breaking changes
+
+A few breaking changes are planned with TS 4.0:
+
+* lib.d.ts has changed (DOM types have been adapted), meaning that we could face some new compilations errors when upgrading to this new release. For one, the`document.origin` property, which has been obsolete for quite a while, has been removed
+* Overriding accessors with properties (or vice versa) is now considered as an error in all cases. Previously is only raised an error when `useDefineForClassfields` was used. So if you have derived classes that override getters/setters of the base class, then you’ll have compilation errors with TS 4.0. Check out [the PR](https://github.com/microsoft/TypeScript/pull/37894) for details
+* With TS 4.0, when in `strictNullChecks` mode (i.e., always, right??!), the operand of the `delete` operator MUST be `any` , `unknown` , `never` or be optional (i.e., containing `undefined` ); otherwise, the code doesn’t compile. Check out [the PR](https://github.com/microsoft/TypeScript/pull/37921) for details
+
+## Deprecations
+
+The old factory functions for producing TS AST nodes [has been deprecated](https://github.com/microsoft/TypeScript/pull/35282) since a new node factory API is being introduced by TS 4.0.
+
+This shouldn’t be an issue for the vast majority of projects.
+
+## Conclusion
+
+In this article, I’ve shared what’s new and shiny with TypeScript 4.0.
+
+This amazing language continues to evolve at lightning speed.
+
+Can’t wait to use this in production!
+
+<BlogPostSignature />
