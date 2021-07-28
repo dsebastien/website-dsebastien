@@ -1,0 +1,82 @@
+---
+title: "Creating Moment decorators for class-validator"
+summary: "Learn how to create Moment decorators."
+publishedAt: '2020-10-25'
+image: '/static/images/blog/2020/time.jpeg'
+slug: 'creating-moment-decorators-for-class-validator'
+categories: [javascript, programming]
+keywords: [javascript, class-validator, web development, programming, coding]
+published: true
+---
+
+Moment.js is [on the way out](https://momentjs.com/docs/#/-project-status/), but if your project is using it and you’re missing a validator or two, you can still extend it.
+
+<Image
+  alt={`Time. Picture courtesy of https://unsplash.com/@neonbrand`}
+  src={`/static/images/blog/2020/time.jpeg`}
+  width={700}
+  height={460}
+  priority
+/>
+
+[Class-validator](https://github.com/typestack/class-validator) is a pretty popular JS/TS validation library based on decorators. It provides [many built-in validators](https://github.com/typestack/class-validator#validation-decorators), but can also be extended [quite easily](https://github.com/typestack/class-validator#custom-validation-decorators).
+
+As stated in the introduction, I know that Moment.js is now deprecated (and actually has been for quite some time), given its long-standing issues (bloat, lack of support for tree shaking, mutability, etc). My goal in this article is not to discuss whether it’s a good idea to use Moment.js in your project; I think that by now, the answer is pretty clear: it isn’t. But the truth is that we don’t always have a choice and we can’t just ditch it right now if there are other priorities.
+
+In this article, I’ll explain how easy it is to create custom Moment.js validators/custom decorators for class-validator. To show this, I’ll share the code of the `IsDuration` and `MinDuration` validators that I needed on my current project. As their name indicates, these validators respectively ensure that the value to check is a valid Moment duration object, or is a duration that is equal or above the configured minimum.
+
+## Generic validation function
+
+First of all, let’s define a simple function to check whether a given value (string or null) is a valid [duration](https://momentjs.com/docs/#/durations/) object or not:
+
+<Gist gistLink="dsebastien/30ac9bad2bf0ad1b66063c24cd422b84" />
+
+As you can see, this function is pretty simple. It receives a value assumed to be a duration and checks whether it really is one. For details about this logic, check out this [SO question](https://stackoverflow.com/questions/38692972/how-to-validate-a-moment-js-duration), as it works around some quirks.
+
+The tests for this function are straightforward:
+
+<Gist gistLink="dsebastien/e7020151ac51dbb231c9da31c0f622e7" />
+
+## IsDuration validator
+
+Now, let’s wrap our function into an actual Moment validator:
+
+<Gist gistLink="dsebastien/7b194318b7779c92d13868a55d375e05" />
+
+The `isDuration` function is the validator function (which reuses our previous function) and the `IsDuration` function is a TypeScript property decorator.
+
+If you didn’t know, a TS decorator is actually.. a function. So this function receives the standard `ValidationOptions` configuration object os Moment and returns the definition of the validator. When it calls the `ValidateBy` function of moment, it defines how the validation needs to be performed and what message to return if validation fails.
+
+Here are the tests for this validator:
+
+<Gist gistLink="dsebastien/7d54eac8696c4b5025310d3e717a2e1d" />
+
+Using this validator is as easy as adding `@IsDuration()` to the property to validate.
+
+## MinDuration validator
+
+The next validator extends the previous one to ensure that a duration value is equal or above a certain minimum.
+
+Here’s the implementation:
+
+<Gist gistLink="dsebastien/e35029f8d8556e2c48965092f30f3770" />
+
+This second validator is a bit more complex as it accepts an input value, which we’ve called `minDurationInMs` (minimum duration in milliseconds). We pass that value as an argument to the decorator function, which passes it down to the `ValidateBy` function as a constraint and is retrieved/passed to the `minDuration`function using `args?.constraints[0]`.
+
+Once again, such validators are easy to test:
+
+<Gist gistLink="dsebastien/1ebbc0d3c5864aa63fd1ebf27dd08e6d" />
+
+And as easy to use:
+
+<Gist gistLink="dsebastien/27354a5cb158bd5377808d7b3db43e54" />
+
+## Conclusion
+
+In this article, I’ve shown you how easy it is to create custom class-validator validation decorators using TypeScript and simple functions.
+
+These are using the now officially dead Moment.js library, but you can create similar validators for any library or need you may have.
+
+That’s it for today!
+
+<BlogPostSignature />
