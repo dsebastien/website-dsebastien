@@ -1,0 +1,273 @@
+---
+title: "Git concepts for newcomers — Part 3: Commits, log and amend"
+summary: "In this third article of the series, we’re going to discover how to create and modify commits with Git, but also how to look at the commit log."
+publishedAt: '2020-06-02'
+image: '/static/images/blog/2020/commit-log.jpeg'
+slug: 'git-concepts-for-newcomers-part-3-commits-log-and-amend'
+categories: [git, source control management, scm]
+keywords: [git, source control management, scm, dvcs, programming]
+published: true
+---
+
+This is the third article of my Git concepts for beginner series:
+
+- Part #1 — What is a DVCS: [https://itnext.io/git-concepts-for-newcomers-part-1-what-is-a-dvcs-bc873076c424](https://itnext.io/git-concepts-for-newcomers-part-1-what-is-a-dvcs-bc873076c424)
+- Part #2 — Working tree and staging area: [https://itnext.io/git-concepts-for-newcomers-part-2-git-repository-working-tree-and-staging-area-a2e720bf3528](https://itnext.io/git-concepts-for-newcomers-part-2-git-repository-working-tree-and-staging-area-a2e720bf3528)
+- Part #3 — Commits, log and amend: [https://medium.com/@dSebastien/git-concepts-for-newcomers-part-3-commits-log-and-amend-6dcbb05370c](https://medium.com/@dSebastien/git-concepts-for-newcomers-part-3-commits-log-and-amend-6dcbb05370c)
+- Part #4 — Branches: [https://medium.com/@dSebastien/git-concepts-for-newcomers-part-4-branches-52aee1da4385](https://medium.com/@dSebastien/git-concepts-for-newcomers-part-4-branches-52aee1da4385)
+
+<Image
+  alt={`Commit log`}
+  src={`/static/images/blog/2020/translate.jpeg`}
+  width={700}
+  height={464}
+  priority
+/>
+
+In this third article of the series, we’re going to discover how to create and modify commits with Git, but also how to look at the commit log.
+
+**Commits** are super important in Git (and any version control system, really). To actually save your changes, you need to create commits (i.e., commit your code). If you don’t _commit_ your changes, then they can be lost at any time (e.g., because of a bad manipulation in your working tree or if you override contents of your staging area). Commits are the atomic units of work for Git.
+
+Moreover, without commits, you won’t be able to _share_ your work with others.
+
+In the previous article, I’ve explained how the staging area of Git works and I’ve told you that everything that is added to this area is _tracked_ by Git.
+
+If you remember, after using the `git add` command, our “hello.txt” file was added to the staging area (aka the index). Once done, the `git status` command told us the following:
+
+<Gist gistLink="dsebastien/919f01cee1a9d4becf6c6f725224d834" />
+
+As I’ve said in the last article, Git considers whatever is part of the staging area to be the content that should be committed next. In the example above, the “hello.txt” file is ready to be committed, as it is part of the staging area.
+
+We saw together that the staging area of Git stores “snaphots” of files/lines added to it. But I insist on the fact that even though you can recover files from the staging area (as we did in the previous post), it is nothing more than a _temporary_ work area; it is _not_ where you actually _save_ your work once and for all.
+
+The staging area is only a tool that you can use to save snapshots of your work and to _assemble_ commits. The term assemble is really important here. You can choose which files and even which lines are to be included in your next commit, allowing you to create commits containing only what is relevant.
+
+But adding files to the staging area/index _does not_ create a commit, it only _prepares_ your next commit; the distinction is important to keep in mind. To create a commit, you need to use the `git commit` command; we’ll learn about it real soon.
+
+Once a commit is created based on contents in the staging area, that content is added/moved to the repository (the third zone we’ve discussed in the previous article), and thus stored within the “.git” directory (i.e., the repository). So once a commit has been created, the staging area will be empty.
+
+Once a commit has been created, even if the working tree is deleted entirely (expect for the “.git folder indeed) and even if the staging area is cleared, your content can still be recovered.
+
+You can think of commits as long term and _stable_ snapshots that are stored in your Git repository. Commits are stable in the sense that Git will never modify the contents of a commit _unless you explicitly ask it to_ (we’ll see how later in this article).
+
+## Git log
+
+Before we create our first commit, let’s first discover the **commit log**. It’s useful to know about it because you’ll use it all of the time.
+
+The commit log is a log of all of the commits in your Git repository, showing the most recent commits first (unless you add parameters to change the contents/order).
+
+To show the log, you can use the `git log` [command](https://git-scm.com/docs/git-log).
+
+Here’s an example commit log taken from the official documentation:
+
+```
+$ git log
+commit ca82a6dff817ec66f44342007202690a93763949
+Author: Scott Chacon <schacon@gee-mail.com>
+Date:   Mon Mar 17 21:52:11 2008 -0700
+
+    Change version number
+
+commit 085bb3bcb608e1e8451d4b2432f8ecbe6306e7e7
+Author: Scott Chacon <schacon@gee-mail.com>
+Date:   Sat Mar 15 16:40:33 2008 -0700
+
+    Remove unnecessary test
+
+commit a11bef06a3f659402fe7563abf99ad00de2209e6
+Author: Scott Chacon <schacon@gee-mail.com>
+Date:   Sat Mar 15 10:31:28 2008 -0700
+
+    Initial commit
+```
+
+As you can see above, by default, each commit is listed with:
+
+* **The commit hash:** uniquely identifying this commit and corresponding to the hash of the commit contents
+* **The author of the commit**
+* **The date/time of creation**
+* **The commit message**
+
+If we put (numerous) technical details aside, then you now know the most important pieces of information that a commit is composed of; in addition to the actual modifications that is.
+
+In a later article, I’ll share a few bash aliases that you can use to see a more practical log.
+
+If you look at the commit log of our test repository, it won’t be as interesting:
+
+```
+$ git log
+fatal: your current branch 'master' does not have any commits yet
+```
+
+Indeed, since we haven’t created a single commit yet, there’s not much to see here. Let’s fix that now!
+
+You can learn tons more about the git log command [here](https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History).
+
+## How to create a commit
+
+Once you have staged changes using the `git add` command, creating a commit is really easy; you simply need to invoke the `git commit` [command](https://git-scm.com/docs/git-commit). This command is the one you’ll use most often, along with `git add`.
+
+Like most Git commands, [git commit](https://git-scm.com/docs/git-commit) has many options. We’ll explore only a few basic ones here.
+
+Go ahead and execute the `git commit` command from your working tree (assuming that you still have the modifications we made earlier added to the staging area):
+
+```
+git commit
+```
+
+Once you do so, Git will open the default editor (vim in my case) for you to enter the **commit message**. That commit message should describe the set of changes that you’re committing to the repository:
+
+<Gist gistLink="dsebastien/c86f39bc8c9fc0665571d7fde18d277b" />
+
+Once you’re done, save the file and close the editor. After that, Git will actually create the commit in the repository:
+
+```
+$ git commit
+[master (root-commit) d0f8595] Added the hello world example
+ 1 file changed, 1 insertion(+)
+ create mode 100644 hello.txt
+```
+
+As you can see above:
+
+* Git has created a commit that has changed one newly created file: “hello.txt”
+* That commit has a specific message: “Added the hello world example”
+* That commit has a specific hash: d0f8595 (note that the actual hash is much longer, but Git usually only shows the short 7-character version; you can [learn more about that here](https://stackoverflow.com/questions/43665836/in-git-what-is-the-difference-between-long-and-short-hashes#:~:text=A%20short%20hash%20is%20just,c26cf8af130955c5c67cfea96f9532680b963628%20you%20were%20looking%20for.&text=The%20short%20hash%20shows%20the%20first%20seven%20characters%20of%20the%20hash.))
+
+Now that your commit has been created, you can take a look at the status using `git status`:
+
+```
+$ git status
+On branch master
+nothing to commit, working tree clean
+```
+
+Now that the commit has been created:
+
+* Our working tree is “clean”; it matches _exactly_ the contents of the repository
+* The staging area is empty since the snapshot that we put there has now been moved into the repository as part of our commit
+
+Great! Last but not least, we can now look at the commit log once again:
+
+```
+$ git log
+commit d0f8595d422d8c9dd5c55afd88a3052b19af6e5a (HEAD -> refs/heads/master)
+Author: Seb <seb@developassion.be>
+Date:   Tue Jun 2 15:15:17 2020 +0200
+Added the hello world example
+```
+
+This time the log is more interesting; we now see that our commit has indeed been added to the Git repository and is thus safely stored within the .git folder.
+
+Side note: On the first line of the log, you can see the full hash of our commit. There’s also a “cryptic” mention after it: `(HEAD -> refs/heads/master)`. I’ll try explain this clearly in the next article, when we discover what branches _are_, how they work and what the “HEAD” of a branch is.
+
+Bonus points: If you want to already have a good mental model in mind, then accept the idea that our commit has been added to the “master” branch because it’s the branch that is currently checked out and shown in our working tree. Unless we switch to a different branch, our commits will be part of that branch. Also, by creating our commit, we’ve moved the HEAD (also called _tip_) of the branch forward; it now points to our newly created commit. This means that, if we switch to a different branch and checkout the master again, we’ll be at that exact same point in the history. Don’t worry if this isn’t clear yet; it’s normal. I’ll come back to this in the next article.
+
+Here are a few useful tips about the `git commit` command:
+
+* You can pass the message directly like this: `git commit -m 'Insert your message here'`
+* You can add the `— dry-run` argument to see what the commit will do, without actually doing it
+* You can use the `git reset` [command](https://git-scm.com/docs/git-reset) right after creating a commit if you realize that you made a mistake: `git reset — soft HEAD~1`. This will remove the commit and put back the corresponding changes to the staging area. Note that this command will only work if you have at least two commits in the branch. You can find out more about this [here](https://devconnected.com/how-to-undo-last-git-commit/)
+* You can use `git commit --all` to ask git to automatically detect modified/deleted (not new!) files, add them to the index and then commit those; all in one step. Although, I really don’t recommend this. It’s much safer and cleaner to precisely select what should be added so that your commits are clean and to the point. This option can be useful while you’re iterating on your code, but if you do use it then you should absolutely rework your commits before sharing them with others; otherwise you’re turning your Git log into an ugly mess (and this is a very common issue)
+* You can use `git commit --patch`to interactively select what to include in your commit. I mention it, but in practice I recommend using a visual Git tool, which is much more user-friendly
+* You can use the `— no-verify` flag to bypass pre-commit and commit-msg hooks. We’ll learn about hooks much later in the series as it is an advanced subject. This flag is often useful in projects that have automatic behavior before commits are created or to validate that commit messages comply with specific conventions, because there are cases when you don’t need/want the whole shabang to run
+
+There you have it, now go ahead and create millions of commits. Don’t worry and do create as many as you’d like while you’re working. As I’ll show you in the upcoming articles, you can modify/regroup/reorder/etc your commits easily with Git (with some caveats that I’ll tell you about later on).
+
+## SVN commits vs Git commits
+
+For those of you coming from SVN, I want to take bit of time to clarify some misconceptions that you might have about Git commits.
+
+Git commits and SVN commits are not the same things at all. Here are some of the major differences to keep in mind:
+
+* With SVN, commits are created on the central repository and require it to be available to be able to commit; this is not the case with Git. Git commits are created/stored locally and don’t depend on the availability of any other system/server/repository
+* While SVN tracks differences (i.e., commits represent diffs between the previous version and the next), Git creates snapshots of the whole files. If you create 3 commits with different modifications of the same file, Git will actually save the file three times. This is hugely beneficial for performance, as Git doesn’t need to reassemble files by applying diff after diff after diff like SVN does. Instead, it always has the complete files readily available. Don’t worry about the performance; it works mighty well. By the way, this snapshot-based design has a huge impact on many things in Git (e.g., performances when switching between branches)
+
+## Fixing oopsie doopsies with amend
+
+If you create a commit and realize that you’ve made a mistake; for instance if you have forgotten to add a file to the commit, then you can easily adapt the last commit using the `--amend` flag of `git commit`.
+
+To do so, you simply need to stage your additional changes (or changes that cancel previous ones) using `git add`. Then execute `git commit --amend`.
+
+Let’s try it out. Currently, your working tree should be clean. Let’s make some changes to the “hello.txt”:
+
+```
+$ echo "Git is cool" >> hello.txt
+$ cat hello.txt
+Hello world
+Git is cool
+```
+
+Now, check the new status:
+
+```
+$ git status
+On branch master
+Changes not staged for commit:
+modified:   hello.txt
+
+no changes added to commit
+```
+
+Then, add the changes to the index and show the status again:
+
+```
+$ git add -A
+$ git status
+On branch master
+Changes to be committed:
+modified:   hello.txt
+```
+
+Okay, at this point we could create a new commit, but what we want instead is to update our previous commit to include our staged changes. We can do this easily using the `--amend` flag:
+
+```
+$ git commit --amend
+[master 7750f16] Added the hello world example
+ Date: Tue Jun 2 15:15:17 2020 +0200
+ 1 file changed, 2 insertions(+)
+ create mode 100644 hello.txt
+$ git status
+On branch master
+nothing to commit, working tree clean
+```
+
+As you can see, the working tree is now clean again. If we ask Git to show us the differences introduced by our commit, we can see that our new line has indeed been included in our commit:
+
+```
+$ git log -c
+commit 7750f167330c17ae08193cbe03d5c5c89a91bb4c (HEAD -> refs/heads/master)
+Author: Seb <seb@developassion.be>
+Date:   Tue Jun 2 15:15:17 2020 +0200
+Added the hello world example
+diff --git a/hello.txt b/hello.txt
+new file mode 100644
+index 0000000..cf3b027
+--- /dev/null
++++ b/hello.txt
+@@ -0,0 +1,2 @@
++Hello world
++Git is cool
+```
+
+Cool, right?
+
+Fixing commits is super useful, but you must always remain careful when doing that, since it does change the history of your git repository.
+
+There are a few other git commands which can also rewrite the history; I’ll tell you about those later on in the series.
+
+Changing the history is not an issue per se, but it’s one of the ways in which you can lose changes. To be honest, there are often ways to still recover your data, but it may become hard to do so (dark arts involved :p).
+
+Even more importantly, you should never ever rewrite the history of a Git repository if the concerned branches/commits have been shared with others, as it’ll cause all sorts of annoying issues. It’s just like time travel; you can go back in time, but never ever change history or all hell breaks loose 😎.
+
+## Conclusion
+
+In this article, I’ve introduced you to a few new Git commands allowing you to really save your work and to take a look at the history of your repository. I’ve also shown you a first tool that you can use to rewrite that history.
+
+There are a ton more things to learn about Git, but you’re making great progress. Speed doesn’t matter that much; what matters is understanding. If you gain a clear view of what’s going on, step by step, then you’ll quickly become a Git master!
+
+In the next article of the series, I’ll finally introduce branches, one of the coolest features of Git.
+
+That’s it for today!
+
+<BlogPostSignature />
