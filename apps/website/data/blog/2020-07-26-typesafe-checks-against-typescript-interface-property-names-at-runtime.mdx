@@ -23,7 +23,7 @@ With TypeScript, interfaces only exist during development time. Still, sometimes
 
 In this article, I’ll share a cool and typesafe trick to be able to refer to interface property names at runtime; that is, long after the TS compiler has removed all traces of our interfaces.
 
-### TypeScript interfaces disappear
+## TypeScript interfaces disappear
 
 TypeScript interfaces are awesome. So awesome that they don’t even exist at runtime.
 
@@ -33,7 +33,7 @@ For instance, you might want to do runtime validation of JSON data to ensure tha
 
 In this article, I won’t dive into the details of “why” interfaces disappear, and instead focus on how you can perform strongly typed runtime checks validated at compile time and safe against refactoring.
 
-### A concrete use case
+## A concrete use case
 
 In my last post, I’ve discussed [input validation](https://medium.com/@dSebastien/input-validation-with-nestjs-7184ba81af7e) based on something that I’ve worked on last week. While integrating input validation for my current project, I needed to handle partial updates.
 
@@ -59,7 +59,7 @@ for each(property of partialUpdateObject) {
 
 Alternatively, I could’ve written tons of if checks, for each property, but I could’ve missed some; I preferred to loop over those that were present instead.
 
-### Naive implementation
+## Naive implementation
 
 The simplest expression of a solution looks like this:
 
@@ -75,7 +75,7 @@ But if you’re like me, then you probably won’t like doing this either. Can y
 
 So what can we do instead?
 
-### A cleaner solution
+## A cleaner solution
 
 Fortunately for us, since [TypeScript 2.1](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-1.html), we can use the `keyof` keyword, also called Indexed Type Query. Using `keyof`, we can get the type of permitted property names for a type `T` :
 
@@ -122,7 +122,7 @@ if(meetingUpdateProperties("A") === propertyKey) {
 
 I found this technique here on StackOverflow: [https://stackoverflow.com/questions/33547583/safe-way-to-extract-property-names](https://stackoverflow.com/questions/33547583/safe-way-to-extract-property-names)
 
-### Conclusion
+## Conclusion
 
 In this article, I’ve explained how you can implement safe runtime property name checks against interface property names, even though those interfaces are long gone at that time.
 
