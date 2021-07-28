@@ -1,0 +1,275 @@
+---
+title: 'Angular 10 in Depth'
+summary: 'Everything you need to know about Angular 10'
+publishedAt: '2020-07-27'
+image: '/static/images/logos/angular.svg'
+slug: 'angular-10-in-depth'
+categories: [angular, typescript, javascript, programming]
+keywords: [angular, typescript, javascript, web development, software development, programming, coding]
+published: true
+---
+
+**NEWS**: [Angular 11 is out. Check out my article to learn everything about it](https://dsebastien.medium.com/angular-11-in-depth-9a7372b4a600).
+
+* Update #2: Angular 12 is out. Check out my article about it: https://javascript.plainenglish.io/angular-12-in-depth-7741e759c72
+* Update #1: Angular 11 is out. Check out my article to learn everything about it: https://medium.com/swlh/angular-11-in-depth-9a7372b4a600
+
+In this article, I’ll go over (almost) _everything_ noteworthy in this brand new release. I’ll also highlight what’s changed around Angular.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Angular`}
+    src={`/static/images/logos/angular.svg`}
+    width={400}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+If you want an helicopter view of what’s included, then check out the [official Angular blog](https://blog.angular.io/version-10-of-angular-now-available-78960babd41). Here, I’ll try to dig deeper into the release notes.
+
+Angular 10 is already here, just four months after version 9. Of course during this short time period, there’s _not that much_ that has changed. Still, there are quite a few noteworthy features, in addition to the large number of bug fixes brought by this release.
+
+As a reminder, the Angular team tries to release two major versions per year, so Angular 11 should arrive this fall.
+
+## Support for TypeScript 3.9.x
+
+What can I say? You know me, [I love TypeScript](https://www.amazon.com/gp/product/B081FB89BL). So the very first thing that makes me happy about this release of Angular is the fact that it supports [TypeScript 3.9](https://medium.com/@dSebastien/whats-new-with-typescript-3-9-9095ff9f68a5).
+
+I’ve already published an article about the [new features of TS 3.9](https://medium.com/@dSebastien/whats-new-with-typescript-3-9-9095ff9f68a5), so if you didn’t read it, [go ahead](https://medium.com/@dSebastien/whats-new-with-typescript-3-9-9095ff9f68a5) and upgrade asap, it’s really worth it! I have also written another one about [what’s coming with TypeScript 4.0](https://medium.com/javascript-in-plain-english/whats-new-with-typescript-4-0-beta-a2e674846ef3).
+
+Note that Angular 10 has dropped support for TS 3.6, 3.7 and 3.8! I hope that it won’t hold you back.
+
+Thanks to its support for TS 3.9.x and other improvements in the compiler CLI, type-checking is faster than ever in Angular 10, which should be positive for most projects out there; especially larger ones.
+
+Aside from that, Angular 10 also upgraded to [TSLib 2.0](https://github.com/microsoft/tslib). For those who don’t know, TSLib is an official library providing TypeScript helper functions that can be used at runtime. TSLib works in combination with the `importHelpers` flag of “tsconfig.json”; when enabled, it allows the compiler to generate more condensed/readable code. Anyways, nothing to worry about; TSLib hasn’t changed much..
+
+## Optional stricter settings
+
+Strict mode for the win!
+
+Angular 10 brings the possibility to create stricter projects right at creation time, which is great and should certainly be used for all new projects. To create a project with stricter defaults, use:
+
+```
+ng new --strict
+```
+
+This will allow you to detect issues much sooner (finding out about bugs at build time is better than at runtime, right?).
+
+This new option enables TypeScript strict mode (which you should all enable on your projects!).
+
+Next to that, it also enables strict [Angular template type checking](https://medium.com/javascript-in-plain-english/angular-template-type-checking-e2c99c50f999), which I [wrote about last week](https://medium.com/javascript-in-plain-english/angular-template-type-checking-e2c99c50f999).
+
+It also lowers the budgets in “angular.json” quite drastically:
+
+<Gist gistLink="dsebastien/a202d828b758d5f41ed49b2bcde5317a" />
+
+This is good as it will encourage new users to pay attention to the bundle size of their applications (about that, I’m planning an article on how to analyze the bundle size of your apps).
+
+It also enforces a stricter TSLint configuration which bans “any” (“no-any” is set to `true`), and also enables quite a few interesting rules provided by [codelyzer](http://codelyzer.com/rules/). Note that even though strict, you can still go much further with TSLint. For instance, [here’s the config of one of my projects](https://gist.github.com/dsebastien/19acb20bf30fc2f4a09b60d974f7097c), which you can use as starting point.
+
+I think that this new “strict” option is awesome, but am a bit sad that it isn’t the default rather than an optional flag. I feel like stricter means safer, so why make safer optional? I imagine that the rationale is that by being more lenient by default, Angular feels less scary at first?
+
+Anyways, if you do create a new project, please enable this and go even further; you’ll thank me later.
+
+## New TypeScript configuration layout
+
+With this new release, the TypeScript configuration provided by default in new projects has changed. There’s now a “tsconfig.base.json” file in addition to “tsconfig.json”, “tsconfig.app.json” and “tsconfig.spec.json”.
+
+So why all these configuration files? To better support the way IDEs and build tools look up the types and compiler configuration.
+
+With the new setup, “tsconfig.json” simply contains [TypeScript project references](https://www.typescriptlang.org/docs/handbook/project-references.html) based on the so-called [“solution style”](https://devblogs.microsoft.com/typescript/announcing-typescript-3-9/#solution-style-tsconfig) (Visual Studio is back? :p) brought by TypeScript 3.9, which is great to improve compilation times and enforce a stricter separation between parts of the project:
+
+<Gist gistLink="dsebastien/40cd2e164937779049fae9ad4055e4bb" />
+
+In this case, the separation is there to cleanly isolate application code (taken care of by “tsconfig.app.json”) from tests (handled by “tsconfig.spec.json”).
+
+If you look at the “tsconfig.base.json” file, then you’ll find the bulk of the TypeScript configuration:
+
+<Gist gistLink="dsebastien/9f941c9f5464700fc7a0d89b3f5fd4af" />
+
+Note that this one was generated using the `strict` option discussed in the previous section.
+
+As you can see above, this file only configures TypeScript compiler and Angular compiler options; it doesn’t list/include/exclude files to compile.
+
+The answer is indeed in the “tsconfig.app.json” file, which lists the “main.ts” and “polyfills.ts”:
+
+<Gist gistLink="dsebastien/a98584d08fffed6e3366006d3f6cb517" />
+
+If you have an existing project without this layout, then you should probably review your TypeScript configuration in order to stay aligned and benefit
+
+Ok ok, enough about the TypeScript config.
+
+## NGCC
+
+In case you haven’t done this yet (this was already true with NG9), make sure that you have a `postinstall` script in your “package.json” file to execute NGCC right after an installation:
+
+<Gist gistLink="dsebastien/d4f2247a1ddbdb5b9fa665a137661329" />
+
+Note that in this release, NGCC is _more_ _resilient_. Previously, it [couldn’t always recover when one of its worker processes crashed](https://github.com/angular/angular/pull/36626). So if you sometimes saw issues with NGCC hanging, this should now be fixed.
+
+There were also quite a lot of improvements made to NGCC, including performance-related ones, which is clearly my biggest pain point around NGCC ;-)
+
+## New default browser configuration
+
+Web browsers move faster than ever. Angular follows course and now uses an updated [browserslist](https://github.com/browserslist/browserslist) file (.browserslistrc).
+
+As explained in the official blog post, the side effect of the new configuration is that ES5 builds are disabled by default for new projects.
+
+Of course, at this point it doesn’t make much sense anymore to generate ES5 code. Modern Web browsers support at the very least ES2015. If you still use Internet Explorer, then it’s clearly time to let go of the past!
+
+To get the exact list of supported Web browsers, just execute the following command in your project:
+
+```
+npx browserslist
+```
+
+The output is generated based on the contents of the “.browserslistrc” file at the root; by default it now looks as follows:
+
+<Gist gistLink="dsebastien/8762668f3b9941216c6cd4d4c6328a71" />
+
+You can find out more about this [here](https://angular.io/guide/browser-support).
+
+## Bazel
+
+Sorry to disappoint, but did you know that [Angular Bazel has left Angular labs](https://dev.to/bazel/angular-bazel-leaving-angular-labs-51ja)? [Alex Eagle](https://twitter.com/Jakeherringbone) [wrote about it on dev.to](https://dev.to/bazel/angular-bazel-leaving-angular-labs-51ja) a while ago. Basically, support for Bazel is not part of the Angular project anymore.
+
+Bazel will _never_ be the default build tool in Angular CLI after all…
+
+I won’t go over the reasons here, but make sure to take a look at the article of Alex as it is very interesting (as usual).
+
+## @angular-devkit/build-angular 0.1000.0)
+
+Behind this barbaric name (and version???!), hides an important piece of the way Angular apps are built.
+
+The newest version of this package brought us some cool new features.
+
+The coolest one (if you’re using SASS that is) is the fact that build-angular will now rebase relative paths to assets.
+
+As stated in [the commit](https://github.com/angular/angular-cli/commit/c034477dc5e64259fa1cff23a8d0646748a49521), previously, paths like `url(./foo.png)` referenced in stylesheets and imported in other stylesheets would retain the exact URL. This was problematic since it broke as soon as the importing stylesheet was not in the same folder. Now, all resources using relative paths will be found. Cool!
+
+Another hidden gem in that release is the fact that build-angular now [dedupes duplicate modules](https://github.com/angular/angular-cli/commit/a78d1c3ed14350bbe85bbf01ab30bcf6ad319f29) that [Webpack can’t handle](https://github.com/webpack/webpack/issues/5593). This is done through a custom Webpack resolve plugin.
+
+## And more…
+
+### Incremental template type checking
+
+In this release, the compiler CLI is now able to perform [template type checking](https://medium.com/javascript-in-plain-english/angular-template-type-checking-e2c99c50f999) [incrementally](https://github.com/angular/angular/commit/ecffc35). Hopefully this will save quite a few trees (and maybe a laptop or two)! :)
+
+### CanLoad
+
+Previously, `CanLoad` guards [could only return booleans](https://github.com/angular/angular/issues/28306). Now, it’s possible to return a `UrlTree`. This matches the behavior of `CanActivate` guards.
+
+Note that this doesn’t affect preloading.
+
+### I18N/L10N
+
+Previously, only one translation file was supported per locale. Now, it is possible to specify multiple files for each locale. All of those then get merged by message id.
+
+I can’t say much more about this since I’m only using ngx-translate & transloco these days… Check out this [issue](https://github.com/angular/angular/pull/36792) for more details.
+
+### Service Workers
+
+The default `SwRegistrationStrategy` has been improved. Previously, there were cases where the Service Worker [never registered](https://github.com/angular/angular/issues/34464) (e.g., when there were long-running tasks like intervals and recurring timeouts).
+
+Again, I can’t say much more as [I’m not using NGSW but Workbox](https://medium.com/@dSebastien/building-a-service-worker-with-workbox-5-typescript-webpack-and-angular-5015ba76340b).
+
+### Angular Material
+
+As usual, Angular Material’s releases follow those of Angular, so Angular Material 10 is here, with many changes.
+
+I won’t go over these in this article as it is quite long already, so go [check out the release notes](https://github.com/angular/components/releases) if you’re interested!
+
+## Bug fixes galore
+
+As mentioned a few weeks back, the Angular team has invested _a lot_ of time and effort in bug fixing and backlog grooming. They’ve decreased their issue count by > 700 issues, which is quite impressive.
+
+If you were the victim of known bugs in previous versions of Angular, then it’s probably time to take a look around and see if those aren’t fixed by Angular 10.
+
+A funny one (to me that is) is the fact that enabling [strict template type checking](https://medium.com/javascript-in-plain-english/angular-template-type-checking-e2c99c50f999) caused issues with routerLinks because their underlying type didn’t [include null/undefined](https://github.com/angular/angular/issues/6971). Another one that was fixed is the `KeyValuePipe`, which [didn’t play along well](https://github.com/angular/angular/issues/35743) with the `async` pipe.
+
+While we’re on templates, note that the language service of Angular [now supports](https://github.com/angular/angular/pull/36312) more array-like objects such as `ReadonlyArray` and `readonly` property arrays for `*ngFor` loops. How cool is that? :)
+
+## Deprecations and removals
+
+As stated in the official blog post, the ESM5/FESM5 bundles that were previously part of the [Angular Package Format](https://g.co/ng/apf) are now gone because the downleveling to ES5 is now done at the end of the build process. If you don’t use the Angular CLI to build your application/library and still need ES5 bundles (poor souls..), then you’ll need to downlevel the Angular code to es5 on your own.
+
+IE 9, 10 and Internet Explorer Mobile are not supported anymore. But again, if you ask me, you should just ditch IE altogether at this point. It’s nonsense to keep zombies around.
+
+There are quite a few deprecated elements such as `ReflectiveInjector`, `CollectionChangeRecord`, `DefaultIterableDiffer`, `ReflectiveKey`, `RenderComponentType`, `ViewEncapsulation.Native`, `ngModel`with Reactive Forms, `preserveQueryParams`, `@angular/upgrade`, `defineInjectable`, `entryComponents`, `TestBed.get`, etc.
+
+You can [check out the full list here](https://next.angular.io/guide/deprecations).
+
+## Classes using Angular features without an Angular decorator are not supported anymore
+
+Up to version 9, it was okay to have a class using Angular features without specifying one of the decorators (@Component, @Directive, etc).
+
+With Angular 10, it is now mandatory to add an Angular decorator if a class uses Angular features. This change impacts all cases where you have components extending from a base class and one of the two (i.e., parent or child) is missing an Angular decorator.
+
+Why is this change mandatory? Simply put, because Ivy needs it!
+
+When there’s no Angular decorator on a class, the Angular compiler doesn’t add extra code for dependency injection.
+
+As stated in the [official doc](https://next.angular.io/guide/migration-undecorated-classes), when the decorator is missing from the parent class, the subclass will inherit a constructor from a class for which the compiler did not generate special constructor info (because it was not decorated as a directive). When Angular then tries to create the subclass, it doesn’t have the correct info to create it.
+
+In View Engine, the compiler has global knowledge, so it can look up the missing data. However, the Ivy compiler only processes each directive in isolation. This means that compilation can be faster, but the compiler can’t automatically infer the same information as before. Adding the `@[Directive](https://next.angular.io/api/core/Directive)()` explicitly provides this information.
+
+When the child class is missing the decorator, the child class inherits from the parent class yet has no decorators of its own. Without a decorator, the compiler has no way of knowing that the class is a `@[Directive](https://next.angular.io/api/core/Directive)` or `@[Component](https://next.angular.io/api/core/Component)`, so it doesn't generate the proper instructions for the directive.
+
+The nice thing about this change is that it brings more consistency into the Angular world (and consistency is good :p). Now things are simple: if you use Angular features, then you must add a decorator.
+
+To give you an example, the following code won’t compile with Ivy:
+
+<Gist gistLink="dsebastien/2cad025791a83a4402c6177fb8043877" />
+
+To fix the issue, you need to add a decorator to the `Base` class.
+
+You can learn more about this change [here](https://next.angular.io/guide/migration-undecorated-classes).
+
+## Mandatory generic type for ModuleWithProviders
+
+In previous releases, [ModuleWithProviders](https://angular.io/api/core/ModuleWithProviders) already accepted a generic type, but it was not mandatory. With NG 10, the generic argument is required.
+
+It’s a good thing for type safety anyways, so hopefully you already had the parameter defined:
+
+<Gist gistLink="dsebastien/412a2a43f4ec1554614eb92c078f2708" />
+
+If you stumble upon the following error because of a library that you’re using:
+
+```
+error TS2314: Generic type 'ModuleWithProviders<T>' requires 1 type argument(s).
+```
+
+Then you should contact the library author to get it fixed as ngcc can’t help there. A workaround there is to set `skipLibChecks` to false
+
+## Other breaking changes
+
+Here are notable breaking changes:
+
+* [Resolvers](https://angular.io/api/router/Resolve) behave differently; those that return `EMPTY` will now cancel navigation. If you want to allow navigation to continue, then you need to make sure that your resolvers emit a value; for instance using `defaultIfEmpty(...)`, `of(...)` and the like
+* Service worker implementations that rely on resources with `Vary` headers will not work like they did previously. Vary headers will be ignored. The proposed “solution” is to avoid caching such resources as they tend to cause unpredictable behavior depending on the user agents. Because of this, resources may be retrieved even when their headers are different. Note that [cache match options](https://github.com/angular/angular/pull/34663) may now be configured in NGSW’s config file
+* Property bindings such as `[foo]=(bar$ | async).fubar` will not trigger change detection if the `fubar` value is the same as the previous one. The workaround if you rely on the previous behavior is to manually subscribe / force change detection or adapt the binding in order to make sure that the reference does change
+* The following format codes of `formatDate()` and `DatePipe` have changed; apparently the previous behavior was incorrect for day periods that crossed midnight
+* The function that stands behind the `UrlMatcher` [utility type](https://angular.io/api/router/UrlMatcher) (function alias) now correctly states that its return type may be `null`. If you have a custom Router or Recognizer class, then you need to adapt those
+* Additional occurrences of `ExpressionChangedAfterItHasBeenChecked` can now be raised by Angular for errors that it didn’t detect before
+* Angular now logs at error level when it notices unknown elements / property bindings in your templates. These were previously warnings
+* Reactive forms’s `valueChanges`had a bug with FormControls that were bound to inputs of type `number` ([they fired twice](https://github.com/angular/angular/issues/12540) since 2016! A first time after typing in the input field and a second time when the input field lost focus). Now, number inputs don’t listen to the `change` event anymore, but to the `input` event. Don’t forget to adapt your tests accordingly. Note that this breaks IE9 compatibility, but that’s not a problem for anyone.. right? ;-)
+* The `minLength` and `maxLength` validators now make sure that the associated form controls values have a numeric `length` property. If that’s not the case, then these won’t be validated. Previously, falsy values without a `length` property (e.g., `false` or `0`) were triggering validation errors. If you rely on that behavior, then you should add other validators like [min](https://angular.io/api/forms/Validators#min) or [requiredTrue](https://angular.io/api/forms/Validators#requiredTrue)
+
+## Upgrading
+
+As usual, there’s a complete [upgrade guide available](https://update.angular.io/#9.0:10.0l3) and ng update will help you out: [https://update.angular.io/#9.0:10.0l3](https://update.angular.io/#9.0:10.0l3)
+
+If you do the upgrade manually and still use Protractor (just in case), then don’t forget to update protractor to 7.0.0+ as previous versions had a [vulnerability](https://www.npmjs.com/advisories/1500).
+
+## Conclusion
+
+In this article, I’ve explored the new features of Angular 10, as well as the deprecations, removals and breaking changes.
+
+All in all, even if this isn’t an earth-shattering release, it’s clearly a rock solid one with tons of bug fixes and a few gems.
+
+As usual, we can only be thankful for all the efforts made by the Angular team and the community that surrounds it!
+
+That’s it for today.
+
+<BlogPostSignature />
