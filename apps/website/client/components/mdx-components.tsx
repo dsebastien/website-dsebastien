@@ -18,6 +18,7 @@ import BlogPostWarning from './blog-post-warning';
 import BlogPostCenteredContent from './blog-post-centered-content';
 import BlogPostTip from './blog-post-tip';
 import BlogPostQuote from "./blog-post-quote";
+import BlogPostNote from "@/components/blog-post-note";
 
 type CustomLinkProps = { href: string } & any;
 
@@ -47,6 +48,7 @@ const MDXComponents = {
   Tweet,
   YouTube,
   TwitterFollowButton,
+  BlogPostNote,
   BlogPostQuote,
   BlogPostSignature,
   BlogPostTip,
