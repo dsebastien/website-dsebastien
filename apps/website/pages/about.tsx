@@ -64,7 +64,7 @@ const AboutPage = () => {
             open-source software. I write about programming, architecture, code
             quality, entrepreneurship, management, leadership, and more.{' '}
             <a
-              href="https://mailchi.mp/fb661753d54a/developassion-newsletter"
+              href="https://dsebastien.net/newsletter"
               rel="noopener"
             >
               Subscribe to my newsletter

@@ -19,7 +19,7 @@ const BlogPostSignature = () => {
         </a>
         ,{' '}
         <a
-          href="https://mailchi.mp/fb661753d54a/developassion-newsletter"
+          href="https://dsebastien.net/newsletter"
           rel="noopener"
         >
           subscribe to my newsletter
