@@ -24,7 +24,7 @@ const BlogPostSummary = ({
   publishedAt,
 }: BlogPostSummaryProps) => {
   return (
-    <Link href={`/blog/${slug}`}>
+    <Link href={`/blog/${slug}`} passHref>
       <StyledLink className="w-full my-3 px-2 flex justify-between">
         <div>
           <div className="flex flex-col md:flex-row justify-between">

@@ -24,7 +24,7 @@ const NewsletterEditionSummary = ({
   publishedAt,
 }: NewsletterEditionSummaryProps) => {
   return (
-    <Link href={`/news/${slug}`}>
+    <Link href={`/news/${slug}`} passHref>
       <StyledLink className="w-full my-3 px-2 flex justify-between">
         <div>
           <div className="flex flex-col md:flex-row justify-between">
