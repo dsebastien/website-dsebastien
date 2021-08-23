@@ -74,7 +74,7 @@ const AboutPage = () => {
           <p>
             Back in 2019, I wrote{' '}
             <a
-              href="https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860?tag=developassion-20"
+              href="https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860?tag=dsebastien-20"
               rel="noopener"
             >
               a book called "Learn TypeScript by Building Web Applications"

@@ -62,7 +62,7 @@ In this case, if there’s no input (`null` argument), then there’s no point i
 
 ## But there should be a single return statement?!
 
-[Code Complete](https://www.amazon.com/Code-Complete-Practical-Handbook-Construction/dp/0735619670) and other sources sometimes recommend against having multiple return statements in a single function. Generally speaking, I concur and adhere to that as it usually simplifies debugging, but in simple cases like this, I firmly believe that the best approach is to just return immediately and simplify the rest of the code.
+[Code Complete](https://www.amazon.com/Code-Complete-Practical-Handbook-Construction/dp/0735619670?tag=dsebastien-20) and other sources sometimes recommend against having multiple return statements in a single function. Generally speaking, I concur and adhere to that as it usually simplifies debugging, but in simple cases like this, I firmly believe that the best approach is to just return immediately and simplify the rest of the code.
 
 As explained in a few [StackOverflow questions](https://stackoverflow.com/questions/36707/should-a-function-have-only-one-return-statement), having a single return can sometimes lead to nightmarish code like the following:
 
