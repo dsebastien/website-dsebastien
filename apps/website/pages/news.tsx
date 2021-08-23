@@ -5,6 +5,7 @@ import Layout from '@/layouts/layout';
 import tw from 'twin.macro';
 import {WebsiteDataType} from "@/lib/website-data-types.intf";
 import NewsletterEditionSummary from "@/components/newsletter-edition-summary";
+import NewsletterSubscribe from "@/components/newsletter-subscribe";
 
 const StyledArticle = tw.article``;
 
@@ -38,8 +39,13 @@ export default function News(input: { entries: FrontMatter[] }) {
       <StyledArticle className="page-content-wrapper">
         <h1 className="page-heading">Newsletter</h1>
         <p className="text-gray-900 dark:text-gray-400 mb-4">
-          I've published <b>{`${input.entries.length}`}</b> edition{input.entries.length > 1 && 's'} of my newsletter. You can browse the past editions below. Use the search below to filter by title.
+          I've published <b>{`${input.entries.length}`}</b> edition{input.entries.length > 1 && 's'} of my newsletter. You can browse the past editions below.
         </p>
+
+        <div className="mb-4">
+          <NewsletterSubscribe />
+        </div>
+
         <div className="relative w-full mb-4">
           <input
             aria-label="Search newsletters"

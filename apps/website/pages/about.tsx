@@ -18,6 +18,7 @@ import Link from 'next/link';
 import SocialLink from '@/components/social-link';
 import tw from 'twin.macro';
 import Image from 'next/image';
+import NewsletterSubscribe from "@/components/newsletter-subscribe";
 
 const StyledArticle = tw.article``;
 
@@ -230,6 +231,9 @@ const AboutPage = () => {
               <li>and more.. ;-)</li>
             </ul>
           </div>
+        </section>
+        <section>
+          <NewsletterSubscribe />
         </section>
       </StyledArticle>
     </Layout>

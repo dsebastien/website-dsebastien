@@ -7,6 +7,7 @@ import {FaDev, FaHashtag, FaMedium} from 'react-icons/fa';
 import SocialLink from '@/components/social-link';
 import tw from 'twin.macro';
 import {WebsiteDataType} from "@/lib/website-data-types.intf";
+import NewsletterSubscribe from "@/components/newsletter-subscribe";
 
 const StyledArticle = tw.article``;
 
@@ -109,6 +110,11 @@ export default function Blog(input: { entries: FrontMatter[] }) {
             <BlogPostSummary {...post} />
           </div>
         ))}
+
+        <div className="mt-4">
+          <NewsletterSubscribe />
+        </div>
+
       </StyledArticle>
     </Layout>
   );
