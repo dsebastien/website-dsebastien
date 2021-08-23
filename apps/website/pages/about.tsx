@@ -226,6 +226,7 @@ const AboutPage = () => {
                   titleText="Go to my blog on HashNode"
                 />
               </li>
+              <li><a href="https://updates.dsebastien.net/" rel="noopener">Polywork</a></li>
               <li>and more.. ;-)</li>
             </ul>
           </div>
