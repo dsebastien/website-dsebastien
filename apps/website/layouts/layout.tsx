@@ -117,6 +117,15 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
                 <div className="site-button text-base">Blog</div>
               </a>
             </Link>
+            <Link href="/news">
+              <a
+                className="main-menu-link"
+                aria-label="Go to the news"
+                title="Go to the news"
+              >
+                <div className="site-button text-base">Newsletter</div>
+              </a>
+            </Link>
             <a
               href="https://dev-concepts.dev"
               className="main-menu-link"

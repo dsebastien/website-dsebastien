@@ -1,0 +1,123 @@
+---
+title: "Newsletter #14"
+summary: ""
+publishedAt: '2021-01-16'
+image: '/static/images/logos/developassion.png'
+slug: 'developassion-newsletter-14'
+categories: [software development, newsletter, developassion]
+keywords: [programming, coding, software engineering, software development, it, newsletter]
+published: true
+---
+
+Welcome to the 14th edition of DeveloPassion's newsletter.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={``}
+    src={`/static/images/logos/developassion.png`}
+    width={480}
+    height={270}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Since this is the first newsletter of 2021, let me start by giving you my best wishes for 2021. May this year be full of wonders for all of us.
+
+As usual, I'd like to ask all of you to help me out a bit. If you find this newsletter interesting, then please do take a bit of time to share the link to my newsletter on social media: https://mailchi.mp/fb661753d54a/developassion-newsletter. With your help, others will also get a chance to discover and enjoy reading it. As an added benefit, it'll also motivate me to continue the experience!
+
+Don't forget that you can also follow me on <a href="https://medium.com/@dsebastien" rel="noopener">Twitter</a> and <a href="https://medium.com/@dsebastien" rel="noopener">Medium</a> where i publish my articles.
+
+## Dev Concepts News
+
+As I've announced in the previous editions, I'm working on <a href="http://dev-concepts.dev/" rel="noopener">a new book</a> about software development concepts. I write this book in public, even stream my writing sessions on Twitch/Youtube, and publish weekly updates on IndieHackers: https://www.indiehackers.com/product/dev-concepts.
+
+In about a week, I should be done with the first part of the book, and I can't wait to share it with the world. This first part is dedicated to the software craft. In it, I explain what it's about, how to become a software crafter, list all of the essential skills, and give practical advice. This will be one of the most important parts of the book.
+
+I'd like to share this first part with some of you, the people who seem most interested in what I'm writing ;-). If you're curious/interested, then send me a direct message on Twitter, and I'll give you the first part (in its current state), free of charge. In exchange, all I'll ask is direct/honest feedback about the content, and a promise to keep it to yourself.
+
+## Frontpage of Hacker News for a day
+
+Two weeks ago, I published <a href="https://medium.com/swlh/20-months-in-2k-hours-spent-and-200k-lost-a-story-about-resilience-and-the-sunk-cost-fallacy-69fd4f61ef59" rel="noopener">an article on Medium</a>, relating my journey as a newbie tech entrepreneur. That article, called "20 Months in, 2K Hours Spent and 200K € Lost. A Story About Resilience and the Sunk Cost Fallacy", is the most successful I've published so far.
+
+After having spent my holidays reflecting over the past two years, I wanted to share my story with others. First, because writing often helps me see things more clearly, and also because I felt like it could be useful to others.
+
+I started writing the article around 11 PM and was done with it around 3 AM. For once, I thought about trying to share the article elsewhere, so I <a href="https://news.ycombinator.com/item?id=25627081" rel="noopener">posted the link on HackerNews</a> right after publishing it. Then, I went to bed directly; I was <i>exhausted</i>.
+
+On the next day, I was really surprised to see that my article was on the front page of Hacker News. Even more surprisingly, it stayed there for 12+ hours, which still amazes me now. As you can imagine, the impact was <i>huge</i>. The article got 32K visits during that day alone and generated a ton of very useful feedback, which I'm still busy digesting. Many people even reached out to me through Twitter & LinkedIn to thank me for the article and to wish me luck with the project; even a PM at Google. This was really heartwarming.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={``}
+    src={`/static/images/news/2021/2021-01-16-hacker-news-impact.png`}
+    width={938}
+    height={633}
+    priority
+  />
+</BlogPostCenteredContent>
+
+As you can see, the view count quickly came back to normal. Still, it brought me, 100+ new followers, on Medium, a dozen on Twitter. So far, the article generated 355$, which is also a new record for me. It doesn't pay the new water bill I just received (no kidding :p), but it's certainly welcome ;-)
+
+Regarding the article's subject, the truth is that I mostly worked in environments where I could afford to be very serious about code quality, security, and operational excellence. I worked for a large financial institution in Belgium for 12+ years and there, budgets are of course huge. Before I started my consulting firm and my current project, I had a team of 10+ engineers with me, was responsible for software architecture, security, and build tooling for all the development teams. As you can guess, the budgets and time that I had were incomparable to a small 3-person startup. Still, I embarked on my current startup project with my usual mindset/approach. Long story short, 20 months later, the product is still in the making. To seasoned tech entrepreneurs, it is clearly an anti-pattern, and it is obvious to me <i>now</i>.
+
+During all that time, I tried my best to make progress on the project, all while striving for great quality results. But it was just too much for our tiny team. We're 3 on-board, only two with a technical background, and I'm the one taking care of most technical details (security, authentication, authorization, build tooling, CI, code quality management, testing, backlog management, project planning, etc). I aimed too high and failed to lower the bar soon enough. Of course, we've got great quality code, a rock-solid infrastructure as code (e.g., I can throw away the whole infrastructure and build it from scratch using 2-3 commands), etc. But feature-wise, we're clearly way behind schedule.
+
+So, in conclusion, that's probably a good read if you're thinking about getting into entrepreneurship/product creation. On my end, I consider this a valuable lesson, but don't regret anything; I learned a ton during that time, and it filled-in my bucket list of articles to write for years to come. As an added benefit, it reinforces some of the advice that I give in my new book ;-)
+
+## Storybook 6
+
+At the end of the year, I upgraded my project to <a href="https://github.com/storybookjs/storybook/blob/next/CHANGELOG.md" rel="noopener">Storybook 6</a>. And I must say that I'm both happy and sad about it.
+
+I'm sad because the upgrade experience was really painful. Configuration changed a lot, APIs changed a lot and even though there was a <a href="https://github.com/storybookjs/storybook/blob/next/MIGRATION.md" rel="noopener">detailed migration guide</a>, it was not always easy to know how to adapt some parts.
+
+At the same time, now that it's done, I'm pretty happy with the new status quo. The old docs plugin has been replaced by <a href="https://storybook.js.org/docs/react/api/mdx" rel="noopener">MDX support</a>, which brings avenues for better "living" documentation. In addition, MDX also works for Angular apps, which is great. Another cool thing is the fact that TypeScript support is much better with this version. There are now TS types for story metadata, stories, etc. This makes for a much better developer experience. Finally, since NX supports Storybook 6 already, it's also a breeze to setup for new projects.
+
+I still need to dive into the new <a href="https://medium.com/storybookjs/introducing-storybook-args-2dadcdb777cc" rel="noopener">Args</a>, which supersede knobs. I looked at those a bit, but it wasn't very clear, especially for Angular apps. I feel like I'm missing out, but I'll learn that later on ;-)
+
+I've planned an article to explain how to upgrade existing Angular projects.
+
+## Cypress
+
+Last week, I had the opportunity to follow a training about <a href="https://www.cypress.io/" rel="noopener">Cypress</a> given by <a href="https://twitter.com/davyengone" rel="noopener">Davy Engone</a> at <a href="https://www.hackages.io/" rel="noopener">Hackages</a>. I was glad because I read very good things about Cypress, and fiddled with it a bit in the past, but didn't take time to really dive into it. Thanks to this training, I now have a much clearer understanding of the API, and I'm not disappointed.
+
+For the oldest in the crowd (haha), Cypress is like Selenium on steroids. Using its API, you can quickly write end-to-end tests. The API has full support for TypeScript, and allows to easily open Web pages, visit specific URLs, retrieve DOM elements, interact with those, etc.
+
+During the training, we did a small exercise where we instructed Cypress to go to Google.com, perform a search for a company, then interact with the links on the right-hand side. Quite basic, but it gives a good idea about the possibilities.
+
+You can find the full sources here: https://github.com/dsebastien/cypress-intro-bnn/tree/ex1-solution, and those of the exercise here: https://github.com/dsebastien/cypress-intro-bnn/blob/ex1-solution/cypress/integration/exercise1.spec.js.
+
+Among other things, what I found really nice is the fact that Cypress handles waiting really intelligently, compared to other tools that I've dealt with over the years (including Selenium). Cypress is a breeze to integrate (one command and you're good to go) and is not much harder to integrate in a CI pipeline. Last but not least, it is also supported by Nrwl NX.
+
+I'm definitely planning to write content about Cypress, because I believe that it deserves to be used by many more people. For now, make sure to drop by their <a href="https://www.cypress.io/" rel="noopener">official Website</a>, and check out the intro video if you want a quick glance at what it can do: https://vimeo.com/237527670.
+
+## Accessibility tip: Color picker
+
+Last week, I watched an interesting episode of "Tech Talks with Santosh" on Youtube, about <a href="https://www.youtube.com/watch?v=qyd7Hmkjt7c" rel="noopener">Making the Web accessible for everyone</a>. By the way, do subscribe to Santosh's channel, there's great content in there!
+
+As you might know, I'd like every Website/app to be accessible to everyone. I find it infuriating that so many barriers exist for people with disabilities. We all find it unacceptable in real life, but for some reason, many people seem to think that it's okay for people to be left out in the digital space.
+
+During the episode, <a href="https://twitter.com/miracle_404" rel="noopener">Anuradha Kumari</a> mentioned (among other things) color contrast as one of the key elements of importance for accessibility. It reminded me about another useful Website: https://color.adobe.com/create, which includes accessibility tools, allowing to easily create color palettes that are accessible for everyone.
+
+She also mentioned that screen readers are actually <a href="https://blog.easterseals.com/emojis-and-accessibility-the-dos-and-donts-of-including-emojis-in-texts-and-emails/" rel="noopener">able to read (at least some) emojis out loud</a>. It never occurred to me before, but it's true that blind people would again be left out of many "emotions" on the Web if screen readers weren't able to read emojis. Still, I don't think that they can read all of those (I haven't checked). As a community, we could probably try and see if there's something useful to do in this area. If you're looking for a cool project to work on, then check that out ;p
+
+The following article provides a few tips and tricks regarding accessibility and emojis. One piece of advice that seems obvious is to avoid using many emojis in one message/post/mail/whatever and to avoid repeating those. When we look at those, we can ignore them, but visually impaired people relying on screen readers will waste time because of those.
+
+## A call for help
+
+As you know, Dev Concepts, the book project that I'm currently working on is a very important project for me. I have a passion for IT and software development, and want to share it with as many people as I can. I strongly believe that this book will bring a lot of value for its readers, but they'll never know if they don't hear about it.
+
+So please go ahead and help me to let people know that it exists:
+
+The official Website: http://dev-concepts.dev/
+The pre-order page: https://gumroad.com/l/DevConcepts
+
+## That's all folks!
+
+I'm really interested to hear about what you think of this newsletter. If you have remarks/ideas/articles to share, then please don't hesitate to contact me through Twitter (https://twitter.com/dSebastien). My DMs are open.
+
+If you find this newsletter interesting, then please share the link around: https://mailchi.mp/fb661753d54a/developassion-newsletter
+
+Don't forget that you can also <a href="https://medium.com/@dsebastien" rel="noopener">follow me on Medium</a> where I currently publish my articles.
+
+See you next time!
+
+<BlogPostSignature />

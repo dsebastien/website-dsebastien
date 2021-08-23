@@ -1,81 +1,51 @@
 import React, {useState} from 'react';
 import {getAllFilesFrontMatter} from '@/lib/mdx';
 import {FrontMatter} from '@/lib/front-matter.intf';
-import BlogPostSummary from '@/components/blog-post-summary';
 import Layout from '@/layouts/layout';
-import {FaDev, FaHashtag, FaMedium} from 'react-icons/fa';
-import SocialLink from '@/components/social-link';
 import tw from 'twin.macro';
 import {WebsiteDataType} from "@/lib/website-data-types.intf";
+import NewsletterEditionSummary from "@/components/newsletter-edition-summary";
 
 const StyledArticle = tw.article``;
 
 /**
- * Blog homepage
+ * News homepage
  * @param input
  * @constructor
  */
-export default function Blog(input: { entries: FrontMatter[] }) {
+export default function News(input: { entries: FrontMatter[] }) {
   const [searchValue, setSearchValue] = useState('');
-  const filteredBlogPosts = input.entries
+  const filteredEntries = input.entries
     .sort(
       (a, b) =>
         Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt))
     )
-    .filter((post) => {
-      if (!post.title) {
-        throw new Error(`Invalid post title: ${JSON.stringify(post, null, 2)}`);
+    .filter((entry) => {
+      if (!entry.title) {
+        throw new Error(`Invalid entry title: ${JSON.stringify(entry, null, 2)}`);
       }
-      return post.title.toLowerCase().includes(searchValue.toLowerCase());
+      return entry.title.toLowerCase().includes(searchValue.toLowerCase());
     });
 
   return (
     <Layout
       customMeta={{
-        title: 'Blog – Sébastien Dubois',
+        title: 'Newsletter – Sébastien Dubois',
         description:
           'A glimpse of my journey. I write about programming, software/IT/solution architecture, code quality, IT security, entrepreneurship, management, leadership, and more.',
       }}
     >
       <StyledArticle className="page-content-wrapper">
-        <h1 className="page-heading">Blog</h1>
+        <h1 className="page-heading">Newsletter</h1>
         <p className="text-gray-900 dark:text-gray-400 mb-4">
-          I've published <b>{`${input.entries.length}`}</b> article
-          {input.entries.length > 1 && 's'} here. I usually post everything here,
-          but you can also find my some of my content on{' '}
-          <SocialLink
-            url="http://dsebastien.medium.com"
-            name="Medium"
-            icon={
-              <FaMedium className="inline hover:text-black hover:bg-white" />
-            }
-            ariaLabelText="Go to my blog on Medium"
-            titleText="Go to my blog on Medium"
-          />
-          ,{' '}
-          <SocialLink
-            url="https://dev.to/dsebastien"
-            name="DEV.to"
-            icon={<FaDev className="inline hover:text-black hover:bg-white" />}
-            ariaLabelText="Go to my blog on DEV.to"
-            titleText="Go to my blog on DEV.to"
-          />{' '}
-          and{' '}
-          <SocialLink
-            url="https://dsebastien.hashnode.dev"
-            name="Hashnode"
-            icon={<FaHashtag className="inline" />}
-            ariaLabelText="Go to my blog on HashNode"
-            titleText="Go to my blog on HashNode"
-          />
-          . Use the search below to filter by title.
+          I've published <b>{`${input.entries.length}`}</b> edition{input.entries.length > 1 && 's'} of my newsletter. You can browse the past editions below. Use the search below to filter by title.
         </p>
         <div className="relative w-full mb-4">
           <input
-            aria-label="Search articles"
+            aria-label="Search newsletters"
             type="text"
             onChange={(e) => setSearchValue(e.target.value)}
-            placeholder="Search articles"
+            placeholder="Search newsletters"
             className="px-4 py-2 border-2 border-gray-300 dark:border-gray-900 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
           />
           <svg
@@ -94,19 +64,19 @@ export default function Blog(input: { entries: FrontMatter[] }) {
           </svg>
         </div>
         <h3 className="font-bold text-2xl md:text-4xl tracking-tight mb-4 mt-8 text-black dark:text-white">
-          All Posts
+          Past Editions
         </h3>
-        {!filteredBlogPosts.length && (
+        {!filteredEntries.length && (
           <p className="text-gray-900 dark:text-gray-400 mb-4">
             No match found. Please refine your search criteria.
           </p>
         )}
-        {filteredBlogPosts.map((post) => (
+        {filteredEntries.map((newsletterEdition) => (
           <div
             className="mt-4 border-2 rounded-md p-2 border-gray-300 dark:border-gray-800 hover:border-blue-400 dark:hover:border-blue-400 hover:shadow-md transition-all ease-in duration-150 hover:cursor-pointer"
-            key={post.title}
+            key={newsletterEdition.title}
           >
-            <BlogPostSummary {...post} />
+            <NewsletterEditionSummary {...newsletterEdition} />
           </div>
         ))}
       </StyledArticle>
@@ -115,7 +85,7 @@ export default function Blog(input: { entries: FrontMatter[] }) {
 }
 
 export async function getStaticProps() {
-  const posts = await getAllFilesFrontMatter(WebsiteDataType.BLOG);
+  const newsletterEditions = await getAllFilesFrontMatter(WebsiteDataType.NEWS);
 
-  return { props: { entries: posts } };
+  return { props: { entries:  newsletterEditions } };
 }

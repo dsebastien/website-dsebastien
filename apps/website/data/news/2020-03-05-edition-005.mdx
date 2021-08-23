@@ -1,0 +1,109 @@
+---
+title: "Newsletter #5"
+summary: ""
+publishedAt: '2020-03-05'
+image: '/static/images/logos/developassion.png'
+slug: 'developassion-newsletter-5'
+categories: [software development, newsletter, developassion]
+keywords: [programming, coding, software engineering, software development, it, newsletter]
+published: true
+---
+
+Welcome to the fifth edition of DeveloPassion's newsletter.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={``}
+    src={`/static/images/logos/developassion.png`}
+    width={480}
+    height={270}
+    priority
+  />
+</BlogPostCenteredContent>
+
+The last weeks have been quite the thing! I've come back (half time) to my previous team over at the National Bank of Belgium and am enjoying the familar/friendly place, but at the same time having lots of difficulty to adjust my internal clock to the constant context switching. I hope it'll soon stabilize and that I'll feel less tired.
+
+Still, I was missing you guys, so here goes!
+
+## Spread the word!
+
+First of all, I'd like to ask all of you to help me out a bit.
+
+If you find this newsletter interesting, then please do take a bit of time to share this link to others on social media: https://mailchi.mp/fb661753d54a/developassion-newsletter
+
+With your help, others will also get a chance to discover and enjoy reading it. As an added benefit, it'll also motivate me to continue the experience! =)
+
+## Angular 9
+
+What else could I start this newsletter with?
+
+<a href="https://blog.angular.io/version-9-of-angular-now-available-project-ivy-has-arrived-23c97b63cfa3" rel="noopener">Angular 9 is out</a>!
+
+The biggest improvement in v9 is the final release of the Ivy compiler, which helps to create smaller bundles (e.g., tree-shakes parts of Angular that we don't need). This is especially impactful for larger apps (~25-40%), but also for small apps (~30%). Thanks to Ivy, the Angular team has also decided to enable AOT by default, also in development mode.
+
+Along with that, there are also cool changes around type checking and build errors. Templates type checking is much better in v9 and to me that's a really drastic improvement; for instance in my current project, migrating has allowed me to detect and fix at least 3 different issues that previously went unnoticed. Build errors are now a bit more understandable, which is always good :)
+
+One more change that I'm really happy about is the revamped TestBed and how that change is leveraged already in Angular Material. Basically, Angular component tests can now be written much more succinctly, compared to the "old" API. I haven't played with this just yet, but am really enthusiastic about it. You can learn more about this here:
+
+CSS class and style bindings have also improved. Now the order in which those are applied is deterministic, which can't be bad, right? ^^
+
+And, last but certainly not least, this release supports TypeScript 3.7. This alone is enough for me to justify the effort of upgrading! :)
+
+There are a ton more things to say/discover about this release (e.g., new options for `providedIn`, i18n support improvements, debugging improvements through the <a href="https://angular.io/api/core/global" rel="noopener">ng global</a>, ng update improvements, youtube-player and google-maps components, etc), but the official release notes go in great length about all of that.
+
+If you didn't upgrade your apps just yet, then don't waste time and do it now. If your managers won't let you, then tell them that I said it's mandatory/critical for business continuity :)
+Check out the migration steps <a href="https://update.angular.io/" rel="noopener">over here</a>.and <a href="https://angular.io/guide/updating-to-version-9" rel="noopener">there</a>.
+
+## Nrwl NX 9
+
+While we're talking about nines... <a href="https://blog.nrwl.io/nx-cli-distributed-caching-improved-react-support-bazel-support-and-more-in-nx-9-8d55c4becdc4" rel="noopener">NX 9 has been released</a>, and includes AWESOME features.
+
+For me, the top feature in v9 is the new <a href="https://blog.nrwl.io/distributed-caching-in-nx-164edfbc68e0" rel="noopener">distributed caching feature</a>. If you use Nx and haven't upgraded yet, then do it asap, because the performance improvements that brings are quite cool (especially for CI). The feature was actually there already in 8.11 but is now official. It's a first taste of what Bazel builds support will bring us in the future; not as great, but already nice.
+
+You can learn more about it and see how to enable it in the following <a href="https://www.youtube.com/watch?v=lozIzU0ik2s" rel="noopener">video</a> by <a href="https://twitter.com/mannisaac" rel="noopener">Isaac Mann</a>: https://www.youtube.com/watch?v=lozIzU0ik2s
+
+In parallel of this new feature, Nrwl is preparing to launch  Nx Cloud platform, which should allow developers to easily (think 2-3 clicks) benefit from distributed caching in CI/CD pipelines and also across developer machines. You can read more about it here: https://blog.nrwl.io/introducing-the-new-nx-cloud-platform-46648e749b5a
+
+Nx 9 also includes a new standalone CLI, aply called the Nx CLI, which allows us to use the familiar Nx commands in different ecosystems.
+
+Apart from this, Nx 9 also marks a big milestone regarding React support; from now on it'll get a lot more attention and it is truly great, as it means that there's more and more support within Nx for the mainstream frameworks/libraries out there.
+
+Finally, I couldn't test this just yet, but Nx 9 also includes support for <a href="https://storybook.js.org/" rel="nooopener">Storybook</a>. This is awesomer (yes that's a word :p), because it means that we can now easily integrate component in storybook and automate tests of those using <a href="https://www.cypress.io/" rel="noopener">Cypress</a>. This, combined with some of the testing goodness brought by Angular 9 is really nice for code quality and code confidence. The future looks bright! :)
+
+You can learn more about the other features and bug fixes here: https://blog.nrwl.io/nx-cli-distributed-caching-improved-react-support-bazel-support-and-more-in-nx-9-8d55c4becdc4
+Note that since then, <a href="https://github.com/nrwl/nx/releases/tag/9.0.4" rel="noopener">9.0.4 is available</a>.
+
+Can't wait to test all of this!
+
+## Building Service workers using TypeScript
+
+I've recently published a new article on Medium explaining <a href="https://medium.com/@dSebastien/building-a-service-worker-with-workbox-5-typescript-webpack-and-angular-5015ba76340b" rel="noopener">how to write service workers in TypeScript using Workbox 5</a>.
+
+In my current project, during the implementation of PWA related aspects, I've dived into service workers. At first, I wrote mine using pure JS, but was really interested about improving the setup in order to leverage TypeScript (as you know, I'm quite in love with this programming language). A few days after this initial implementation, <a href="https://developers.google.com/web/tools/workbox" rel="noopener">Workbox</a> 5 was <a href="https://github.com/GoogleChrome/workbox/releases/tag/v5.0.0" rel="noopener">released</a>, with full support for TypeScript (the project is now written in TS), so I quickly switched to that version and took the occasion to write about the setup.
+
+It turned out to be quite easy in practice, but there are a few subtleties (as usual) to be aware of when integrating this with the Angular application's build. Note that the article only covers the build setup though, so don't expect in-depth explanations about the service worker itself, or the way it is integrated into the Angular app backing the example. I've kept that part for a future post ;-)
+
+Still, this is probably an interesting read if you're just getting started, can't satisfy yourself with <a href="https://angular.io/guide/service-worker-getting-started" rel="noopener">Angular's built-in declarative PWA support</a>. Do your homework before going for Workbox though, it's not relevant/beneficial for all apps. In my project's case it made sense because we need fine-grained control over the service worker.
+
+## Improving work/life balance
+
+People often talk about how important work/life balance is, but fail to recognize what "work" actually means in the equation and in their lives. I've recently published <a href="https://medium.com/@dSebastien/work-life-equilibrium-5227ced1987f" rel="noopener">two</a> <a href="https://medium.com/@dSebastien/steps-towards-a-better-work-life-equilibrium-5557af620e42" rel="noopener">articles</a> over this subject last month:
+
+* https://medium.com/@dSebastien/work-life-equilibrium-5227ced1987f
+* https://medium.com/@dSebastien/steps-towards-a-better-work-life-equilibrium-5557af620e42
+
+In those articles, I discuss my recent epiphany about what "working too hard" means for me (hint: I did it for years) and some of the steps I've gradually taken to bring more balance into my life.
+
+It doesn't mean that I'll stop blogging, creating content or working on my startup project (I actually plan to launch two new initiatives in the short term), but that I'll make more effort to keep the balance in a better spot. And you should too! :)
+
+I have tons more to say around this subject and also about personal organization, but it'll wait a bit more!
+
+## That's all folks!
+
+I'm really interested to hear about what you think of this new initiative, ideas to improve, links to share, etc. Don't hesitate to contact me through Twitter: https://twitter.com/dSebastien
+
+If you find this newsletter interesting, then please share the link around: https://mailchi.mp/fb661753d54a/developassion-newsletter
+
+See you next time!
+
+<BlogPostSignature />

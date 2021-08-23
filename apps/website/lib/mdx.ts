@@ -15,7 +15,7 @@ import { FrontMatter } from './front-matter.intf';
 const root = process.cwd();
 const DATA_FOLDER_PATH = 'apps/website/data';
 
-export async function getFiles(type: 'blog'): Promise<string[]> {
+export async function getFiles(type: WebsiteDataType.BLOG | WebsiteDataType.NEWS): Promise<string[]> {
   return fs.readdirSync(path.join(root, DATA_FOLDER_PATH, type));
 }
 
@@ -102,30 +102,31 @@ export async function getFileBySlug({
   };
 }
 
-export async function getAllFilesFrontMatter(type: string) {
+export async function getAllFilesFrontMatter(type: WebsiteDataType) {
   const files = fs.readdirSync(path.join(root, DATA_FOLDER_PATH, type));
 
-  type AllPosts = { slug: string }[];
+  type AllEntries = { slug: string }[];
 
-  return files.reduce<AllPosts>((allPosts: AllPosts, postSlug) => {
+  return files.reduce<AllEntries>((allEntries: AllEntries, entrySlug) => {
     const source = fs.readFileSync(
-      path.join(root, DATA_FOLDER_PATH, type, postSlug),
+      path.join(root, DATA_FOLDER_PATH, type, entrySlug),
       'utf8'
     );
+
     const { data } = matter(source);
 
-    let retVal: AllPosts = allPosts;
+    let retVal: AllEntries = allEntries;
 
     /**
-     * Only consider PUBLISHED articles here
+     * Only consider PUBLISHED elements here
      */
     if (data && data.published) {
       retVal = [
         {
           ...data,
-          slug: postSlug.replace('.mdx', ''),
+          slug: entrySlug.replace('.mdx', ''),
         },
-        ...allPosts,
+        ...allEntries,
       ];
     }
 

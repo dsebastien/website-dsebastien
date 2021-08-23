@@ -1,0 +1,137 @@
+---
+title: "Newsletter #6"
+summary: ""
+publishedAt: '2020-04-14'
+image: '/static/images/logos/developassion.png'
+slug: 'developassion-newsletter-6'
+categories: [software development, newsletter, developassion]
+keywords: [programming, coding, software engineering, software development, it, newsletter]
+published: true
+---
+
+Welcome to the sixth edition of DeveloPassion's newsletter.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={``}
+    src={`/static/images/logos/developassion.png`}
+    width={480}
+    height={270}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Like most of you, I'm now staying full time at home, working remotely 100% of the time, barely getting outside to do some exercise every other day. Since I have asthma, I prefer to avoid taking needless risks.
+
+Having spent a large part of my life in my head, I thought to myself that this whole "Corona situation" wasn't going to be too hard for me to go through. I still think that it is true to some extent, but over time it becomes harder to cope with, even though I'm part of the lucky ones who have a big backyard, live in the countryside, have accumulated tons and tons of digital content and basically never get bored..
+
+I sincerely hope that all of you are doing okay!
+
+By the way, I'd like to ask all of you to help me out a bit. If you find this newsletter interesting, then please do take a bit of time to share this link to others on social media: https://mailchi.mp/fb661753d54a/developassion-newsletter
+
+With your help, others will also get a chance to discover and enjoy reading it. As an added benefit, it'll also motivate me to continue the experience! =)
+
+## 100% Remote
+
+One thing that I think many enterprises, executives and team managers will realize through this crisis, is the fact that having 80-90% of their employee workforce working remotely is indeed possible and works fine (pun intended), (with some adaptation time).
+
+For many years, I've been a strong advocate of letting people work remotely more than 1-2 days per week, but have constantly faced bosses with rigid views of what "work" means. For many, "work" means getting together to the same place, most of the time, seeing each other, talking to each other and being able to keep an eye on what others in the team are doing.
+I plan on writing a few articles (at least) about team management, team organization, team cohesion, vision and leadership. Give me a sign on Twitter if you’re interested ;-)
+
+I wrote a first article about remote work, which you can find here: https://medium.com/@dSebastien/remote-work-works-fine-if-b8b785d442ea
+
+## Angular 9.1.1
+
+Angular 9.1.1 has been released: https://github.com/angular/angular/blob/master/CHANGELOG.md#911-2020-04-07
+
+This release is a minor one, with multiple ngcc improvements, but to me, the most important thing is that it brings support for TypeScript 3.8.3! I stopped reading the release notes after seeing that though :D
+
+## Nrwl NX 9.2.2 & Nx Cloud
+
+Nx 9.2.2 has been released: https://github.com/nrwl/nx/releases/tag/9.2.2
+
+Since that last newsletter edition, Nx has enabled caching by default, has also included support for Angular 9.1.x and TypeScript 3.8.x.
+
+Next to that, Nx Cloud's beta has started. I've joined the beta and am quite happy with the time gains that it brings me during development and in the CI/CD pipeline.
+
+Nx Cloud is super easy to set up (< 5 minutes), so if you have then chance then give it a try.
+I do have some concerns about data security (unclear where/how the data is sent to/processed), but I suppose that those will be addressed by the official launch date.
+
+## TypeScript 3.8.x
+
+TypeScript continues to amaze; 3.8 is already in store: https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/
+
+Here is my top 3 of the newest features:
+
+<a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/#ecmascript-private-fields" rel="noopener">ECMAScript Private Fields</a>: Long-awaited, but they're finally here, the real <b>private</b> EcmaScript class fields. Wow! Unfortunately, it does not use the `private` keyword, but the `#` character. I find this really really sad, but at least it's here.
+
+From now on, we can have true runtime private fields in our classes, which I think is really valuable.
+
+Take a look at this beauty:
+
+```
+class Person {
+    #name: string
+
+    constructor(name: string) {
+        this.#name = name;
+    }
+
+    greet() {
+        console.log(`Hello, my name is ${this.#name}!`);
+    }
+}
+
+let jeremy = new Person("Jeremy Bearimy");
+
+jeremy.#name
+//     ~~~~~
+// Property '#name' is not accessible outside class 'Person'
+// because it has a private identifier.
+```
+
+Isn't that cool? Oh yes it is! :)
+
+We already had the private keyword in TypeScript for quite some time, but that only lasts until our code is transpiled since those are fully erased. Now, we can keep the safety at runtime too.
+
+This begs the question: when to use # and when to use private? I plan to write a small article about this very subject, but to me it is going to be "#" all the way as I'm targeting ES2015+. If you are targeting ES5 or even older, then be careful about the performance impact since this is down-level emitted to WeakMaps
+
+<a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/#top-level-await" rel="noopener">Top-Level await</a>: We can finally use the "await" keyword at the top level of a module (i.e., a file with imports and/or exports).
+
+<a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-8/#type-only-imports-exports" rel="noopener">Type-Only Imports and Exports</a>: This solves a problem that I had in my NestJS application where I imported a type only to use it as a type, not as a value. Webpack complained about such imports, because once the code is compiled, those imports remained while the code behind wasn't there anymore.
+
+Now, we can use `import type { ... } from "...";` to do this more cleanly. With type imports, TypeScript will simply remove (i.e., erase) everything, so that there's nothing left at runtime. Per-fect!
+
+Note that this feature can be configured through the `importsNotUsedAsValues` flag.
+
+There's way more in the latest releases, so do yourself a favor and go check it out right now :)
+
+Ending this section, I realize that I didn't taken time to even cover TS 3.7.x! Although, that release has also introduced tons of awesome features like <a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#optional-chaining" rel="noopener">optional chaining</a> and <a href="https://devblogs.microsoft.com/typescript/announcing-typescript-3-7/#nullish-coalescing">nullish coalescing</a>, well worth using to improve your codebases!
+
+## Tailwind
+
+In my current project, we've decided to ditch Angular Material in favor of <a href="https://www.primefaces.org/primeng/" rel="noopener">Prime NG</a>.
+It's an hard and costly decision for us because we've built a few screens already, and we're going to have to rewrite most of those.
+
+It's an hard and costly decision for us because we've built a few screens already and we're going to have to rewrite most of those.
+
+But the thing is that Angular Material is not that customizable, and given the proposals of our UX/UI designer, this will be a big issue for us, as the proposed UI of our product is really distant from the opinionated Material Design.
+
+And we don't want to spend time bending/breaking Material. Instead, we've chosen to use a more customizable component toolkit; Prime NG being much more approachable in that sense.
+
+But in fact, our strategy is to use the toolkit as little as we can and instead style our own components/DOM. To do that, we've integrated <a href="https://tailwindcss.com/" rel="noopener">Tailwind</a> in the project, which is a great library promoting the "utility-first" approach.
+
+Having tried different CSS code organization/approaches over the years (SMACSS, BEM, etc), I think that Tailwind's approach is good and really clean. Of course it's a trade-off between components stylesheets complexity and HTML templates complexity, but that's okay. If we end up repeating code, then we can still factor things out using the @apply rule.
+
+Also, as I've <a href="https://medium.com/@dSebastien/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e" rel="noopener">explained in my article</a>, it is pretty straightforward to integrate in an Angular project: https://medium.com/@dSebastien/adding-tailwind-support-to-a-nrwl-nx-workspace-with-angular-and-storybook-bf890ea882e
+
+So far, we're quite happy with the results!
+
+That's all folks!
+I'm really interested to hear about what you think of this new initiative, ideas to improve, links to share, etc. Don't hesitate to contact me through Twitter: https://twitter.com/dSebastien
+
+If you find this newsletter interesting, then please share the link around: https://mailchi.mp/fb661753d54a/developassion-newsletter
+
+See you next time!
+
+<BlogPostSignature />
