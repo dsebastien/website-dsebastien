@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaTwitter, FaNewspaper } from 'react-icons/fa';
 import SocialLink from './social-link';
 import tw from 'twin.macro';
 
@@ -39,6 +39,16 @@ const Footer = () => {
             ariaLabelText="Go to my GitHub profile"
             titleText="Go to my GitHub profile"
             icon={<FaGithub className="inline hover:text-black" />}
+          />
+        </li>
+        <li>
+          <SocialLink
+            url="https://dsebastien.net/newsletter"
+            name="Newsletter"
+            hideText={true}
+            ariaLabelText="Subscribe to my newsletter"
+            titleText="Subscribe to my newsletter"
+            icon={<FaNewspaper className="inline hover:text-black" />}
           />
         </li>
       </StyledList>
