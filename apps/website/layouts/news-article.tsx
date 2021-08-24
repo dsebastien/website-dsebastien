@@ -14,24 +14,24 @@ interface EntryDetails {
 }
 
 const editUrl = (details: EntryDetails) =>
-  `https://github.com/dsebastien/website-dsebastien/edit/main/apps/website/data/blog/${details.publishedAt}-${details.slug}.mdx`;
+  `https://github.com/dsebastien/website-dsebastien/edit/main/apps/website/data/news/${details.publishedAt}-${details.slug}.mdx`;
 
 const discussUrl = (details: EntryDetails) =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(
-    `https://dsebastien.net/blog/${details.publishedAt}-${details.slug}`
+    `https://dsebastien.net/news/${details.publishedAt}-${details.slug}`
   )}`;
 
-type BlogLayoutProps = PropsWithChildren<{
+type NewsLayoutProps = PropsWithChildren<{
   frontMatter: FrontMatter;
 }>;
 
 /**
- * Layout for blog articles
+ * Layout for news articles
  * @param children
  * @param frontMatter
  * @constructor
  */
-const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
+const NewsArticleLayout = ({ children, frontMatter }: NewsLayoutProps) => {
   return (
     <Layout
       customMeta={{
@@ -91,4 +91,4 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
   );
 };
 
-export default BlogArticleLayout;
+export default NewsArticleLayout;

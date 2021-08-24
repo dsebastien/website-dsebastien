@@ -5,7 +5,7 @@ import { FrontMatter } from '@/lib/front-matter.intf';
 import { getFileBySlug, getFiles } from '@/lib/mdx';
 import { WebsiteDataType } from '@/lib/website-data-types.intf';
 import { MdxRemote } from 'next-mdx-remote/types';
-import BlogArticleLayout from '../../layouts/blog-article';
+import NewsArticleLayout from '../../layouts/news-article';
 
 interface NewsProps {
   mdxSource: MdxRemote.Source;
@@ -23,9 +23,9 @@ const NewsletterEdition = (input: NewsProps) => {
   });
 
   return (
-    <BlogArticleLayout frontMatter={input.frontMatter}>
+    <NewsArticleLayout frontMatter={input.frontMatter}>
       {content}
-    </BlogArticleLayout>
+    </NewsArticleLayout>
   );
 };
 
