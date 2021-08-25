@@ -79,7 +79,7 @@ export default function News(input: { entries: FrontMatter[] }) {
         )}
         {filteredEntries.map((newsletterEdition) => (
           <div
-            className="mt-4 border-2 rounded-md p-2 border-gray-300 dark:border-gray-800 hover:border-blue-400 dark:hover:border-blue-400 hover:shadow-md transition-all ease-in duration-150 hover:cursor-pointer"
+            className="newsletter-edition-summary-container"
             key={newsletterEdition.title}
           >
             <NewsletterEditionSummary {...newsletterEdition} />

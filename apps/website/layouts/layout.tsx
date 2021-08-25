@@ -93,12 +93,12 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         >
           Skip to content
         </a>
-        <div className="header-left-side flex flex-col sm:flex-row items-center object-center">
+        <div className="header-left-side flex flex-col sm:flex-row flex-wrap items-center object-center">
           <ThemeSwitcher />
           <div className="header-app-logo">
             <h1 className="sm:ml-2">dSebastien</h1>
           </div>
-          <nav className="header-menu sm:ml-10 flex items-baseline space-x-4 font-semibold">
+          <nav className="header-menu my-4 sm:my-0 sm:ml-10 flex flex-col sm:flex-row flex-wrap items-baseline gap-2 sm:gap-4 font-semibold">
             <Link href="/">
               <a
                 className="main-menu-link"
@@ -126,14 +126,24 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
                 <div className="site-button text-base">Newsletter</div>
               </a>
             </Link>
-            <a
-              href="https://dev-concepts.dev"
-              className="main-menu-link"
-              target="_blank"
-              rel="noopener"
-            >
-              <div className="site-button text-base">Dev Concepts</div>
-            </a>
+            <Link href="/books">
+              <a
+                className="main-menu-link"
+                aria-label="Discover my books"
+                title="Discover my books"
+              >
+                <div className="site-button text-base">Books</div>
+              </a>
+            </Link>
+            <Link href="/projects">
+              <a
+                className="main-menu-link"
+                aria-label="Explore my projects"
+                title="Explore my projects"
+              >
+                <div className="site-button text-base">Projects</div>
+              </a>
+            </Link>
             <Link href="/about">
               <a
                 className="main-menu-link"

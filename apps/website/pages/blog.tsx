@@ -104,7 +104,7 @@ export default function Blog(input: { entries: FrontMatter[] }) {
         )}
         {filteredBlogPosts.map((post) => (
           <div
-            className="mt-4 border-2 rounded-md p-2 border-gray-300 dark:border-gray-800 hover:border-blue-400 dark:hover:border-blue-400 hover:shadow-md transition-all ease-in duration-150 hover:cursor-pointer"
+            className="blog-post-summary-container"
             key={post.title}
           >
             <BlogPostSummary {...post} />
