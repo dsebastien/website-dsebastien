@@ -18,6 +18,9 @@ const BlogPostSignature = () => {
         <a href="https://dev-concepts.dev" rel="noopener">
           check out the Dev Concepts series of books
         </a>
+        ,{' '}<a href="https://join.slack.com/t/softwarecrafterstalk/shared_invite/zt-umgx3v06-4rtJ20PXz867GTPzCk1zeQ" rel="noopener">
+        join the Software Crafters community
+      </a>
         , and{' '}
         <a href="https://twitter.com/dSebastien" rel="noopener">
           come say hi on Twitter!
