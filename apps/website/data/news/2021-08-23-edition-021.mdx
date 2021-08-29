@@ -1,0 +1,117 @@
+---
+title: "Newsletter #21 - Communities"
+summary: ""
+publishedAt: '2021-08-29'
+image: '/static/images/logos/developassion.png'
+slug: 'edition-021'
+categories: [software development, newsletter, developassion]
+keywords: [programming, coding, software engineering, software development, it, newsletter]
+published: true
+---
+
+Welcome to the 21st edition of DeveloPassion's newsletter.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={``}
+    src={`/static/images/logos/developassion.png`}
+    width={480}
+    height={270}
+    priority
+  />
+</BlogPostCenteredContent>
+
+What a week! I thought that I'd have time to work on my projects, but instead, I've spent a lot of time in the hospital. Life is always full of surprises! In the last edition, I've mentioned that our baby should arrive soon, but apparently, he'll be arriving even sooner than anticipated! We're now rushing to get everything prepared for his arrival, and that leaves little time for other things. As the saying goes "whatever you do is your priority". And, clearly, my baby is my number one priority right now ;-)
+
+Still, I wanted to take a bit of time to check in and say hi to you all!
+
+## A new Personal Knowledge Management community
+
+As you know, I'm embarked on a journey to improve the way we manage our personal knowledge. I firmly believe that all knowledge workers like us can benefit a lot from better prioritizing our learning, and keeping track of what we've learned about. I personally did this for years using various approaches, and really don't regret it. Although I feel like the tools at our disposal are limited, and force us to maintain knowledge silos.
+
+I've got wiki pages, Evernote entries, pages in notion, notes in Obsidian, highlights in Readwise, my books, my blog articles, this newsletter, bookmarks, files on my NAS, and more. And it's a real shame that all this information is scattered around and not all in a single place. I really have no doubt that we can do better and learn more efficiently. What I want is a personal information hub.
+
+That's why I've decided to create a new community for people interested in getting started or getting better at personal knowledge management.
+
+You can join us using the following link: https://dsebastien.net/pkm-community
+
+## TypeScript 4.4
+
+TypeScript 4.4 has been released a few days ago. As usual, it brings awesome new features. Here are my personal favorites:
+
+* Better control flow analysis: TS now better recognizes the types after checks have been made and provides better auto-completions: https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/#cfa-aliased-conditions
+* Possibility to use Symbol and Template String pattern index signatures. This is something that I've hoped to see for quite some time. It gives us more flexibility around accessing object properties: https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/#symbol-template-signatures
+* Possibility to enforce catch blocks to default to `unknown`. This allows us to enforce better type safety on our projects. Since `unknown` was added to the language, it was obvious that it was a better choice than `any` for `catch` blocks, but we could only define it manually. Now there's a compiler flag for that! https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/#use-unknown-catch-variables
+* Possibility to define static blocks in classes. I'm <a href="https://javascript.plainenglish.io/why-you-should-generally-prefer-typescript-interfaces-and-custom-types-over-classes-d145814218ce" rel="noopener">not a huge fan of classes anymore</a> (even if they do have value!), but it's nice to see static blocks appear in TypeScript! I've used those more than a few times in Java, and there are situations where they can really help avoid convoluted code. https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/#static-blocks
+
+
+And there's more! Check out the official release notes over at https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/
+
+## Nrwl Nx 12.8
+
+Nrwl Nx is another rocket ship that's hard to follow. I'm constantly amazed by how cool Nx is. A real shame that "so few" developers even know about it!
+
+With the 12.8 release, it now supports micro-frontends based on Webpack 5's Module Federation plugin. That support is in the form of Angular executors and generators. Nrwl has published a guide to show how to start using this: https://nx.dev/latest/angular/guides/setup-mfe-with-angular.
+
+With this version, there are also some changes with the integration of React & Storybook. Nx now includes a dedicated preset to simplify the Storybook setup and to share the same Webpack configuration as the React app.
+
+Nx 12.8 also introduces support for TypeScript compiler plugins for NestJS. This is cool because NestJS 8 has added support for those back in July (https://trilon.io/blog/announcing-nestjs-8-whats-new). This support in Nx means that we are now able to use the new Swagger TSC plugin of NestJS.
+
+Check out the following links to learn more:
+Blog post: https://blog.nrwl.io/micro-frontends-using-module-federation-presets-for-react-and-storybook-typescript-compiler-4120cf134816
+Release notes: https://github.com/nrwl/nx/releases/tag/12.8.0
+By the way, there's a free online conference dedicated to Nx in September: https://ti.to/nrwl/nx-conf-2021
+
+## Books corner
+
+Many of you have appreciated the list of books that I've shared in the previous edition. So I'll continue to share some with you!
+
+One book that I want to highlight this week is one that focuses entirely on Angular Ivy, called <a href="https://www.amazon.com/Accelerating-Angular-Development-Ivy-practical/dp/180020521X?tag=dsebastien-20" rel="noopener">Accelerating Angular Development with Ivy: A practical guide to building faster and more testable Angular apps with the new Ivy engine</a>. This book, currently available for pre-order has been written by <a href="https://twitter.com/LayZeeDK" rel="noopener">Lars Gyrup Brink Nielsen</a> and <a href="https://twitter.com/jacobandresen" rel="noopener">Jacob Andresen</a>. Knowing Lars, I have no doubt that this book is going to be full of gems. If you're an Angular developer, then definitely check it out.
+
+I also want to continue sharing books that have influenced me over the years. Here are three that I strongly recommend:
+
+* <a href="https://www.amazon.com/How-Friends-Influence-People-Digital/dp/1451612575?tag=dsebastien-20" rel="noopener">How to Win Friends and Influence People in the Digital Age</a>
+
+  * This book by Dale Carnegie is a trove chest of useful advice to help improve the way we interact and communicate with others. As an introvert, it has helped me open doors that I did not dare to open before
+* <a href="https://www.amazon.com/Never-Split-Difference-Negotiating-Depended/dp/0062407805?tag=dsebastien-20" rel="noopener">Never Split the Difference: Negotiating As If Your Life Depended On It</a>
+
+  * In this book, Chris Voss, a former international hostage negotiator for the FBI gives practical advice/tips about how to negotiate. Not only are the advice really useful, but the stories that the book shares are super entertaining
+* <a href="https://www.amazon.com/Dont-Make-Think-Revisited-Usability/dp/0321965515?tag=dsebastien-20" rel="noopener">Don't Make Me Think</a>
+
+  * An ode to simplicity, clarity, and usability
+
+Reply to this e-mail, and tell me about your own favorites. Or better yet: <a href="https://join.slack.com/t/softwarecrafterstalk/shared_invite/zt-umgx3v06-4rtJ20PXz867GTPzCk1zeQ" rel="noopener">join us on Slack</a> and share those with all of us!
+
+## Links of the week, ideas, and tips
+
+Here are a few links that I found interesting this week:
+
+* <a href="https://css-tricks.com/choice-words-about-the-upcoming-deprecation-of-javascript-dialogs/" rel="noopener">JavaScript dialogs are getting deprecated. Say goodbye to alert(...) and friends!</a>
+
+  * Announcement: https://www.chromestatus.com/feature/5148698084376576
+* <a href="https://www.canistilluse.com/" rel="noopener">canistilluse.com</a>
+
+  * Now that the Web platform is starting to deprecate core elements like JS dialogs, we clearly need something like this in addition to caniuse.com. Check out this blog post for more details: https://blog.jim-nielsen.com/2021/canistilluse.com/
+* <a href="https://medium.com/@ketacode/node-js-and-zero-servers-b73169c54674" rel="noopener">NodeJS and serverless</a>
+* <a href="https://www.youtube.com/watch?v=fhv2_7sdJwc" rel="noopener">Highlight of a neat new string feature with ES 2021</a> (foo.replaceAll)
+* <a href="https://linx.software/?utm=dp" rel="noopener">Linx: a low code platform built for developers</a>. It aims to help build APIs and integrations faster with less code.
+
+  * This one is pretty intriguing for me. Anthony Morris reached out to me to mention it. I'm not into low code and no code at the moment, but I'm definitely interested in the space, as I see it growing a lot recently. We developers probably ought to keep an eye out on how our ecosystem is evolving
+* Using SVG as favicons? Yes, it's possible! https://austingil.com/svg-favicons/
+* <a href="https://www.npmjs.com/package/aws-sdk-mock" rel="noopener">A module to help mock AWS SDK elements</a>
+* Just for fun: <a href="https://nautil.us/blog/12-mind_bending-perceptual-illusions" rel="noopener">12 mind-bending perceptual illusions</a>
+* A wonderful place to learn interesting things about the world: https://youarenotsosmart.com/
+
+## Software Crafters community
+
+The Software Crafters community is growing. I'm thrilled to see more and more of you over there! Don't forget to join the <a href="https://join.slack.com/t/softwarecrafterstalk/shared_invite/zt-umgx3v06-4rtJ20PXz867GTPzCk1zeQ" rel="noopener">Slack channel of our community</a>. It's a friendly and cozy place to discuss IT, Software Development, code quality, productivity, and more!
+
+Here is the invite link: https://join.slack.com/t/softwarecrafterstalk/shared_invite/zt-umgx3v06-4rtJ20PXz867GTPzCk1zeQ
+
+## That's all folks!
+
+If you find this newsletter interesting, then share the following link on social media: https://dsebastien.net/newsletter. With your help, others will also get a chance to discover it. The more, the merrier! Don't forget that you can also <a href="https://twitter.com/dSebastien" rel="noopener">follow me on Twitter</a>, where I'm most active, and always available to answer your questions. Finally, make sure to <a href="https://join.slack.com/t/softwarecrafterstalk/shared_invite/zt-umgx3v06-4rtJ20PXz867GTPzCk1zeQ" rel="noopener">join our community on Slack</a>.
+
+That's it for today!
+
+<BlogPostSignature />
