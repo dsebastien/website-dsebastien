@@ -2,9 +2,7 @@ import React from 'react';
 import Layout from '@/layouts/layout';
 import {
   FaBook,
-  FaAmazon,
 } from 'react-icons/fa';
-import Link from 'next/link';
 import tw from 'twin.macro';
 import Image from 'next/image';
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
