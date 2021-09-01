@@ -35,7 +35,7 @@ As you probably know, in Angular applications, we can force change detection usi
 
 The ChangeDetectorRef has multiple methods such as `markForCheck` and `detectChanges` which can do what we want.
 
-As I’ve [explained in my book](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860?tag=dsebastien-20), there’s a change detector tree parallel to the component tree, so each component actually has its own change detector attached.
+As I’ve [explained in my book](https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860?tag=dsebastien00-20), there’s a change detector tree parallel to the component tree, so each component actually has its own change detector attached.
 
 The thing is that, depending on which one we use, we cause more or less work. For instance, when the App component forces change detection using it’s ChangeDetectorRef, then it forces change detection on a large tree.
 

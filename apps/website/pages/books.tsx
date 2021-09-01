@@ -36,7 +36,7 @@ const BooksPage = () => {
             </article>
           </a>
 
-          <a href="https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860?tag=dsebastien-20" rel="noopener">
+          <a href="https://www.amazon.com/Learn-TypeScript-Building-Applications-understanding/dp/1789615860?tag=dsebastien00-20" rel="noopener">
             <article className="book-card">
               <div>
                 <Image

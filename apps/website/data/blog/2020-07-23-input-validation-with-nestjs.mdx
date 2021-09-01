@@ -189,7 +189,7 @@ Also, this approach has great support out of the box by NestJS, through its `Val
 
 In this section, I’ve covered the different solutions mentioned in NestJS’s documentation, but it’s far from all that you can do.
 
-There are a myriad of options for runtime type checking/validation, such as [io-ts](https://github.com/gcanti/io-ts), which I wrote about in [my TS book](https://www.amazon.com/gp/product/B081FB89BL?tag=dsebastien-20), [zod](https://github.com/vriad/zod), [runtypes](https://github.com/pelotom/runtypes), [vest](https://github.com/ealush/vest), and many more. You can find a [nice article about this subject here](https://2ality.com/2020/06/validating-data-typescript.html).
+There are a myriad of options for runtime type checking/validation, such as [io-ts](https://github.com/gcanti/io-ts), which I wrote about in [my TS book](https://www.amazon.com/gp/product/B081FB89BL?tag=dsebastien00-20), [zod](https://github.com/vriad/zod), [runtypes](https://github.com/pelotom/runtypes), [vest](https://github.com/ealush/vest), and many more. You can find a [nice article about this subject here](https://2ality.com/2020/06/validating-data-typescript.html).
 
 As a side note, a NestJS maintainer also recommended [Marshall](https://github.com/super-hornet/super-hornet.ts/tree/master/packages/marshal) to me as an alternative to class-validator, as it is apparently much more performant and provides a custom NestJS pipe for ease of use. Still, I chose class-validator for now as it is supported right out of the box and battle tested. If NestJS switches over, then I’ll probably follow along. Anyhow, to me, maintainability and support trump performance… until performance really becomes a bottleneck ;-)
 
