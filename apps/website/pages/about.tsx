@@ -95,7 +95,7 @@ const AboutPage = () => {
             <a href="https://dev-concepts.dev/" rel="noopener">
               Dev Concepts
             </a>
-            , which explains a gazillion concepts around around software
+            , which explains a gazillion concepts around software
             development. The goal of that book is to explain what the software
             craft is all about, and help those interested on their way to become
             full-stack developers.
