@@ -43,11 +43,11 @@ const Footer = () => {
         </li>
         <li>
           <SocialLink
-            url="https://dsebastien.net/newsletter"
+            url="https://dsebastien.net/news"
             name="Newsletter"
             hideText={true}
-            ariaLabelText="Subscribe to my newsletter"
-            titleText="Subscribe to my newsletter"
+            ariaLabelText="Discover my newsletter"
+            titleText="Discover my newsletter"
             icon={<FaNewspaper className="inline hover:text-white" />}
           />
         </li>
