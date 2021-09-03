@@ -49,11 +49,19 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       }
     );
 
-    //console.log("response: ", await response.json());
+    const responseAsJson = await response.json();
+
+    console.log("response: ", responseAsJson);
 
     if (response.status >= 400) {
+      let errorMessage = GENERIC_ERROR;
+
+      if(responseAsJson.title && responseAsJson.title === 'Member Exists') {
+        errorMessage = "You've already subscribed to my newsletter!";
+      }
+
       return res.status(400).json({
-        error: GENERIC_ERROR,
+        error: errorMessage,
       });
     }
 
