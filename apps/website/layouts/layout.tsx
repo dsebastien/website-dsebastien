@@ -155,7 +155,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
             </Link>
           </nav>
         </div>
-        <div className="header-right-side mt-2 sm:mt-0 flex flex-col sm:flex-row items-center object-center">
+        <div className="hidden sm:flex mt-2 sm:mt-0 sm:flex-row items-center object-center">
           <a
             href="https://github.com/dsebastien/website-dsebastien"
             className="rounded-full"
