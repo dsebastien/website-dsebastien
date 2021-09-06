@@ -8,6 +8,7 @@ import SocialLink from '@/components/social-link';
 import tw from 'twin.macro';
 import {WebsiteDataType} from "@/lib/website-data-types.intf";
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
+import {BLOG_DESCRIPTION} from "../constants";
 
 const StyledArticle = tw.article``;
 
@@ -34,8 +35,7 @@ export default function Blog(input: { entries: FrontMatter[] }) {
     <Layout
       customMeta={{
         title: 'Blog – Sébastien Dubois',
-        description:
-          'A glimpse of my journey. I write about programming, software/IT/solution architecture, code quality, IT security, entrepreneurship, management, leadership, and more.',
+        description: BLOG_DESCRIPTION,
       }}
     >
       <StyledArticle className="page-content-wrapper">
