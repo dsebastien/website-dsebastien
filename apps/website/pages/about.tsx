@@ -49,7 +49,7 @@ const AboutPage = () => {
           <p>
             I wear many hats: father, husband, author, software crafter, CTO,
             solution architect, mentor, coach, entrepreneur, geek, gamer. I'm
-            also the CEO of{' '}
+            also the founder of{' '}
             <a href="https://developassion.be" rel="noopener">
               DeveloPassion
             </a>
@@ -60,10 +60,9 @@ const AboutPage = () => {
             <a href="https://www.linkedin.com/in/sebastiend/" rel="noopener">
               15+ years in the IT industry
             </a>{' '}
-            . Since day one, I have always been passionate about IT, software
+            . Since day one (and actually long before that), I have always been passionate about IT, software
             development, IT security, code quality, the open Web, and
-            open-source software. I write about programming, architecture, code
-            quality, entrepreneurship, management, leadership, and more.{' '}
+            open-source software. I write about knowledge management, software development, entrepreneurship, indie hacking, management, leadership, and more.{' '}
             <a
               href="https://dsebastien.net/newsletter"
               rel="noopener"
