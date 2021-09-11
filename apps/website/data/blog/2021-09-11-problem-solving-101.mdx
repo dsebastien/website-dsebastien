@@ -1,0 +1,115 @@
+---
+title: "Problem-solving 101"
+summary: "Software crafters need rock-solid problem-solving skills."
+publishedAt: '2021-09-11'
+image: '/static/images/blog/2021/rubik.jpg'
+slug: 'problem-solving-101'
+categories: [software development, quality, devconcepts]
+keywords: [problem solving, programming, coding, craft, software engineering, software development, it]
+published: true
+---
+
+In this article, I want to discuss problem-solving, one of the key skills that software developers need to master. As a software developer, you'll face problems *all day long*. IT in general and software development in particular is really all about solving problems. If you don't enjoy doing that, then you might not like software development all that much.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Picture courtesy of https://unsplash.com/@alandelacruz4`}
+    src={`/static/images/blog/2021/rubik.jpg`}
+    width={2089}
+    height={1175}
+    priority
+  />
+</BlogPostCenteredContent>
+
+This content is part of <a href="https://gum.co/DevConcepts-Part-01-SoftwareCraft" rel="noopener"> the first volume</a> of my <a href="https://dev-concepts.dev" rel="noopener">Dev Concepts series of books</a>.
+
+## Early days
+
+In your early days as a developer, you'll spend _a lot_ of time fighting against compilers, interpreters and linters. Why is this expression invalid? What is wrong with that function? What type should be used here? etc. Over time, once you overcome those learning difficulties, you'll get to bang your hand against the wall for more "important" issues such as:
+
+* How should we call this variable?
+* Haven't I imported that module?
+* Why is that value null at this point?
+* Shouldn't this be true at this point?
+* What was I doing ten minutes ago?
+
+Just kidding! More seriously though, because of the constant trial and error process that you'll go through over the years, you'll face and resolve the same kinds of issues over and over again, albeit in different forms. It'll gradually become easier and easier for you to solve those issues. But new variants will emerge, always surprising you. Like viruses, there are always new problem variants.
+
+Also, the more experienced you become, the more complex the problems you'll have to solve (the most complex ones always being about team collaboration). The other fun part as your experience grows is that you'll be able to anticipate problems and avoid some of them, for instance by creating more solid architectures/designs from the beginning.
+
+When you are constantly facing issues, there are two main possible reactions: go mad or find it amusing, and move forward with the resolution of the new puzzle at hand. Hopefully, you'll be part of the second group. Sometimes, it'll take you a few minutes to solve an issue, and it won't trouble you much. But sometimes, issues will take hours or even days to be fixed, which can be hard on your morale, especially when you feel the pressure. There are also problems that you won't be able to crack and for which you and your teams will have to find external help, or workarounds.
+
+## Problem-solving cycle and approaches
+
+Problem-solving can be tackled using a systematic approach. For instance, with the *problem-solving cycle*:
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Problem-solving cycle`}
+    src={`/static/images/blog/2021/problem-solving-cycle.svg`}
+    width={867}
+    height={167}
+    priority
+  />
+</BlogPostCenteredContent>
+
+* **Recognize the problem**: Before anything else, we need to see that there's a problem
+* **Define the problem**: We need to clarify what needs to be solved precisely
+* **Develop a strategy to fix it**
+* **Organize information**: What information do we have about the problem, what do we have to figure out, etc
+* **Track progress**: If we don't track our progress, then we risk spending too much time/energy. By evaluating progress, we'll be able to devise/try other strategies if needed
+* **Evaluate found solutions (correctness, efficiency, etc)**: Especially useful if there are multiple solutions
+* **Remember**: Keep track of previously encountered problems, and their solutions to avoid having to find the same solutions again in the future
+
+While analyzing problems, we can create an [*argument map*](https://en.wikipedia.org/wiki/Argument_map), which is a useful tool to visualize the _problem space_. We can also make use of many other [problem structuring methods](https://en.wikipedia.org/wiki/Problem_structuring_methods).
+
+Reformulating a problem is also very useful to make sure that it is clearly understood. Once clearly articulated, it should be simplified/reduced as much as possible. The goal is to simplify, focus on the essential and remove all the noise.
+
+* **Brainstorming**: Identify many ideas and potential solutions without judging those immediately
+* **Analogies**: Compare with other similar problems
+* **Divide and conquer**: Break down the problem in smaller, more easily solvable parts
+* **Abstraction**: Solve the problem on paper/in thought/on a prototype before solving it on the real system
+* **Hypothesis validation**: Validate parts of the solution
+* **Root cause analysis**: Identify the real source of the problem
+* **Elimination**: Rework or even eliminate a system or subsystem to make problems disappear altogether. Sometimes, eliminating the source of a problem is the fastest way to move forward
+* etc
+
+For instance, we can create an [issue tree](https://en.wikipedia.org/wiki/Issue_tree), which visualizes the possible solutions to a problem and explore those separately. For root cause analysis, we can use the [five whys](https://en.wikipedia.org/wiki/Five_whys) technique and/or [Ishikawa diagrams](https://en.wikipedia.org/wiki/Ishikawa_diagram).
+
+We can also use [*mind maps*](https://en.wikipedia.org/wiki/Mind_map), which are one of the more powerful tools at our disposal to organize information/knowledge and analyze concepts/ideas. I'm a huge fan of mind maps. Mind maps are also very useful to use when trying to solve problems.
+
+In general, visualizations and [diagrammatic reasoning](https://en.wikipedia.org/wiki/Diagrammatic_reasoning) helps _a lot_, so don't hesitate to read articles/books about visualization techniques; it _will_, prove useful.
+
+As professional problem solvers, there's a true _pleasure_ when we finally get to the "Aha!" moment (also known as the [Eureka effect](https://en.wikipedia.org/wiki/Eureka_effect)); when the puzzle is finally solved. It only lasts an instant (because the next problem is already in front of you), but that moment is _bliss_. Sometimes the solution will come out of the blue. Many developers have already gone to sleep with an issue on their mind, and with a solution at hand in the morning.
+
+In IT, problems often have many possible solutions. Of course, some are better than others, but it's not always obvious.
+
+## References
+
+* [The Ideal Problem Solver: A Guide for Improving Thinking, Learning, and Creativity](https://www.amazon.com/Ideal-Problem-Solver-Improving-Creativity/dp/0716722046?tag=dsebastien00-20) by John D. Bransford and Barry S. Stein
+* [Problem solving](https://en.wikipedia.org/wiki/Problem_solving)
+* [Cracked it!: How to solve big problems](https://www.amazon.com/Cracked-problems-solutions-strategy-consultants-ebook/dp/B07DMFYH2R?tag=dsebastien00-20) by Bernard Garrette, Corey Phelps and Olivier Sibony
+* [Issue tree](https://en.wikipedia.org/wiki/Issue_tree)
+* [Five whys](https://en.wikipedia.org/wiki/Five_whys) technique
+* [Ishikawa diagrams](https://en.wikipedia.org/wiki/Ishikawa_diagram)
+* [Mind maps](https://en.wikipedia.org/wiki/Mind_map)
+* [Mind Map Mastery](https://www.amazon.com/Mind-Map-Mastery-Complete-Learning/dp/1786781417?tag=dsebastien00-20) by Tony Buzan
+* [Diagrammatic reasoning](https://en.wikipedia.org/wiki/Diagrammatic_reasoning)
+* [Eureka effect](https://en.wikipedia.org/wiki/Eureka_effect)
+* [How to Solve It](https://www.amazon.com/How-Solve-Aspect-Mathematical-Method/dp/069116407X?tag=dsebastien00-20) by G. Polya
+* [Thinking, Fast and Slow](https://www.amazon.com/dp/0141033576?tag=dsebastien00-20) by Daniel Kahnerman
+
+## Conclusion
+
+In this article, I've discussed problem-solving skills, which are key for all software crafters. I've covered the problem-solving cycle, as well as a number of approaches you can take to tackle the most complex problems. Make sure to check out the references that I've shared above, as those contain many more keys to help you solve the fascinating puzzles you'll be confronted with.
+
+Problem-solving does require a particular mindset/thought process, an analytical mind, and specific skills that we'll discuss next.
+
+What is your favorite approach to solve problems?
+
+That’s it for today!
+
+<BlogPostSignature />
+
+
+
