@@ -7,7 +7,7 @@ import ThemeSwitcher from '@/components/theme-switcher';
 import { FaArrowUp, FaGithub } from 'react-icons/fa';
 import Footer from '@/components/footer';
 import ScrollToTop from '@/components/scroll-to-top';
-import { IS_BROWSER } from '../constants';
+import {BLOG_DESCRIPTION, IS_BROWSER} from '../constants';
 
 const StyledPage = tw.div``;
 
@@ -39,7 +39,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
   const meta: SupportedMeta = {
     siteName: 'dSebastien',
     title: 'dSebastien',
-    description: `Sébastien Dubois' home on the Web`,
+    description: BLOG_DESCRIPTION,
     image: 'https://dsebastien.net/static/images/banner-2560.jpg',
     type: 'website',
     keywords:
@@ -55,7 +55,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
       <Head>
         <meta charSet="utf-8" />
         <title>{meta.title}</title>
-        <meta content={meta.description} name="description" />
+        <meta name="description" content={meta.description} />
         <meta name="keywords" content={meta.keywords} />
         <meta name="robots" content="index,follow,max-image-preview:large" />
         <meta

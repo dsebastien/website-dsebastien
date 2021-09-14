@@ -24,7 +24,12 @@ const StyledArticle = tw.article``;
 
 const AboutPage = () => {
   return (
-    <Layout>
+    <Layout
+      customMeta={{
+        title: 'About – Sébastien Dubois',
+        description: 'A few things about who I am',
+      }}
+    >
       <StyledArticle className="article-content-wrapper">
         <h1 className="page-heading">
           A little about me <FaCoffee className="inline" />

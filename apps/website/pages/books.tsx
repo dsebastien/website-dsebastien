@@ -11,7 +11,12 @@ const StyledArticle = tw.article``;
 
 const BooksPage = () => {
   return (
-    <Layout>
+    <Layout
+      customMeta={{
+        title: 'Books – Sébastien Dubois',
+        description: 'My books',
+      }}
+    >
       <StyledArticle className="article-content-wrapper">
         <h1 className="page-heading">
           My Books <FaBook className="inline" />
