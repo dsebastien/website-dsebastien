@@ -2,6 +2,7 @@ import React, {useState, useRef, KeyboardEvent, FormEvent} from 'react';
 import tw from 'twin.macro';
 import {IoIosMailOpen} from "react-icons/io";
 import {AiOutlineLoading} from "react-icons/ai";
+import {NEWSLETTER_MUST_VALIDATE_EMAIL} from "../../constants";
 
 const StyledDiv = tw.div``;
 
@@ -42,12 +43,22 @@ const NewsletterSubscribe = () => {
     const { error } = await res.json();
 
     if (error) {
+      if(error === NEWSLETTER_MUST_VALIDATE_EMAIL) {
+        setForm({
+          state: 'error',
+          message: '',
+          error,
+          completed: true,
+        });
+        return;
+      }
+
       setForm({
         state: 'error',
         message: '',
         error,
         completed: false,
-      })
+      });
       return;
     }
 
@@ -56,7 +67,7 @@ const NewsletterSubscribe = () => {
       message: "Yay, you're on the list!",
       error: '',
       completed: true,
-    })
+    });
   };
 
   /**
@@ -135,7 +146,7 @@ const NewsletterSubscribe = () => {
           </div>
       </div>
 
-      {(form.state === 'ready' || form.state === 'error') && (
+      {(form.state === 'ready' || form.state === 'error') && !form.completed && (
         <>
           <form onSubmit={handleFormSubmit}>
             <div className="flex flex-row justify-center gap-2">

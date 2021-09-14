@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
+import {NEWSLETTER_MUST_VALIDATE_EMAIL} from "../../constants";
 
 const GENERIC_ERROR = "There was an error subscribing you to the newsletter. Send me an email at seb@dsebastien.net and I'll add you to the list.";
 
@@ -20,49 +21,45 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   console.log("New newsletter subscriber to add: ", email);
 
   try {
-    const AUDIENCE_ID = process.env.MAILCHIMP_AUDIENCE_ID;
-    if(!AUDIENCE_ID) {
-      throw new Error("The following environment variable is mandatory: [MAILCHIMP_AUDIENCE_ID]");
-    }
-
-    const API_KEY = process.env.MAILCHIMP_API_KEY;
+    const API_KEY = process.env.REVUE_API_KEY;
     if(!API_KEY) {
-      throw new Error("The following environment variable is mandatory: [MAILCHIMP_API_KEY]");
+      throw new Error("The following environment variable is mandatory: [REVUE_API_KEY]");
     }
-
-    const DATACENTER = API_KEY.split('-')[1];
-
-    const data = {
-      email_address: email,
-      status: 'subscribed',
-    };
 
     const response = await fetch(
-      `https://${DATACENTER}.api.mailchimp.com/3.0/lists/${AUDIENCE_ID}/members`,
+      `https://www.getrevue.co/api/v2/subscribers`,
+
       {
-        body: JSON.stringify(data),
+        method: 'POST',
         headers: {
-          Authorization: `apikey ${API_KEY}`,
+          Authorization: `Token ${API_KEY}`,
           'Content-Type': 'application/json'
         },
-        method: 'POST'
+        // Reference: https://www.getrevue.co/api#post-/v2/subscribers
+        body: JSON.stringify({
+          email,
+          first_name: '',
+          last_name: '',
+          double_opt_in: true,
+        }),
       }
     );
 
     const responseAsJson = await response.json();
 
-    console.log("response: ", responseAsJson);
+    const responseStatus = response.status;
 
-    if (response.status >= 400) {
-      let errorMessage = GENERIC_ERROR;
+    console.log("Response status code: ", responseStatus);
+    console.log("Response: ", responseAsJson);
 
-      if(responseAsJson.title && responseAsJson.title === 'Member Exists') {
-        errorMessage = "You've already subscribed to my newsletter!";
+    if(responseStatus !== 200) {
+      console.log("Response status not 200: ", responseStatus);
+      const mustValidateEmail = responseStatus === 400 && responseAsJson.error && responseAsJson.error.email && responseAsJson.error.email[0] === 'This email address was not confirmed yet.'
+      if(mustValidateEmail) {
+        return res.status(500).json({ error: NEWSLETTER_MUST_VALIDATE_EMAIL });
       }
-
-      return res.status(400).json({
-        error: errorMessage,
-      });
+      // Generic error
+      return res.status(500).json({ error: responseAsJson.error.email[0] });
     }
 
     return res.status(201).json({ error: '' });

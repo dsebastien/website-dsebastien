@@ -16,3 +16,8 @@ export const BUILD_TIMESTAMP = Date.now();
  * Ref data
  */
 export const BLOG_DESCRIPTION = `A glimpse of my journey. I write about knowledge management, software development, entrepreneurship, indie hacking, management and leadership.`;
+
+/**
+ * Newsletter errors
+ */
+export const NEWSLETTER_MUST_VALIDATE_EMAIL = 'Please check your inbox to confirm your subscription!';
