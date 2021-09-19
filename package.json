@@ -1,7 +1,20 @@
 {
   "name": "website",
+  "description": "dSebastien's Website",
   "version": "0.0.0",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dsebastien/website.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dsebastien/website/issues"
+  },
+  "homepage": "https://github.com/dsebastien/website#readme",
+  "author": "dSebastien <seb@dsebastien.net> (https://www.dsebastien.net)",
+  "engines": {
+    "node": ">=12.10.0"
+  },
   "scripts": {
     "nx": "nx",
     "start": "npm run start:website",
@@ -24,14 +37,18 @@
     "format:write": "nx format:write",
     "format:check": "nx format:check",
     "format:all": "nx format:write",
-    "clean:install": "rm -rf node_modules && rm -rf package-lock.json && npm install",
+    "clean:install": "rm -rf node_modules && rm -rf dist && rm -rf package-lock.json && rm -rf yarn.lock && npm run setup",
     "install:clean": "npm run clean:install",
+    "prettier": "npm run format",
+    "setup": "npm install --legacy-peer-deps",
+    "tailwind": "tailwind",
     "update": "nx migrate latest",
     "update:check": "ng update",
     "workspace-generator": "nx workspace-generator",
     "dep-graph": "nx dep-graph",
     "help": "nx help",
-    "tsc": "tsc -p ./tsconfig.app.json --noEmit"
+    "tsc": "tsc -p ./tsconfig.app.json --noEmit",
+    "check-updates": "ncu -u"
   },
   "private": true,
   "dependencies": {
@@ -62,7 +79,7 @@
     "rxjs": "6.6.6",
     "styled-components": "5.2.1",
     "swr": "1.0.0",
-    "tailwindcss": "2.1.0",
+    "tailwindcss": "2.2.15",
     "tslib": "2.1.0"
   },
   "devDependencies": {
@@ -93,8 +110,8 @@
     "@typescript-eslint/parser": "4.14.0",
     "autoprefixer": "10.2.5",
     "babel-jest": "26.6.3",
-    "babel-plugin-macros": "3.0.1",
-    "babel-plugin-styled-components": "1.12.0",
+    "babel-plugin-macros": "3.1.0",
+    "babel-plugin-styled-components": "1.13.2",
     "browserslist": "4.16.3",
     "caniuse-lite": "1.0.30001197",
     "concurrently": "6.0.0",
@@ -111,6 +128,7 @@
     "globby": "11.0.2",
     "image-size": "0.9.4",
     "jest": "26.6.3",
+    "npm-check-updates": "11.8.5",
     "postcss": "8.2.6",
     "postcss-flexbugs-fixes": "5.0.2",
     "postcss-import": "14.0.0",
@@ -126,9 +144,9 @@
     "ts-node": "9.1.1",
     "tsconfig-paths": "3.9.0",
     "tslint": "6.1.3",
-    "twin.macro": "2.3.0",
+    "twin.macro": "2.7.0",
     "unified": "9.2.1",
     "unist-util-visit": "2.0.3",
-    "typescript": "4.2.3"
+    "typescript": "4.4.3"
   }
 }
