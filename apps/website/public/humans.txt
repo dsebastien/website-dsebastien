@@ -1,0 +1,27 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+  Sébastien Dubois -- Founder -- https://twitter.com/dSebastien
+  DeveloPassion -- https://www.developassion.be -- https://twitter.com/DeveloPassion
+
+# THANKS
+
+  Thanks to the open source community!
+
+# TECHNOLOGY COLOPHON
+  HTML
+  CSS
+  TypeScript / EcmaScript
+  React
+  React Styled Components
+  Next.js
+  next-themes
+  Tailwind
+  Tailwind Custom Forms
+  MDX
+  CSP
+  Webpack
+  NodeJS
+  Yarn
