@@ -149,7 +149,7 @@ const NewsletterSubscribe = () => {
       {(form.state === 'ready' || form.state === 'error') && !form.completed && (
         <>
           <form onSubmit={handleFormSubmit}>
-            <div className="flex flex-row justify-center gap-2">
+            <div className="flex flex-row flex-wrap sm:flex-nowrap justify-center gap-2">
               <input
                 type="email"
                 autoComplete="email"
@@ -163,7 +163,7 @@ const NewsletterSubscribe = () => {
                 className="px-4 py-2 border-2 border-gray-300 dark:border-gray-900 focus:ring-blue-500 focus:border-blue-500 block w-full rounded-md bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100"
               />
               <button
-                className="bg-pink-500 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded flex flex-row justify-center items-center"
+                className="w-full sm:w-auto bg-pink-500 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded flex flex-row justify-center items-center"
               >
                 <span className="text-lg">Subscribe</span><span className="ml-2 text-2xl">📧</span>
               </button>
