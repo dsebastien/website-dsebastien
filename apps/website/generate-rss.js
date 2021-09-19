@@ -83,25 +83,3 @@ async function generate() {
 }
 
 generate();
-
-//
-// async function generate() {
-//     await Promise.all(
-//     posts.map(async (name) => {
-//
-//       const frontmatter = matter(content);
-//
-//       feed.item({
-//         title: frontmatter.data.title,
-//         url: 'https://dsebastien.net/blog/' + name.replace(/\.mdx?/, ''),
-//         date: frontmatter.data.publishedAt,
-//         description: frontmatter.data.summary,
-//       });
-//     })
-//   );
-//
-//   await fs.writeFile(
-//     helpers.root('apps/website/public/feed.xml'),
-//     feed.xml({ indent: true })
-//   );
-// }

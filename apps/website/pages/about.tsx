@@ -45,8 +45,8 @@ const AboutPage = () => {
           <div className="">
             <Image
               alt="Dubois Sébastien"
-              height={317}
               width={264}
+              height={317}
               src="/static/images/sebastien.png"
               className="rounded-lg"
             />

@@ -98,7 +98,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
           <div className="header-app-logo">
             <h1 className="sm:ml-2">dSebastien</h1>
           </div>
-          <nav className="header-menu my-4 sm:my-0 sm:ml-10 flex flex-col sm:flex-row flex-wrap items-baseline gap-2 sm:gap-4 font-semibold">
+          <nav className="header-menu my-4 md:my-0 sm:ml-10 flex flex-col sm:flex-row flex-wrap items-baseline gap-2 sm:gap-4 font-semibold">
             <Link href="/">
               <a
                 className="main-menu-link"
