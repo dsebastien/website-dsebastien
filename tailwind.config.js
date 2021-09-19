@@ -43,7 +43,7 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        writerplan: [
+        dsebastien: [
           'AvenirNext',
           '-apple-system',
           'BlinkMacSystemFont',
@@ -64,6 +64,7 @@ module.exports = {
         lg: { min: '1280px' },
         xg: { min: '1600px' },
         xl: { min: '1920px' },
+        xxl: { min: "2440px" },
         print: { raw: 'print' },
         portrait: { raw: '(orientation: portrait)' },
       },
