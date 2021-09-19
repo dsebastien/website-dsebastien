@@ -48,7 +48,7 @@ const Footer = () => {
             hideText={true}
             ariaLabelText="Discover my newsletter"
             titleText="Discover my newsletter"
-            icon={<FaNewspaper className="inline hover:text-white" />}
+            icon={<FaNewspaper className="inline dark:hover:text-white hover:text-blue-400" />}
           />
         </li>
       </StyledList>
