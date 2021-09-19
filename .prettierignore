@@ -1,6 +1,7 @@
 # Add files here to ignore them from prettier formatting
 
 dist/
+.tmp/
 coverage/
 node_modules/
 coverage/
@@ -8,3 +9,12 @@ coverage/
 backups/
 .env.*
 .vercel/
+__mocks__
+.git/
+.github/
+.idea/
+.vscode/
+package.json
+package-lock.json
+yarn.lock
+yarn-error.log
