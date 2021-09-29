@@ -72,6 +72,8 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         <meta property="og:description" content={meta.description} />
         <meta property="og:title" content={meta.title} />
         <meta property="og:image" content={meta.image} />
+        <meta property="og:locale" content="en_US" />
+        <meta property="image" content={meta.image} />
         <meta name="author" content="Sébastien Dubois" />
         <meta property="article:author" content="https://dsebastien.net" />
         <meta name="twitter:creator" content="@dSebastien" />
@@ -85,7 +87,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         )}
         <meta name="theme-color" content="#3C74DB" /> {/* blue-500 */}
       </Head>
-      <header className="main-header sticky-nav py-4 px-8 flex flex-col sm:flex-row justify-between bg-blue-500 text-gray-100 border-b-2 border-blue-700 shadow-lg">
+      <header className="main-header sticky top-0 py-4 px-8 flex flex-col sm:flex-row justify-between bg-blue-500 text-gray-100 border-b-2 border-blue-700 shadow-lg">
         <a
           href="#main"
           aria-label="Skip to the content"
@@ -96,9 +98,9 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         <div className="header-left-side flex flex-col sm:flex-row flex-wrap items-center object-center">
           <ThemeSwitcher />
           <div className="header-app-logo">
-            <h1 className="sm:ml-2">dSebastien</h1>
+            <span className="sm:ml-2 text-5xl font-semibold tracking-normal text-gray-100">dSebastien</span>
           </div>
-          <nav className="header-menu my-4 md:my-0 sm:ml-10 flex flex-col sm:flex-row flex-wrap items-baseline gap-2 sm:gap-4 font-semibold">
+          <nav className="header-menu mt-4 lg:mt-0 sm:ml-10 flex flex-col sm:flex-row flex-wrap items-center object-center gap-2 sm:gap-4 font-semibold">
             <Link href="/">
               <a
                 className="main-menu-link"
@@ -179,7 +181,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         className="scroll-to-top"
         icon={<FaArrowUp className="w-full h-full text-white" />}
       />
-      <main id="main" className="mt-12 px-4 sm:px-8 flex-grow">
+      <main id="main" className="relative mt-12 px-4 sm:px-8 flex-grow">
         {children}
       </main>
       <footer className="px-4 mb-4 sm:px-8">
