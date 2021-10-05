@@ -15,7 +15,7 @@ export const BUILD_TIMESTAMP = Date.now();
 /**
  * Ref data
  */
-export const BLOG_DESCRIPTION = `A glimpse of my journey. I write about knowledge management, software development, entrepreneurship, indie hacking, management and leadership.`;
+export const BLOG_DESCRIPTION = `A glimpse of my journey. I write about knowledge management, software development, productivity, entrepreneurship, indie hacking, management and leadership.`;
 
 /**
  * Newsletter errors
