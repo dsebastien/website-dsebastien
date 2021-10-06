@@ -13,7 +13,7 @@ const NotFound = () => {
       }}
     >
       <StyledDiv className="max-w-2xl mx-auto">
-        <h1 className="page-heading">Doh...</h1>
+        <div className="page-heading">Doh...</div>
         <p className="text-gray-900 dark:text-gray-400 mb-8">
           You seem to be lost. Hold my hand (yes, it's safe here), and let me
           show you the way.

@@ -38,9 +38,9 @@ export default function Blog(input: { entries: FrontMatter[] }) {
         description: BLOG_DESCRIPTION,
       }}
     >
-      <StyledArticle className="page-content-wrapper">
-        <h1 className="page-heading">Blog</h1>
-        <p className="text-gray-900 dark:text-gray-400 mb-4">
+      <StyledArticle className="page-content-wrapper space-y-4">
+        <div className="page-heading">Blog</div>
+        <p className="text-gray-900 dark:text-gray-400">
           I've published <b>{`${input.entries.length}`}</b> article
           {input.entries.length > 1 && 's'} here. I usually post everything here,
           but you can also find my some of my content on{' '}
@@ -71,7 +71,7 @@ export default function Blog(input: { entries: FrontMatter[] }) {
           />
           . Use the search below to filter by title.
         </p>
-        <div className="relative w-full mb-4">
+        <div className="relative w-full">
           <input
             aria-label="Search articles"
             type="text"
@@ -94,11 +94,11 @@ export default function Blog(input: { entries: FrontMatter[] }) {
             />
           </svg>
         </div>
-        <h3 className="font-bold text-2xl md:text-4xl tracking-tight mb-4 mt-8 text-black dark:text-white">
+        <h3 className="font-bold text-2xl md:text-4xl tracking-tight mt-8 text-black dark:text-white">
           All Posts
         </h3>
         {!filteredBlogPosts.length && (
-          <p className="text-gray-900 dark:text-gray-400 mb-4">
+          <p className="text-gray-900 dark:text-gray-400">
             No match found. Please refine your search criteria.
           </p>
         )}

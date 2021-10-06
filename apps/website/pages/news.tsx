@@ -36,17 +36,17 @@ export default function News(input: { entries: FrontMatter[] }) {
         description: BLOG_DESCRIPTION,
       }}
     >
-      <StyledArticle className="page-content-wrapper">
-        <h1 className="page-heading">Newsletter</h1>
-        <p className="text-gray-900 dark:text-gray-400 mb-4">
+      <StyledArticle className="page-content-wrapper space-y-4">
+        <div className="page-heading">Newsletter</div>
+        <p className="text-gray-900 dark:text-gray-400">
           I've published <b>{`${input.entries.length}`}</b> edition{input.entries.length > 1 && 's'} of my newsletter. You can browse the past editions below.
         </p>
 
-        <div className="mb-4">
+        <div className="">
           <NewsletterSubscribe />
         </div>
 
-        <div className="relative w-full mb-4">
+        <div className="relative w-full">
           <input
             aria-label="Search newsletters"
             type="text"
@@ -69,11 +69,11 @@ export default function News(input: { entries: FrontMatter[] }) {
             />
           </svg>
         </div>
-        <h3 className="font-bold text-2xl md:text-4xl tracking-tight mb-4 mt-8 text-black dark:text-white">
+        <h3 className="font-bold text-2xl md:text-4xl tracking-tight mt-8 text-black dark:text-white">
           Past Editions
         </h3>
         {!filteredEntries.length && (
-          <p className="text-gray-900 dark:text-gray-400 mb-4">
+          <p className="text-gray-900 dark:text-gray-400">
             No match found. Please refine your search criteria.
           </p>
         )}

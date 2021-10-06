@@ -10,7 +10,7 @@ const IndexPage = () => {
   return (
     <Layout>
       <StyledDiv className="article-content-wrapper">
-        <h1 className="page-heading">Hello! <span className="animate-wave ">👋</span></h1>
+        <div className="page-heading">Hello! <span className="animate-wave ">👋</span></div>
         <p className="text-gray-900 dark:text-gray-400 text-5xl	tracking-wide leading-normal">
           I'm <span className="font-bold">Sébastien Dubois</span>, an <span className="font-bold">author ✍️</span>, <span className="font-bold">crafter 🔨</span>, <span className="font-bold">CTO 🚀</span>, and <span className="font-bold">Bootstrapper ✨</span>
         </p>

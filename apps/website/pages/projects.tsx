@@ -18,9 +18,9 @@ const BooksPage = () => {
       }}
     >
       <StyledArticle className="article-content-wrapper">
-        <h1 className="page-heading">
+        <div className="page-heading">
           My projects <FaBook className="inline" />
-        </h1>
+        </div>
 
         <section className="mb-8 text-gray-900 dark:text-gray-400 flex grid grid-cols-1 sm:grid-cols-2 grid-flow-row items-center gap-6">
 

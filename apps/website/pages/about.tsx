@@ -31,9 +31,9 @@ const AboutPage = () => {
       }}
     >
       <StyledArticle className="article-content-wrapper">
-        <h1 className="page-heading">
+        <div className="page-heading">
           A little about me <FaCoffee className="inline" />
-        </h1>
+        </div>
         <section className="mb-8 prose leading-6 text-gray-900 dark:text-gray-400">
           <p>
             Hey there! I'm{' '}
