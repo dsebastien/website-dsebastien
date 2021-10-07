@@ -36,7 +36,7 @@ const BooksPage = () => {
                 />
               </div>
               <footer>
-                <span>A series of 12 books about Software Development and IT, exploring various sub-domains of the field. A solid reference for Software Crafters.</span>
+                <span>A collection of 12 e-books about Software Development and IT, exploring various sub-domains of the field. A solid reference for Software Crafters.</span>
               </footer>
             </article>
           </a>
