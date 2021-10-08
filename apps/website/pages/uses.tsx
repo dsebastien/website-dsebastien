@@ -24,9 +24,9 @@ export default function Uses({ mdxSource }: UsesProps) {
       }}
     >
       <StyledArticle className="article-content-wrapper">
-        <div className="page-heading">
+        <h1 className="page-heading">
           What I use, like, enjoy, love, or can't live without
-        </div>
+        </h1>
         <p className="text-black dark:text-gray-300 mt-2 mb-8">
           Everyone has their own "toolkit". Here's a glimpse into mine. I don't
           intend to convince anyone that there are good choices. They're mine;

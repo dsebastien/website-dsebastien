@@ -39,7 +39,7 @@ export default function Blog(input: { entries: FrontMatter[] }) {
       }}
     >
       <StyledArticle className="page-content-wrapper space-y-4">
-        <div className="page-heading">Blog</div>
+        <h1 className="page-heading">Blog</h1>
         <p className="text-gray-900 dark:text-gray-400">
           I've published <b>{`${input.entries.length}`}</b> article
           {input.entries.length > 1 && 's'} here. I usually post everything here,
