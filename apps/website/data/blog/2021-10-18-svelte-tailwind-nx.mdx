@@ -1,0 +1,254 @@
+---
+title: "Svelte, Tailwind and Nrwl NX, a powerful combo"
+summary: "A tutorial explaining how to create a Svelte application using Nrwl NX and how to add Tailwind support."
+publishedAt: '2021-10-18'
+image: '/static/images/logos/svelte.svg'
+slug: 'svelte-tailwind-nx'
+categories: [tailwind, svelte, software development, programming, coding]
+keywords: [tailwind, svelte, software development, programming, coding]
+published: true
+---
+
+In this article, I'll show you how to create a [Svelte](https://svelte.dev/) application with [Nrwl NX](https://nx.dev/) and how install/configure [Tailwind](https://tailwindcss.com/).
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Svelte`}
+    src={`/static/images/logos/svelte.svg`}
+    width={400}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+[Tailwind](https://tailwindcss.com/) is more popular than ever. If you've been following me, you know that I'm a huge fan. Recently I've started exploring Svelte, and wanted to know how to combine it with Tailwind. Not only that, but I also wanted to use Nrwl NX. This is a summary of my findings.
+
+This is a short, but very practical article. If you hope to learn how Svelte/Tailwind work and why you should use those then this article is not for you.
+
+## Battle plan
+First, we'll create a [Nrwl NX](https://nx.dev/) workspace to structure our project.
+
+Once we're done, we'll install the [Svelte plugin](https://nxext.dev/docs/svelte/overview/) into the workspace, and we'll use it to create our Svelte application.
+
+Then, we'll install Tailwind, and a few supporting tools (e.g., PostCSS and autoprefixer). After that, we'll configure Tailwind, PostCSS and our Svelte application. Finally, we'll load Tailwind's base styles in our application, and we'll add some styling.
+
+## Creating the Nx workspace
+
+NX is a really powerful tool that I use in most of my projects. NX supports many frameworks and programming languages.
+
+Creating an Nx workspace is as simple as running the following command:
+
+`npx create-nx-workspace <workspace name>`
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Svelte`}
+    src={`/static/images/blog/2021/2021-10-18-create-nx-workspace.gif`}
+    width={900}
+    height={477}
+    priority
+  />
+</BlogPostCenteredContent>
+
+At the moment, NX does not natively support Svelte, so we need to create an empty workspace. The `create-nx-workspace` command should generate the following structure for you:
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`NX workspace structure`}
+    src={`/static/images/blog/2021/2021-10-18-structure.png`}
+    width={250}
+    height={497}
+    priority
+  />
+</BlogPostCenteredContent>
+
+This is the standard structure for Nx workspaces. The key elements are:
+
+* The `apps` folder, which will later contain our Svelte application
+* The `libs` folder, which we can use to host parts of our monorepo to make those easily reusable across projects
+* The `nx.json` file, which is the configuration file of Nx
+* The `package.json` file in which we can manage our dependencies
+* The `workspace.json` file, which is the configuration file for our Nx workspace
+
+## Installing the Svelte plugin for Nx
+
+Now that our workspace is created, we need to install the [Svelte community plugin](https://nxext.dev/docs/svelte/overview/), created and maintained by [Dominik Pieper](https://twitter.com/dominik_pieper). This plugin makes it possible to create and build Svelte applications in a Nrwl NX workspace. You can find the official documentation [here](https://nxext.dev/docs/svelte/overview/).
+
+For this example I'll use `npm`, but feel free to use `yarn` if you prefer. Installing the plugin is quite [straightforward](https://nxext.dev/docs/svelte/installation/):
+
+`npm install @nxext/svelte --save`
+
+Once done, we have access to the schematics and builders.
+
+## Creating the Svelte application
+
+The Svelte plugin for NX includes [a schematic](https://nxext.dev/docs/svelte/schematics/application) that we will use to create our Svelte application:
+
+`npx nx g @nxext/svelte:app app_name`
+
+This command will generate the application and store it inside the `apps/<app_name>` folder. Pick any name you fancy.
+
+Inside that folder, you should find the following:
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Svelte app structure`}
+    src={`/static/images/blog/2021/2021-10-18-content-app.png`}
+    width={243}
+    height={348}
+    priority
+  />
+</BlogPostCenteredContent>
+
+The code of the application can be found under `src`, while the assets (e.g., images, fonts, global styles, etc) will go into the `public` folder.
+
+Notice the `svelte.config.cjs` file. This is the configuration file for Svelte. We'll adapt it in a minute.
+
+## Svelte application configuration
+
+In the previous section, I've mentioned the `svelte.config.cjs` file that you should find under `apps/<app name>`. Let's take a look at it:
+
+<Gist gistLink="dsebastien/0489507922f745583cdedc6ebf0e4f55" />
+
+All this file does is export a configuration object for the build of our Svelte application. By default, it uses the [svelte-preprocess](https://github.com/sveltejs/svelte-preprocess) package, which is a preprocessor for Svelte providing support for PostCSS, SCSS, TypeScript, and much more.
+
+The question is: how is that file used by the build system? To answer that question, we need to look at the `workspace.json` file at the root of the NX workspace. It has been updated by the Svelte plugin for NX:
+
+<Gist gistLink="dsebastien/6ae50cb905b7cb008b302f1f35e2e488" />
+
+As you can see, the different targets (e.g., build and serve) use a specific executor: `@nxext/svelte:build`, which is provided by the Svelte plugin for NX. That executor supports [a number of options](https://nxext.dev/docs/svelte/builder/build). In the example above, we care about the `svelteConfig` setting, which defines the configuration file to use for Svelte.
+
+When we build the Svelte application using NX, here's what happens:
+
+* NX loads the `workspace.json` file to know about the different applications and libraries
+* It executes the requested operation (let's imagine a build of the Svelte app)
+* When the Svelte app is being built, NX knows which executor to launch to take care of the grunt's work
+* The Svelte NX plugin executor loads its configuration and notices the `svelteConfig` option. It loads the corresponding file (i.e., `svelte.config.cjs`), and updates its default build configuration accordingly
+
+## Installing Tailwind
+
+To install Tailwind, we need to add a few packages to our project, as explained in the [official documentation](https://tailwindcss.com/docs/installation):
+
+`npm install -D tailwindcss@latest postcss@latest autoprefixer@latest`
+
+We'll also install a few additional ones:
+
+`npm install -D postcss-import@latest postcss-preset-env@latest node-sass`
+
+Next up we'll configure Tailwind.
+
+## Configuring Tailwind
+
+To configure Tailwind, create a file called `tailwind.config.js` at the root of the NX workspace with the following contents:
+
+<Gist gistLink="dsebastien/7e6160f55f11b5caef1a025513001ee9" />
+
+This configuration enables the [JIT mode of Tailwind](https://javascript.plainenglish.io/why-tailwind-just-in-time-mode-is-a-game-changer-and-how-to-use-it-right-now-dubois-s%C3%A9bastien-182db2e64e26) and configures PurgeCSS properly. If you want to know more, check out the [official documentation of Tailwind](https://tailwindcss.com/docs/configuration).
+
+Now, we need to configure PostCSS.
+
+## Configuring PostCSS
+
+[PostCSS](https://postcss.org/) is a CSS processor that Tailwind relies on to do its magic.
+
+The details about PostCSS are out of scope for this article, but let me explain something anyway. One thing you need to understand is that PostCSS can be used to define a _processing pipeline_ for CSS code. The very first step of that pipeline receives the CSS as you wrote it, and processes it in some way. Then, the next step receives the result of the previous one and applies its own processing. And so on and so on. Now that you know this, you'll understand that the order of the elements in the configuration below _does_ matter.
+
+Go ahead and create a file called `postcss.config.js` at the root of the NX workspace, with the following contents:
+
+<Gist gistLink="dsebastien/dbbf2c2a9e2cf23882a113acf5f75e87" />
+
+What does this do?
+
+* First, we apply the `postcss-import` [plugin](https://github.com/postcss/postcss-import#readme), which adds support for the `@import` syntax in our CSS code
+* Second, we enable Tailwind and its [support for CSS nesting](https://tailwindcss.com/docs/using-with-preprocessors)
+* Third, we enable the `postcss-preset-env` plugin, which adds support for [many other cool things](https://github.com/csstools/postcss-preset-env)
+
+Alright, our CSS processing pipeline is configured!
+
+## Loading our PostCSS configuration
+
+By default, the Svelte plugin for Nrwl NX uses its own Svelte preprocessing configuration. To make sure that our PostCSS configuration is loaded, we need to adapt the Svelte configuration file that we saw earlier.
+
+Open up the `svelte.config.cjs` file under `apps/<app name>` and adapt it as follows:
+
+<Gist gistLink="dsebastien/ee1074928d46f55d0cdcee2d8badfc17" />
+
+As you can see, all we did was pass a configuration to the `sveltePreprocess` method and define the `postcss` configuration, associating it with an empty object. We only did this to replace the default `postcss` configuration included by the Svelte NX plugin. This ensures that our own PostCSS configuration is loaded.
+
+## Load Tailwind in the Svelte application
+
+We're almost ready to start using Tailwind in our code.
+
+The next thing we need to do is load the default styles of Tailwind. To do so, go ahead and create a file called `Tailwind.svelte` under `apps/<app name>/src`, with the following contents:
+
+<Gist gistLink="dsebastien/fd37ab2e2d28cb7842f1d1d2a1278f9e" />
+
+There are a few things to notice here:
+
+* We have marked the styles as `global` to make sure that those get applied on the global scope
+* We have set `lang="postcss"` to state that we're using PostCSS
+* We have loaded Tailwind's global styles using the `@tailwind` directive
+
+Next, we need to load and use our Tailwind component inside the `App` component. Open the `src/<app name>/src/App.svelte` file and adapt the contents as follows:
+
+<Gist gistLink="dsebastien/c21f83884817b427fbb323e2d645f7b4" />
+
+What we did here is simply import the `Tailwind.svelte` file, and use it.
+
+We're done with the configuration! Great.
+
+## Running the application
+
+To run the application, we can now use the following command:
+
+`npx nx serve app`
+
+I recommend getting used to the `nx` command, which is the [CLI of Nrxl NX](https://nx.dev/l/r/getting-started/nx-cli).
+
+If you're anything like me, then you might want to update the `scripts` section of your `package.json` file:
+
+<Gist gistLink="dsebastien/1adc8836d040c4f42ed0f38dd2932aa6" />
+
+The names of the script should be self-descriptive.
+
+To run our application, we can now use `npm start`.
+
+To learn more, make sure to look at the [NX CLI documentation](https://nx.dev/l/r/getting-started/nx-cli).
+
+Alright, we can now start playing with Tailwind!
+
+## Using Tailwind
+
+Let's look at a few ways we can use Tailwind in our Svelte application. Edit the `App.svelte` file again as follows:
+
+<Gist gistLink="dsebastien/763222aeaf49b4caaea671d368d0e25a" />
+
+In this example, we've used Tailwind in three different ways:
+
+* Inside the HTML template, we've used `class="..."` to modify the styles of an element using Tailwind. This is the approach you can find in most Tailwind examples out there
+* Inside the `style` tag, we've defined global styles by using the `:global` scope [supported by Svelte](https://svelte.dev/docs#style), and we've defined our styles using the `@apply` directive
+* Inside the `style` tag, we've defined a class called `example`, in which we've also used `@apply`. This approach creates locally scoped styles that only exist for the current component.
+
+If you look at the application now, it should look like this:
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Tailwind styles applied`}
+    src={`/static/images/blog/2021/2021-10-18-tw.png`}
+    width={919}
+    height={204}
+    priority
+  />
+</BlogPostCenteredContent>
+
+## Template
+
+If you're in a hurry, then you can use the template I've prepared and published on Github with the results of this experiment. You can find it here: https://github.com/dsebastien/svelte-tailwind-nx-template
+
+## Conclusion
+
+In this article, I've explained how to create a Svelte application using Nrwl NX. I've also covered how to add Tailwind support. Hopefully, this will have taught you a few things about how to configure Svelte applications, PostCSS and Tailwind.
+
+That’s it for today!
+
+<BlogPostSignature />
