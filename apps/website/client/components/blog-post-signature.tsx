@@ -14,7 +14,7 @@ const BlogPostSignature = () => {
     <>
       <StyledDiv className="mb-2">
         PS: <a href="https://dev-concepts.dev" rel="noopener">
-          check out my Dev Concepts books</a>
+          check out the Dev Concepts collection of e-books</a>
         ,{' '}<a href="https://join.slack.com/t/softwarecrafterstalk/shared_invite/zt-umgx3v06-4rtJ20PXz867GTPzCk1zeQ" rel="noopener">
         join the Software Crafters community</a>, the <a href="https://dsebastien.net/pkm-community" rel="noopener">Personal Knowledge Management community</a>
         , and{' '}
