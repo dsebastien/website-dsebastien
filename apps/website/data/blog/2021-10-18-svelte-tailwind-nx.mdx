@@ -1,11 +1,11 @@
 ---
-title: "Svelte, Tailwind and Nrwl NX, a powerful combo"
-summary: "A tutorial explaining how to create a Svelte application using Nrwl NX and how to add Tailwind support."
+title: "Getting started with Svelte, Tailwind, and Nrwl NX, a powerful combo"
+summary: "Learn how to create a Svelte application using Nrwl NX and how to add Tailwind support."
 publishedAt: '2021-10-18'
 image: '/static/images/logos/svelte.svg'
 slug: 'svelte-tailwind-nx'
-categories: [tailwind, svelte, software development, programming, coding]
-keywords: [tailwind, svelte, software development, programming, coding]
+categories: [tailwind, svelte, web development, software development, programming, coding]
+keywords: [tailwind, svelte, web development, software development, programming, coding]
 published: true
 ---
 
@@ -25,12 +25,12 @@ In this article, I'll show you how to create a [Svelte](https://svelte.dev/) app
 
 This is a short, but very practical article. If you hope to learn how Svelte/Tailwind work and why you should use those then this article is not for you.
 
-## Battle plan
+## Battleplan
 First, we'll create a [Nrwl NX](https://nx.dev/) workspace to structure our project.
 
 Once we're done, we'll install the [Svelte plugin](https://nxext.dev/docs/svelte/overview/) into the workspace, and we'll use it to create our Svelte application.
 
-Then, we'll install Tailwind, and a few supporting tools (e.g., PostCSS and autoprefixer). After that, we'll configure Tailwind, PostCSS and our Svelte application. Finally, we'll load Tailwind's base styles in our application, and we'll add some styling.
+Then, we'll install Tailwind, and a few supporting tools (e.g., PostCSS and autoprefixer). After that, we'll configure Tailwind, PostCSS, and our Svelte application. Finally, we'll load Tailwind's base styles in our application, and we'll add some styling.
 
 ## Creating the Nx workspace
 
@@ -74,7 +74,7 @@ This is the standard structure for Nx workspaces. The key elements are:
 
 Now that our workspace is created, we need to install the [Svelte community plugin](https://nxext.dev/docs/svelte/overview/), created and maintained by [Dominik Pieper](https://twitter.com/dominik_pieper). This plugin makes it possible to create and build Svelte applications in a Nrwl NX workspace. You can find the official documentation [here](https://nxext.dev/docs/svelte/overview/).
 
-For this example I'll use `npm`, but feel free to use `yarn` if you prefer. Installing the plugin is quite [straightforward](https://nxext.dev/docs/svelte/installation/):
+For this example, I'll use `npm`, but feel free to use `yarn` if you prefer. Installing the plugin is quite [straightforward](https://nxext.dev/docs/svelte/installation/):
 
 `npm install @nxext/svelte --save`
 
@@ -201,7 +201,7 @@ We're done with the configuration! Great.
 
 To run the application, we can now use the following command:
 
-`npx nx serve app`
+`npx nx serve <app_name>`
 
 I recommend getting used to the `nx` command, which is the [CLI of Nrxl NX](https://nx.dev/l/r/getting-started/nx-cli).
 
@@ -209,9 +209,9 @@ If you're anything like me, then you might want to update the `scripts` section 
 
 <Gist gistLink="dsebastien/1adc8836d040c4f42ed0f38dd2932aa6" />
 
-The names of the script should be self-descriptive.
+The names of the script should be self-descriptive. Just replace `<app_name>` with the application name you've chosen.
 
-To run our application, we can now use `npm start`.
+To run our application, we can now use `npm start`
 
 To learn more, make sure to look at the [NX CLI documentation](https://nx.dev/l/r/getting-started/nx-cli).
 
