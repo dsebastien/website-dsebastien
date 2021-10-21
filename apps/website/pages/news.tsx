@@ -39,6 +39,9 @@ export default function News(input: { entries: FrontMatter[] }) {
       <StyledArticle className="page-content-wrapper space-y-4">
         <h1 className="page-heading">Newsletter</h1>
         <p className="text-gray-900 dark:text-gray-400">
+          A newsletter about Software Development, Personal Knowledge Management, Entrepreneurship, Startups and Bootstrapping.
+        </p>
+        <p>
           I've published <b>{`${input.entries.length}`}</b> edition{input.entries.length > 1 && 's'} of my newsletter. You can browse the past editions below.
         </p>
 
