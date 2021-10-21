@@ -8,6 +8,7 @@ import { FaArrowUp, FaGithub } from 'react-icons/fa';
 import Footer from '@/components/footer';
 import ScrollToTop from '@/components/scroll-to-top';
 import {BLOG_DESCRIPTION, IS_BROWSER} from '../constants';
+import {propertiesOf} from "../utils/type.utils";
 
 const StyledPage = tw.div``;
 
@@ -15,7 +16,7 @@ const StyledPage = tw.div``;
  * Page metadata that pages can customize
  * Reference: https://github.com/leerob/leerob.io/blob/main/components/Container.js
  */
-interface SupportedMeta {
+export interface SupportedMeta {
   siteName: string;
   image: string;
   title: string;
@@ -23,7 +24,10 @@ interface SupportedMeta {
   type: string;
   date?: string;
   keywords?: string;
+  canonicalUrl?: string;
 }
+
+const supportedMetaProperties = propertiesOf<SupportedMeta>();
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -44,11 +48,73 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
     type: 'website',
     keywords:
       'software, programming, software development, coding, it security, it architecture, code quality',
-    /**
-     * Replace by custom values if any were defined
-     */
-    ...(customMeta ? customMeta : []),
   };
+
+  if(customMeta) {
+    for (const customMetaKey of Object.keys(customMeta ? customMeta : [])) {
+      let propertyHandled = false;
+
+      if (supportedMetaProperties("title") === customMetaKey) {
+        if (customMeta.title && customMeta.title.trim().length > 0) {
+          meta.title = customMeta.title;
+        }
+        propertyHandled = true;
+      }
+
+      if (supportedMetaProperties("date") === customMetaKey) {
+        if (customMeta.date && customMeta.date.trim().length > 0) {
+          meta.date = customMeta.date;
+        }
+        propertyHandled = true;
+      }
+
+      if (supportedMetaProperties("description") === customMetaKey) {
+        if (customMeta.description && customMeta.description.trim().length > 0) {
+          meta.description = customMeta.description;
+        }
+        propertyHandled = true;
+      }
+
+      if (supportedMetaProperties("type") === customMetaKey) {
+        if (customMeta.type && customMeta.type.trim().length > 0) {
+          meta.type = customMeta.type;
+        }
+        propertyHandled = true;
+      }
+
+      if (supportedMetaProperties("image") === customMetaKey) {
+        if (customMeta.image && customMeta.image.trim().length > 0) {
+          meta.image = customMeta.image;
+        }
+        propertyHandled = true;
+      }
+
+      if (supportedMetaProperties("keywords") === customMetaKey) {
+        if (customMeta.keywords && customMeta.keywords.trim().length > 0) {
+          meta.keywords = customMeta.keywords;
+        }
+        propertyHandled = true;
+      }
+
+      if (supportedMetaProperties("canonicalUrl") === customMetaKey) {
+        if (customMeta.canonicalUrl && customMeta.canonicalUrl.trim().length > 0) {
+          meta.canonicalUrl = customMeta.canonicalUrl;
+        }
+        propertyHandled = true;
+      }
+
+      if (supportedMetaProperties("siteName") === customMetaKey) {
+        if (customMeta.siteName && customMeta.siteName.trim().length > 0) {
+          meta.siteName = customMeta.siteName;
+        }
+        propertyHandled = true;
+      }
+
+      if (!propertyHandled) {
+        throw new Error(`Unhandled meta property: ${customMetaKey}`);
+      }
+    }
+  }
 
   return (
     <StyledPage className="full-page flex flex-col flex-grow dark:prose-dark">

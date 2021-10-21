@@ -41,6 +41,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
         date: new Date(frontMatter.publishedAt).toISOString(),
         type: 'article',
         keywords: frontMatter.keywords.join(', '),
+        canonicalUrl: frontMatter.canonicalUrl,
       }}
     >
       <StyledArticle className="article-content-wrapper">

@@ -22,6 +22,10 @@ export interface FrontMatter {
    */
   keywords: string[];
   /**
+   * Used to override the canonical URL of the page
+   */
+  canonicalUrl?: string;
+  /**
    * Added automatically
    */
   wordCount?: number;
