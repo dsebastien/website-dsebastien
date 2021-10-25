@@ -67,9 +67,9 @@ const AboutPage = () => {
             </a>{' '}
             . Since day one (and actually long before that), I have always been passionate about IT, software
             development, IT security, code quality, the open Web, and
-            open-source software. I write about knowledge management, software development, entrepreneurship, indie hacking, management, leadership, and more.{' '}
+            open-source software. I write about knowledge management, software development, entrepreneurship, bootstrapping, management, leadership, and more.{' '}
             <a
-              href="https://dsebastien.net/newsletter"
+              href="https://newsletter.dsebastien.net"
               rel="noopener"
             >
               Subscribe to my newsletter
@@ -95,12 +95,12 @@ const AboutPage = () => {
             , a wonderful programming language.
           </p>
           <p>
-            Currently (March 2021), I'm busy writing my next book:{' '}
+            Currently, I'm busy writing a collection of 12 books called{' '}
             <a href="https://dev-concepts.dev/" rel="noopener">
               Dev Concepts
             </a>
             , which explains a gazillion concepts around software
-            development. The goal of that book is to explain what the software
+            development. The goal of that collection is to explain what the software
             craft is all about, and help those interested on their way to become
             full-stack developers.
           </p>
