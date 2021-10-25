@@ -35,7 +35,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
   return (
     <Layout
       customMeta={{
-        title: `${frontMatter.title} – Dubois Sébastien`,
+        title: `${frontMatter.title}`,
         description: frontMatter.summary,
         image: `https://dsebastien.net${frontMatter.image}`,
         date: new Date(frontMatter.publishedAt).toISOString(),
