@@ -60,7 +60,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
             <p className="text-sm text-gray-700 dark:text-gray-300 ml-2">
               {frontMatter.by}
               {'Sébastien Dubois / '}
-              {format(parseISO(frontMatter.publishedAt), 'MMMM dd, yyyy')}
+              <time dateTime={format(parseISO(frontMatter.publishedAt), 'yyyy-MM-dd')}>{format(parseISO(frontMatter.publishedAt), 'MMMM dd, yyyy')}</time>
             </p>
           </div>
           <p className="text-sm text-gray-500 mt-2 md:mt-0">
