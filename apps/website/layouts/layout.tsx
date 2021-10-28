@@ -47,7 +47,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
     image: 'https://dsebastien.net/static/images/banner-2560.jpg',
     type: 'website',
     keywords:
-      'software, programming, software development, coding, it security, it architecture, code quality',
+      'programming, software development, coding, knowledge management, productivity, entrepreneurship, management, leadership, sebastien dubois',
   };
 
   if(customMeta) {
