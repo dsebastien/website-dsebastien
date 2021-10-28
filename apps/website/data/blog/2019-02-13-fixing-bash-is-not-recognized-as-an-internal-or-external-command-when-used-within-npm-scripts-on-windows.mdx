@@ -19,7 +19,7 @@ published: true
   />
 </BlogPostCenteredContent>
 
-Recently, I’ve lost quite a bit of time figuring why npm scripts would suddenly fail on Windows under Git bash if they tried to execute bash (e.g., “do-something”: “bash ./do-something.sh”).
+Recently, I’ve lost quite a bit of time figuring why npm scripts would suddenly fail on Windows under Git bash if they tried to execute bash (e.g., `"do-something": "bash ./do-something.sh"`).
 
 I was executing the npm scripts from Git Bash as usual, so of course bash.exe was on my path but, it wasn’t found in the environment tied to the process for the script execution:
 

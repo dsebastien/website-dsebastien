@@ -1,10 +1,10 @@
 ---
-title: 'My GPG configuration'
-summary: 'Some notes about my current setup for GPG/PGP.'
+title: 'How to install and configure GPG'
+summary: 'A detailed guide on how to install and configure GPG/PGP.'
 publishedAt: '2017-11-28'
 slug: 'my-GPG-configuration'
-categories: [security, gpg, git]
-keywords: [gpg, pgp, gnupg, open pgp, git, security]
+categories: [security, gpg, git, security]
+keywords: [how to configure gpg, gpg pgp, gnupg, open pgp]
 published: true
 ---
 
@@ -125,7 +125,7 @@ Generating a revocation certificate will allow me to later revoke this keypair i
 gpg --output ./<mail>.gpg-revocation-certificate --gen-revoke <mail>
 ```
 
-## Export the keypair/subkeys to a safe location and make the key safe to use
+## Export public key and private key (i.e., the keypair/subkeys) to a safe location and make the key safe to use
 
 First export the private key:
 

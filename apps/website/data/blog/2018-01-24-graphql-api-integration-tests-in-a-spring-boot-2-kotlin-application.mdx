@@ -1,5 +1,5 @@
 ---
-title: 'GraphQL API integration tests in a Spring Boot 2.x Kotlin application'
+title: 'How to write integration tests for a GraphQL API with Spring Boot and Kotlin'
 summary: 'How to write integration tests for a GraphQL API using Spring Boot 2.x and Kotlin'
 publishedAt: '2018-01-24'
 image: '/static/images/logos/graphql.svg'
@@ -27,6 +27,10 @@ published: true
     priority
   />
 </BlogPostCenteredContent>
+
+In this article, I'll explain how to write integration tests for a GraphQL API using Spring Boot and Kotlin.
+
+# GraphQL and Spring Boot
 
 In a recent project, we’ve integrated [graphql-java](https://github.com/graphql-java) and [graphql-java-servlet](https://github.com/graphql-java/graphql-java-servlet), exposing the GraphQL API over HTTP (over at /graphql).
 
@@ -92,7 +96,7 @@ Thanks to the above, we can now easily inject our test query in our integration 
 private lateinit var createThingPayload: String
 ```
 
-## Prepare the queries
+## Prepare the GraphQL queries
 
 One thing to know with graphql-java (and, I guess, probably other implementations exposing GraphQL over HTTP), GraphQL queries sent to the endpoint are passed in the body of a POST request, within the `query` property of a JSON object.
 
@@ -131,7 +135,7 @@ To perform simple/basic assertions you may for example parse the response using 
 
 <Gist gistLink="dsebastien/480736338d7b27463c5f68265e23eb69" />
 
-Indeed this is not great for maintainability, but it’s a start.
+Indeed, this is not great for maintainability, but it’s a start.
 
 An improvement on this idea is to try and parse the response and compare it with the expected response payload.
 

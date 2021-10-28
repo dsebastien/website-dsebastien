@@ -1,5 +1,5 @@
 ---
-title: 'Cleaning up database tables after each integration test method with Spring Boot 2 and Kotlin'
+title: 'Cleaning up database tables after each integration test method with Spring Boot and Kotlin'
 summary: 'How to clean database tables after each integration test in a Spring Boot application using Kotlin'
 publishedAt: '2018-01-23'
 slug: 'cleaning-up-database-tables-after-each-integration-test-method-with-spring-boot-2-and-kotlin'
@@ -7,6 +7,8 @@ categories: [programming, kotlin, testing, spring]
 keywords: [spring boot test clear database, sprint boot test database rollback, programming, kotlin, testing, integration tests, spring, spring boot]
 published: true
 ---
+
+In this article, I'll explain how to clear database tables after each integration test in a Spring Boot application using Kotlin.
 
 I usually prefer to write integration tests that perform end-to-end processing (e.g., flow from a client making a REST POST/PUT or GraphQL mutation up to the database access layer and back out). I’m not a big fan of mocking parts of the system for integration tests.
 
@@ -22,7 +24,7 @@ With `@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 
 > If your test is `@Transactional`, it will rollback the transaction at the end of each test method by default. However, as using this arrangement with either `RANDOM_PORT` or `DEFINED_PORT` implicitly provides a real servlet environment, HTTP client and server will run in separate threads, thus separate transactions. Any transaction initiated on the server won’t rollback in this case.
 
-Thus indeed, there’s no easy way to rollback the changes...
+Thus, indeed, there’s no easy way to roll back the changes...
 
 The simplest thing that could work would be to perform the cleanup manually at the end of each test method/class, but that is really cumbersome and error-prone. What I want instead is something easy that does the cleanup for me.
 
@@ -50,11 +52,11 @@ With that in place, I’ve created a base class for my integration tests where I
 
 <Gist gistLink="dsebastien/b44abce49d7c8eb03f48c7e57a7e73d6" />
 
-Using the above is pretty simple and fool proof: inherit from that class and the database will be cleaned after each test method has completed.
+Using the above is pretty simple and foolproof: inherit from that class and the database will be cleaned after each test method has completed.
 
 Of course this is far from perfect and will probably break for more complex models/scenarios, but it fits my current (i.e., basic) needs.
 
-What I plan to improve now is to avoid the is-a relationship and providing more flexibility regarding when/what to clean up. This should be pretty straightforward to implement now :)
+What I plan to improve now is to avoid the "is-a" relationship and providing more flexibility regarding when/what to clean up. This should be pretty straightforward to implement now :)
 
 That’s it for today!
 
