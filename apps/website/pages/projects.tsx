@@ -28,9 +28,9 @@ const BooksPage = () => {
             <article className="project-card">
               <div>
                 <Image
-                  alt="Community"
-                  width={200}
-                  height={200}
+                  alt="Software Crafters Community"
+                  width={132}
+                  height={132}
                   src="/static/images/projects/community.svg"
                   className="rounded-md bg-white"
                 />
@@ -40,6 +40,25 @@ const BooksPage = () => {
               </footer>
             </article>
           </a>
+
+          <a href="https://dsebastien.net/pkm-community" rel="noopener">
+            <article className="project-card">
+              <div>
+                <Image
+                  alt="Personal Knowledge Management Community"
+                  width={132}
+                  height={132}
+                  src="/static/images/projects/pkm-community-logo.png"
+                  className="rounded-md bg-white"
+                />
+              </div>
+              <footer>
+                <span>An online community for lifelong learners and Personal Knowledge Management (PKM).</span>
+              </footer>
+            </article>
+          </a>
+
+
 
           <a href="https://stark.nbb.be" rel="noopener">
             <article className="project-card">
@@ -70,7 +89,7 @@ const BooksPage = () => {
                 />
               </div>
               <footer>
-                <span>A comprehensive Open Source design guide for RESTful APIs</span>
+                <span>A comprehensive Open Source design guide for RESTful APIs.</span>
               </footer>
             </article>
           </a>
