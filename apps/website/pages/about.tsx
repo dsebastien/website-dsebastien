@@ -9,6 +9,7 @@ import {
   FaHashtag,
   FaLinkedin,
   FaMedium,
+  FaReddit,
   FaStackOverflow,
   FaTwitch,
   FaTwitter,
@@ -229,6 +230,15 @@ const AboutPage = () => {
                   icon={<FaHashtag className="inline" />}
                   ariaLabelText="Go to my blog on HashNode"
                   titleText="Go to my blog on HashNode"
+                />
+              </li>
+              <li>
+                <SocialLink
+                  url="https://www.reddit.com/user/lechtitseb/"
+                  name="Reddit"
+                  icon={<FaReddit className="inline" />}
+                  ariaLabelText="Go to my profile on Reddit"
+                  titleText="Go to my profile on Reddit"
                 />
               </li>
               <li><a href="https://updates.dsebastien.net/" rel="noopener">Polywork</a></li>

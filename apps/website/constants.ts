@@ -21,3 +21,36 @@ export const BLOG_DESCRIPTION = `I write about knowledge management, software de
  * Newsletter errors
  */
 export const NEWSLETTER_MUST_VALIDATE_EMAIL = 'Please check your inbox to confirm your subscription!';
+
+/**
+ * Person microdata
+ * Reference: https://schema.org/Person
+ */
+export const BLOG_AUTHOR = {
+  "@context": "http://schema.org/",
+  "@type": "Person",
+  "name": "Sébastien Dubois",
+  "familyName": "Dubois",
+  "givenName": "Sébastien",
+  "image": "https://dsebastien.net/static/images/sebastien.png",
+  "url": "https://twitter.com/dSebastien",
+  "sameAs": [
+    "https://www.linkedin.com/in/sebastiend/",
+    "https://github.com/dsebastien",
+    "https://dsebastien.medium.com/",
+    "https://dev.to/dsebastien",
+    "https://www.youtube.com/channel/UCz0x-VJhvKwV-PK3E_i5G1w",
+    "https://www.twitch.tv/dsebastien",
+    "https://stackoverflow.com/users/226630/dsebastien",
+    "https://www.facebook.com/trankill",
+    "https://dsebastien.hashnode.dev/",
+    "https://updates.dsebastien.net/",
+    "https://www.reddit.com/user/lechtitseb/"
+  ],
+  "jobTitle": "Founder",
+  "worksFor": {
+    "@type": "Organization",
+    "name": "DeveloPassion",
+    "url": "https://developassion.be"
+  }
+};

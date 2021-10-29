@@ -5,6 +5,7 @@ import { parseISO, format } from 'date-fns';
 import { FrontMatter } from '@/lib/front-matter.intf';
 import Layout from './layout';
 import tw from 'twin.macro';
+import {BLOG_AUTHOR} from "../constants";
 
 const StyledArticle = tw.article``;
 
@@ -45,11 +46,7 @@ const NewsArticleLayout = ({ children, frontMatter }: NewsLayoutProps) => {
     description: frontMatter.summary,
     image: coverImageUrl,
     datePublished,
-    author: {
-      "@type": "Person",
-      name: frontMatter.author? frontMatter.author: "Sébastien Dubois",
-      url: "https://twitter.com/dSebastien",
-    },
+    author: BLOG_AUTHOR,
   };
 
   return (
