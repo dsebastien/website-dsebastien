@@ -24,6 +24,23 @@ const BooksPage = () => {
 
         <section className="mb-8 text-gray-900 dark:text-gray-400 flex grid grid-cols-1 sm:grid-cols-2 grid-flow-row items-center gap-6">
 
+          <a href="https://dsebastien.net/blog/2021-08-25-software-crafters-community" rel="noopener">
+            <article className="project-card">
+              <div>
+                <Image
+                  alt="Community"
+                  width={200}
+                  height={200}
+                  src="/static/images/projects/community.svg"
+                  className="rounded-md bg-white"
+                />
+              </div>
+              <footer>
+                <span>An online community for Software Crafters.</span>
+              </footer>
+            </article>
+          </a>
+
           <a href="https://stark.nbb.be" rel="noopener">
             <article className="project-card">
               <div>
@@ -54,23 +71,6 @@ const BooksPage = () => {
               </div>
               <footer>
                 <span>A comprehensive Open Source design guide for RESTful APIs</span>
-              </footer>
-            </article>
-          </a>
-
-          <a href="https://dsebastien.net/blog/2021-08-25-software-crafters-community" rel="noopener">
-            <article className="project-card">
-              <div>
-                <Image
-                  alt="Community"
-                  width={200}
-                  height={200}
-                  src="/static/images/projects/community.svg"
-                  className="rounded-md bg-white"
-                />
-              </div>
-              <footer>
-                <span>An online community for Software Crafters.</span>
               </footer>
             </article>
           </a>
