@@ -4,7 +4,7 @@ export interface FrontMatter {
   summary: string;
   publishedAt: string;
   image: string;
-  by?: string;
+  author?: string;
   /**
    * Whether the post is published or not
    */

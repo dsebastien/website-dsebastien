@@ -32,25 +32,49 @@ type BlogLayoutProps = PropsWithChildren<{
  * @constructor
  */
 const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
+  const coverImageUrl = `https://dsebastien.net${frontMatter.image}`;
+  const datePublished = new Date(frontMatter.publishedAt).toISOString();
+
+  /**
+   * Reference: https://schema.org/Article
+   */
+  const articleStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: frontMatter.title,
+    description: frontMatter.summary,
+    image: coverImageUrl,
+    datePublished,
+    author: {
+      "@type": "Person",
+      name: frontMatter.author? frontMatter.author: "Sébastien Dubois",
+      url: "https://twitter.com/dSebastien",
+    },
+  };
+
   return (
     <Layout
       customMeta={{
+        author: frontMatter.author,
         title: `${frontMatter.title}`,
         description: frontMatter.summary,
-        image: `https://dsebastien.net${frontMatter.image}`,
-        date: new Date(frontMatter.publishedAt).toISOString(),
+        image: coverImageUrl,
+        date: datePublished,
         type: 'article',
         keywords: frontMatter.keywords.join(', '),
         canonicalUrl: frontMatter.canonicalUrl,
       }}
     >
+      <script type="application/ld+json">
+        {JSON.stringify(articleStructuredData)}
+      </script>
       <StyledArticle className="article-content-wrapper">
         <h1 className="page-heading">{frontMatter.title}</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full mt-2 mb-8">
           <div className="flex items-center">
             <a href="https://twitter.com/dSebastien" className="rounded-full">
               <Image
-                alt="Dubois Sébastien"
+                alt={frontMatter.author}
                 height={24}
                 width={24}
                 src="/avatar.jpeg"
@@ -58,8 +82,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
               />
             </a>
             <p className="text-sm text-gray-700 dark:text-gray-300 ml-2">
-              {frontMatter.by}
-              {'Sébastien Dubois / '}
+              {`${frontMatter.author} / `}
               <time dateTime={format(parseISO(frontMatter.publishedAt), 'yyyy-MM-dd')}>{format(parseISO(frontMatter.publishedAt), 'MMMM dd, yyyy')}</time>
             </p>
           </div>

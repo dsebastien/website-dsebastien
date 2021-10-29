@@ -18,6 +18,7 @@ const StyledPage = tw.div``;
  */
 export interface SupportedMeta {
   siteName: string;
+  author?: string;
   image: string;
   title: string;
   description: string;
@@ -42,6 +43,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
    */
   const meta: SupportedMeta = {
     siteName: 'dSebastien',
+    author: "Sébastien Dubois",
     title: 'dSebastien',
     description: BLOG_DESCRIPTION,
     image: 'https://dsebastien.net/static/images/banner-2560.jpg',
@@ -110,6 +112,13 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         propertyHandled = true;
       }
 
+      if (supportedMetaProperties("author") === customMetaKey) {
+        if (customMeta.author && customMeta.author.trim().length > 0) {
+          meta.author = customMeta.author;
+        }
+        propertyHandled = true;
+      }
+
       if (!propertyHandled) {
         throw new Error(`Unhandled meta property: ${customMetaKey}`);
       }
@@ -140,7 +149,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         <meta property="og:image" content={meta.image} />
         <meta property="og:locale" content="en_US" />
         <meta property="image" content={meta.image} />
-        <meta name="author" content="Sébastien Dubois" />
+        <meta name="author" content={meta.author} />
         <meta property="article:author" content="https://dsebastien.net" />
         <meta name="twitter:creator" content="@dSebastien" />
         <meta name="twitter:site" content="@dSebastien" />
