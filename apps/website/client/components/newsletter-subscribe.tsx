@@ -126,7 +126,12 @@ const NewsletterSubscribe = () => {
         <div className="text-6xl text-pink-500 mb-2"><IoIosMailOpen className="inline" /></div>
 
           <div className="text-xl text-gray-900 dark:text-gray-100 font-bold">
-            {form.state === 'ready'? (<div><span>Subscribe to my newsletter</span></div>)
+            {form.state === 'ready'? (
+              <>
+                <div className="text-center"><span>Subscribe to my newsletter</span></div>
+                <div className="text-center"><span className="text-lg! font-normal!">Join thousands of curious minds and explore knowledge management, software development, productivity and entrepreneurship with us.</span></div>
+              </>
+              )
                 : form.state === 'loading'? (
                   <div className="flex flex-col justify-center items-center">
                     <div className="mt-2">
