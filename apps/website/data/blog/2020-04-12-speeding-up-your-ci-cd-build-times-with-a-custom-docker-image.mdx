@@ -1,6 +1,6 @@
 ---
-title: 'Speeding up your CI/CD build times with a custom Docker image'
-summary: 'How to drastically reduce CI/CD build times for Node.js projects using a custom Docker image'
+title: 'Improving Gitlab CI performance with a custom Docker image'
+summary: 'How to improve Gitlab CI performance and reduce CI/CD build times for Node.js projects using custom Docker images'
 publishedAt: '2020-04-12'
 image: '/static/images/blog/2020/node-mass.jpeg'
 slug: 'speeding-up-your-ci-cd-build-times-with-a-custom-docker-image'
@@ -31,7 +31,7 @@ In my project, that folder contains ~160K files, adding up to ~750MB (!).
 
 For this reason, it takes a really long time for the caching system to compress all the files, upload the archive and retrieve/unpack it for each subsequent pipeline job.
 
-## Initial situation
+## Gitlab CI is slow with Node.js
 
 Just to give you an idea, here’s what my pipeline looks like:
 
@@ -126,7 +126,7 @@ After all this, I’ve realized that there was no solution over there; the overa
 
 So I needed to try something else.
 
-## Using a custom Docker image
+## Using a custom Docker image to improve Gitlab CI performance
 
 By closely looking at the init script, I’ve realized that most of the time was wasted:
 

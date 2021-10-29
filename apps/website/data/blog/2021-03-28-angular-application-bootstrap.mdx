@@ -1,6 +1,6 @@
 ---
-title: 'How Angular applications boot'
-summary: 'Discover how Angular applications are bootstrapped'
+title: 'How Angular applications start'
+summary: 'Discover how Angular applications start and what main.ts does'
 publishedAt: '2021-03-28'
 image: '/static/images/logos/angular.svg'
 slug: 'angular-application-bootstrap'
@@ -121,7 +121,7 @@ Finally, and most importantly, the following line will be executed:
 platformBrowserDynamic().bootstrapModule(AppModule);
 ```
 
-It's a single line, but it does _a lot_. `platformBrowserDynamic` is a module that is able to load Angular in the context of a Web browser. It loads the necessary elements of the framework and configures what needs to be. Given that Angular can run in other contexts (e.g., mobile, server-side, etc), note that there are other ways to load Angular.
+It's a single line, but it does _a lot_. `platformBrowserDynamic` is [a module that is able to load Angular in the context of a Web browser](https://dsebastien.net/blog/2021-03-28-loading-an-angular-app-lazily). It loads the necessary elements of the framework and configures what needs to be. Given that Angular can run in other contexts (e.g., mobile, server-side, etc), note that there are other ways to load Angular.
 
 So, the first part, `platformBrowserDynamic()` loads Angular. Once that is done, the second part `bootstrapModule(...)` instructs Angular to bootstrap the given module. By default, all Angular applications include _at least_ an `AppModule`.
 

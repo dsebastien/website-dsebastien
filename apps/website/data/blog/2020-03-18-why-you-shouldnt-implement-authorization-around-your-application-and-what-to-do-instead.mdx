@@ -1,6 +1,6 @@
 ---
-title: 'Why you shouldn’t implement authorization “around” your application and what to do instead'
-summary: "Here's how to writer more secure applications"
+title: 'Authorization best practices'
+summary: "Authorization best practices to improve the security of your applications"
 publishedAt: '2020-03-18'
 slug: 'why-you-shouldnt-implement-authorization-around-your-application-and-what-to-do-instead'
 categories: [security, authorization]
@@ -10,11 +10,9 @@ published: true
 
 **Update 2020–03–31**: The post might leave you with the impression that misinterpretation of HTTP verbs and such issues are related only to Apache CXF, but they’re in fact more widespread, as [described in the following article.](https://about.gitlab.com/blog/2020/03/30/how-to-exploit-parser-differentials/) Please don’t assume that you’re safe(r) just because you’re using something else / are on a different software platform/stack. And anyway
 
-If you are in charge of defining how to implement authorization for your application, then be very careful about _how_ and _where_ you implement it.
+In this article, I'll explain why you shouldn’t implement authorization “around” your application and what to do instead. If you are in charge of defining how to implement authorization for your application, then be very careful about _how_ and _where_ you implement it. Here, I’ll just concentrate on the “where”, even though the “how” is also very important. Authentication will not be discussed here either.
 
-In this post, I’ll just concentrate on the “where”, even though the “how” is also very important. Authentication will not be discussed here either.
-
-This is just an introductory post, so don’t expect in-depth advice. In any case, take this article with a grain of salt. Security is a deep and complex matter and a single article can’t cover all of its facets ;-)
+<BlogPostNote>This is just an introductory post, so don’t expect in-depth advice. In any case, take this article with a grain of salt. Security is a deep and complex matter and a single article can’t cover all of its facets ;-)</BlogPostNote>
 
 ## Imaginary system
 
@@ -42,7 +40,7 @@ Let’s suppose that both the front-end and back-end are deployed separately (ev
 - An API gateway
 - …
 
-## Possibilities…
+## Approaches to implement authorization
 
 You are tasked with implementing authorization for this system: what do you do?
 
@@ -65,9 +63,9 @@ This is only a small subset of what you could imagine here. You could indeed als
 
 Although, since I’m not about to write a book on this subject anytime soon, let’s just explore some of the options listed above to see which ones are better/worse.
 
-## Front-end === User Experience
+## Front-end authorization is only useful for User Experience (UX)
 
-First of all, let’s eliminate the dead obvious: **authorization checks may be useful on the front-end side for user experience, but have absolutely no added value for security**.
+First, let’s eliminate the dead obvious: **authorization checks may be useful on the front-end side for user experience, but have absolutely no added value for security**.
 
 When the front-end application executes on the client’s machine, the code running in there is completely outside of your control. As a matter of fact, attackers will look at the front-end to see how they can interact with your back-end, but they won’t even bother using it (apart to explore other vulnerabilities).
 
@@ -87,13 +85,13 @@ Handling authentication at the infrastructure level (at least partly) makes sens
 
 Handling authorization is something else entirely.
 
-First of all, your authorization model might be quite complex and you’ll quickly make the infrastructure teams angry about the maintenance burden it creates.
+First, your authorization model might be quite complex and you’ll quickly make the infrastructure teams angry about the maintenance burden it creates.
 
 Second, the granularity of your checks will be quite limited. Applying different rule sets to the same users based on specific context is not something you can easily do at this level.
 
 More importantly, if you only implement checks against URLs at the infrastructure level, what happens if an attacker can somehow bypass the infrastructure and reach your back-end server directly?
 
-If you implement authorization completely outside of your application and it still gets exposed, then your data is gone, your integrity is gone. Of course, your reputation will probably follow course.
+If you implement authorization completely outside your application, and it still gets exposed, then your data is gone, your integrity is gone. Of course, your reputation will probably follow course.
 
 So no, not such a great idea. Of course there are ways to make that better. For example, you could deploy mutual authentication between your back-end and those infrastructure pieces, or ensure on your back-end that you only accept requests coming from those infrastructure pieces. But it gets hairy really quickly. Not to say that these are not good things to implement, but be conscious that this has a cost (I’ll come back to this in the conclusion).
 
@@ -133,7 +131,7 @@ If your security is set at the REST API layer or above, then you might think tha
 
 Once a workaround/weakness is found, then it’s once again game over for your whole system.
 
-## Handling concerns at the business service layer layer
+## Handling concerns at the business service layer
 
 Now we get into more interesting solutions.
 

@@ -38,7 +38,7 @@ I wanted a similar solution for both cases in order to keep the development envi
 
 Another requirement was to have full automation/reproductibility (i.e., capability to delete/recreate everything easily).
 
-## cert-manager
+## What is cert-manager
 
 After some initial research and, since we were already “neck-deep” into Kubernetes, my choice has settled on [cert-manager](https://cert-manager.io/) an open source solution created by the wonderful people over at [Jetstack](https://twitter.com/JetstackHQ) (kudos to them!).
 
@@ -46,7 +46,7 @@ cert-manager automates the management and issuance of TLS certificates _from dif
 
 Once [installed](https://cert-manager.io/docs/installation/) (which is super easy using helm or the [yaml file provided by the project](https://github.com/jetstack/cert-manager/releases/download/v0.12.0/cert-manager.yaml)), the controller of cert-manager watches for the Custom Resource Definitions (CRDs) that it supports such as the “[Issuer](https://cert-manager.io/docs/concepts/issuer/)” or “[Certificate](https://cert-manager.io/docs/concepts/certificate/)” resource types.
 
-## cert-manager deployment steps
+## How to install cert-manager
 
 In practice the deployment process of cert-manager goes like this:
 
@@ -81,7 +81,7 @@ The plan was as follows:
 - Store the certificates in K8S secrets
 - Use those secrets in my [NGINX Ingress](https://github.com/kubernetes/ingress-nginx) through [the tls configuration option](https://kubernetes.io/docs/concepts/services-networking/ingress/#tls)
 
-## ACME in a jiffy
+## What is the ACME protocol
 
 ACME, which stands for “**A**utomatic **C**ertificate **M**anagement **E**nvironment” is a cool protocol that was (I suppose?) standardized thanks to Let’s Encrypt and that allows CAs and “applicants” (i.e., certificate requesters) to automate the process of ownership/control verification and certificate issuance. ACME is now defined in [RFC8555](https://tools.ietf.org/html/rfc8555).
 
@@ -95,7 +95,7 @@ I chose http01 because it seemed way more straightforward to implement and self-
 
 In practice, there was of course some trial and error involved to get the whole thing working, but everything went according to plan quite easily.
 
-## HTTPS for local development
+## HTTPS for localhost
 
 For local development, it was really a breeze, as mkcert makes it really simple to create a self-signed Root CA certificate on the fly and to add it to the different trust stores of the host:
 
