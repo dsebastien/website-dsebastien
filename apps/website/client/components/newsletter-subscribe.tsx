@@ -129,7 +129,7 @@ const NewsletterSubscribe = () => {
             {form.state === 'ready'? (
               <>
                 <div className="text-center"><span>Subscribe to my newsletter</span></div>
-                <div className="text-center"><span className="text-lg! font-normal!">Join thousands of curious minds and explore knowledge management, software development, productivity and entrepreneurship with us.</span></div>
+                <div className="text-center"><span className="text-lg! font-normal!">Join thousands of curious minds and explore knowledge management, software development, productivity and entrepreneurship with me.</span></div>
               </>
               )
                 : form.state === 'loading'? (
