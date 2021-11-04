@@ -1,0 +1,483 @@
+---
+title: 'Angular 13 in Depth'
+summary: 'Everything you need to know about Angular 13'
+publishedAt: '2021-11-05'
+image: '/static/images/logos/angular.svg'
+slug: 'angular-13-in-depth'
+categories: [angular, javascript, typescript, programming]
+keywords: [angular 13 changes, angular 13 features, angular 13 upgrade, what's new in angular 13, what is angular 13, what are the new features in angular 13, angular 13, angular]
+published: true
+---
+
+Angular 13 is now available. Time to discover what's new!
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Angular`}
+    src={`/static/images/logos/angular.svg`}
+    width={400}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+In this article, I’ll go over (almost) everything noteworthy in this new release. I’ll also highlight what’s changed around Angular, like I did with my previous articles about [Angular 12](https://dsebastien.net/blog/2021-05-13-angular-12-in-depth), [Angular 11](https://dsebastien.net/blog/2020-11-15-angular-11-in-depth) and [Angular 10](https://dsebastien.net/blog/2020-07-27-angular-10-in-depth).
+
+## What's new with Angular 13
+If you're looking for the bird-eye view, then here it is:
+
+* IE11 is no longer supported
+* Faster production builds (+68%)
+* Persistent build cache by default: https://github.com/angular/angular-cli/issues/21545
+* View Engine is gone
+* New Angular Package Format (APF): https://angular.io/apf
+* Simplified API to dynamically create components
+* Minor improvements to forms type safety
+* Improvements to Angular TestBed
+* Accessibility (a11y) improvements to MDC-based Angular Material components
+* TypeScript >=4.4.x
+* RxJS >=7.4
+
+<Tweet tweetLink="angular/status/1456050398020653067" />
+
+If you want more, then check out the [official release announcement](https://blog.angular.io/angular-v13-is-now-available-cce66f7bc296).
+
+And if you want all the details, then stay here with me! We're going to dig much deeper into the release notes ✨.
+
+## IE11 is no longer supported
+Angular 13 no longer supports Internet Explorer. I consider this to be one of the most important news.
+
+By dropping support for Internet Explorer, Angular can finally make use of native Web browser features such as CSS variables and Web animations. Previously, Angular had to include polyfills to ensure retro-compatibility with IE.
+
+This means that Angular is now lighter than before, and will load/execute faster (i.e., better UX!). Moreover, the Angular team can now focus on evergreen Web browsers, which will enable faster innovation cycles.
+
+It also renders [differential loading](https://auth0.com/blog/angular-8-differential-loading/) bogus. Previously, Angular used that technique to generate specific JavaScript bundles for legacy browsers, which slowed everything down and increased the size of production builds.
+
+The update process of angular automatically drops the old IE polyfills and reduces bundle size during migration.
+
+Note that Angular 12 will continue to support IE11 until November 2022.
+
+If you're working for a company that still uses Internet Explorer, the message is clear: it's time to stop that nonsense!
+
+## View Engine is not supported anymore
+The View Engine is not supported by Angular 13.
+
+This is a great step forward for Angular. Again, it means that the Angular team will be able to focus more on the forward-looking evolutions of the framework.
+
+As mentioned in the official announcement, removing View Engine also means that Angular can reduce its reliance on `ngcc` ([Angular compatibility compiler](https://v13.angular.io/guide/glossary#ngcc)) in the future, and teams can look forward to faster compilation because metadata and summary files are no longer included.
+
+## Changes to the Angular Package Format (APF)
+As mentioned in the official announcement, the [Angular Package Format (APF)](https://v13.angular.io/apf) has been streamlined and modernized to better serve developers. To streamline the APF in Angular 13, older output formats such as CommonJS (CJS) and UMD have been removed. As [mentioned](https://twitter.com/IgorMinar) by [Igor Minar](https://twitter.com/IgorMinar), the whole Web community will be better off once ES Modules (ESM) are used everywhere.
+
+The APF now uses more modern JS formats: ES Modules and ES2020. This means that libraries built with the latest version of the APF will no longer need to use `ngcc`. `ngcc` is painful for all Angular developers, as I've [mentioned previously](https://dsebastien.net/blog/2021-05-13-angular-12-in-depth). Thanks to this change, the first build after an installation will be much faster. Awesome! 🚀
+
+The Angular team has also updated the APF to support Node Package Exports. This will help developers from inadvertently relying on internal APIs that may change.
+
+It is now time for Angular library authors to stop using `enableIvy: false`, and to instead use `compilationMode: partial` (in `tsconfig.prod.json`), as [recommended](https://twitter.com/yjaaidi/status/1455543855332397071) by [Younes](https://twitter.com/yjaaidi). The `partial` compilation mode is a partial-Ivy code format that is stable between different versions of Angular, and thus safe to publish to npm. Angular code that uses this partial format is processed during the build of the application using the same version of the Angular compiler. The benefit is that it both the application and its libraries rely on a single version of Angular, removing potential compatibility issues. Check out the [official guidelines for library authors](https://angular.io/guide/creating-libraries#building-libraries-with-ivy) to learn more.
+
+Hopefully, once enough library authors have started shipping their libraries with the new partially compiled format, `ngcc` should finally go away.
+
+Note that the Angular CLI now prefers the ESM version of dependencies (if it is available).
+
+As a result of these changes, the production build of Angular applications now targets ES2020 instead of ES2015 as it was the case before.
+
+## Angular 13 now supports TypeScript 4.4
+Angular 13 introduces support for [TypeScript 4.4](https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/), which means that we can now use a _ton_ of new wonderful language features. Also, support for TypeScript 4.2 and 4.3 has been dropped.
+
+One notable improvement with TypeScript 4.4 that is particularly beneficial for Angular applications is the fact that it no longer enforces getters and setters to have the same type. Previously it was the case, and it was especially annoying for `@Input`.
+
+Check out the [release notes of TypeScript 4.4](https://devblogs.microsoft.com/typescript/announcing-typescript-4-4/) to discover the cool new features that you'll be able to use in your projects.
+
+## Better API to create components dynamically
+Angular no longer requires component factories to dynamically create components.
+
+Previously, we had to create a `ComponentFactory` ourselves by invoking `ComponentFactoryResolver`. This is not needed anymore. The `ViewContainerRef.createComponent` [now accepts a component instance](https://github.com/angular/angular/pull/43022) of will take care of creating the factory transparently.
+
+So, instead of this:
+
+```typescript
+@Directive({ ... })
+export class MyDirective {
+  constructor(
+    private viewContainerRef: ViewContainerRef,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {}
+
+  createMyComponent() {
+    const componentFactory = this.componentFactoryResolver.resolveComponentFactory(MyComponent);
+    this.viewContainerRef.createComponent(componentFactory);
+  }
+}
+```
+
+We can now write this instead:
+
+```typescript
+@Directive({ ... })
+export class MyDirective {
+  constructor(private viewContainerRef: ViewContainerRef) {}
+
+  createMyComponent() {
+    this.viewContainerRef.createComponent(MyComponent);
+  }
+}
+```
+
+Less boilerplate code is better, yay!
+
+## Angular CLI improvements
+As you know, the Angular CLI is one of the key pieces of the Angular puzzle. Few developers in the world are able to deal with the build complexity of the modern Web development ecosystem. And luckily for us, the Angular CLI shields us from most of it.
+
+With this release, Angular now uses the persistent build cache by default, as [requested by the community](https://github.com/angular/angular-cli/issues/21545). The persistent build cache is a feature that caches build results on disk (under the `.angular/cache` folder). This results in up to 68% improvement in build speed.
+
+In order to enable this feature in existing Angular applications, you need to add the following configuration to your `angular.json` file:
+
+```json
+{
+    "$schema": "...",
+    "cli": {
+        "cache": {
+            "enabled": true,
+            "path": ".cache",
+            "environment": "all" // other supported values: "ci" and "local"
+        }
+    }
+    ...
+}
+```
+
+You can also disable that feature (don't unless you really have no choice) using `ng config cli.cache.enabled false`. If you need to clear the cache, then just remove the `.angular/cache` folder.
+
+You can find more information in the [documentation](https://next.angular.io/cli/cache).
+
+Aside from that, ESBuild also sees some performance improvements in this release! The Angular team has introduced [esbuild](https://esbuild.github.io/), which now works with [terser](https://terser.org/) to optimize global scripts. In addition, ESBuild supports CSS sourcemaps and can optimize global CSS, as well as optimizing all style sheets. I'm eager to see some benchmarks on this.
+
+Interestingly, the Angular team is considering using tools like [Vite](https://vitejs.dev/) in the future. It makes sense now that Angular supports ESM and is aligned with recent NodeJS versions. I'm curious to see what performance improvements and new features it will bring in the future.
+
+## RxJS 7.4 and NodeJS 16
+Angular 13 now uses RxJS 7.4 by default for applications created using `ng new`.
+
+I wrote [an article about RxJS 7](https://dsebastien.net/blog/2020-08-05-rxjs-7-in-depth) a while ago, but haven't updated it recently. Check out [the following page](https://rxjs.dev/6-to-7-change-summary) if you want to discover what changed between RxJS 6 and 7.
+
+Aside from that, Angular 13 has dropped support for NodeJS versions below `v12.20.0` and has introduced support for NodeJS [>=16.10](https://nodejs.org/ko/blog/release/v16.0.0/).
+
+## Forms
+Angular Forms have received a bit more attention in this release. Not yet as much as I would have hoped, but there are still notable improvements to the type safety of reactive forms. How cool is that?! 🚀. Let's explore the changes.
+
+### Improved type safety for form status
+Form statuses now use a [specific type](https://github.com/angular/angular/pull/42952). A new type called `FormControlStatus` has been introduced, which is a union of all possible status strings for form controls: `'VALID' | 'INVALID' | 'PENDING' | 'DISABLED'`. That new type is used for `AbstractControl.status`.
+
+Also, `statusChanges` has been narrowed from `Observable<any>` to `Observable<FormControlStatus>`. This is a breaking change, but it's really for the best. As mentioned in the release notes, it can break your application if you were using an invalid form status string (thus a bug fix!) or if you were using `statusChanges` events as if they were something else than strings.
+
+### New form methods
+New form methods have been added to `AbstractControl` in this release:
+
+* `addAsyncValidators`: Add one or more asynchronous validator(s) to the control, without affecting other validators
+* `addValidators`: Add one or more synchronous validator(s) to the control, without affecting other validators
+* `hasAsyncValidator`: Check whether an asynchronous validator function is present on this control (must be the exact same function that was provided)
+* `hasValidator`: Determines whether a validator or validators array has a given validator
+* `removeAsyncValidators`: Remove asynchronous validators from this control
+* `removeValidators`: Remove synchronous validators from this control
+
+Those provide us with more control over the validation process. We can now easily add/remove synchronous and asynchronous validators.
+
+### Dynamically enable/disable validators
+The `minLength` and `maxLength` validators can now be bound to `null`. This allows to disable validation and [preventing attributes from being added to the DOM](https://github.com/angular/angular/pull/42565). This fixes [a regression that was introduced by those two validators](https://github.com/angular/angular/issues/42267). In addition, we can now [disable those validators dynamically](https://github.com/angular/angular/pull/42978).
+
+The ability to dynamically enable/disable validators is definitely going to be _very_ useful for us all!
+
+## Templates
+Angular now supports [autocompletion for string literal union types](https://github.com/angular/angular/pull/42729).
+
+The language service of Angular is now able to [automatically insert the optional chaining operator](https://github.com/angular/angular/commit/d5f9890c9205b4a121275ace84b26776aedd0478) (i.e., `?.`) when property access (i.e., `.`) is done on a nullable symbol.
+
+Here's an example:
+
+<Tweet tweetLink="AlisaDuncan/status/1456293065988128768" />
+
+Note that the `fullTemplateTypeCheck` compiler option has been deprecated. You should now use `strictTemplates` instead. Check out [my article about Angular Template type Checking](https://dsebastien.net/blog/2020-06-16-angular-template-type-checking) if you want to know more about that.
+
+An older syntax for bindings has also been deprecated. I don't think that many Angular developers even knew about that, but if you are defining bindings using things like `on-click`, then you should stop doing so.
+
+## Router
+
+### Observe router link active state
+A new output called `isActiveChange` has been added to the `routerLinkActive` directive. It [emits whenever the link becomes active or inactive](https://github.com/angular/angular/pull/43280).
+
+### Control the router behavior after navigation cancellation
+A new option has been added to the public API of the Angular Router: `canceledNavigationResolution`. It allows to configure the behavior of the router regarding the state restoration when a navigation is cancelled. Check out [the sources](https://github.com/angular/angular/commit/3c6b653089837459809a370ebcaf8911c3bab9ed#diff-03cb1ea13f0b5890eb24ce6fef7a42eed85429da0a90cdb48ab06b58c30cb1c1L537) for the possible values and meaning.
+
+### Observe activate/deactivate events when an outlet gets attached/detached
+The router now provides new outputs allowing to subscribe for the `attach` and `detach` events on a `RouterOutlet`. Previously, there was no way to subscribe for those events when an outlet got attached/detached with `RouteReuseStrategy`. Those new outputs [emit when an outlet gets attached/detached](https://github.com/angular/angular/pull/43333).
+
+### Define custom route reuse strategy through DI for RouterTestingModule
+It is now possible to [provide a custom route reuse strategy through dependency injection for the RouterTestingModule](https://github.com/angular/angular/pull/42434):
+
+```typescript
+TestBed.configureTestingModule({
+    imports: [RouterTestingModule],
+    providers: [{provide: RouteReuseStrategy, useClass: AttachDetachReuseStrategy}]
+});
+```
+
+## Angular tests improvements
+
+With Angular 13, the Angular [TestBed](https://v13.angular.io/api/core/testing/TestBed) has received some improvements.
+
+It now better takes care of tearing down test modules and environments after each test. The DOM is now cleaned up after every test, avoiding side effects. Overall, tests should execute faster, use less memory, and be less interdependent.
+
+The automatic teardown was an opt-in since Angular 12.1.0 and is now the default. As mentioned in the announcement, this behavior can be configured for the entire test suite via the [TestBed.initTestEnvironment](https://v13.angular.io/api/core/testing/TestBed#initTestEnvironment) method:
+
+```typescript
+beforeEach(() => {
+    TestBed.resetTestEnvironment();
+    TestBed.initTestEnvironment(
+        BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting(),
+        {
+            teardown: { destroyAfterEach: true }
+        }
+    );
+});
+```
+
+Or it can be configured per module by updating the [TestBed.configureTestingModule](https://v13.angular.io/api/core/testing/TestBed#configureTestingModule) method:
+
+```typescript
+beforeEach(() => {
+    TestBed.resetTestEnvironment();
+    ...
+    TestBed.configureTestingModule({
+        declarations: [TestComp],
+        teardown: { destroyAfterEach: true }
+    });
+});
+```
+
+This provides us with the flexibility to use a different approach depending on the situations. [Lars Gyrup Brink Nielsen](https://twitter.com/LayZeeDK) has written a [blog post](https://dev.to/this-is-angular/improving-angular-tests-by-enabling-angular-testing-module-teardown-38kh) to explain this more in detail.
+
+## Accessibility improvements
+With Angular 13, the accessibility of Angular Material MDC-based components has been [drastically improved](https://github.com/angular/components/pulls?q=is%3Apr+is%3Aclosed+label%3Aa11y).
+
+To me, it is always a pleasure to see large organizations put energy into improving accessibility. I wish more organizations across the world would do the same, given how important it is to ensure that all of our users have a great experience.
+
+All the MDC-based components have been reviewed and adapted to meet more stringent accessibility standards. The improvements include things like contrast, touch targets, ARIA, and more.
+
+In the announcement, the Angular team has highlighted the touch target size changes for components like [checkbox](https://next.material.angular.io/components/checkbox/overview) and [radio button](https://next.material.angular.io/components/radio/overview):
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`A comparison of touch target sizes. The sizes on the right are the new sizes.`}
+    src={`/static/images/blog/2021/angular13-touch.png`}
+    width={1379}
+    height={781}
+    priority
+  />
+</BlogPostCenteredContent>
+
+As well as the better high contrast mode support for multiple components:
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`High contrast mode improvements.`}
+    src={`/static/images/blog/2021/angular13-high-contrast.png`}
+    width={1600}
+    height={828}
+    priority
+  />
+</BlogPostCenteredContent>
+
+To learn more about those changes, check out [the blog post about improving Angular Component's accessibility](http://goo.gle/v13-accessibility).
+
+I'll tell you more about the other Angular Material changes further in the article.
+
+## And more...
+
+There's [a ton more](https://github.com/angular/angular/blob/master/CHANGELOG.md) minor changes in this release. Here's a quick overview.
+
+### Support for inlining Adobe Fonts
+
+With the release of [Angular 11](https://dsebastien.net/blog/2020-11-15-angular-11-in-depth), Angular became capable of inlining [Google Fonts](https://fonts.google.com/). With this release, Angular can now also inline [Adobe Fonts](https://fonts.adobe.com/). This new feature is enabled by default.
+
+Font inlining is a very cool feature, as it helps improve application performance, and thus reach better Web Vitals scores. In particular, it helps with [First Contentful Paint (FCP)](https://web.dev/first-contentful-paint/).
+
+Check out the following video for more details:
+
+<YouTube youTubeId="yOpy9UMQG-Y" />
+
+### Date pipe improvements
+
+Previously, if we needed to specify a custom timezone/timezone offset for the `date` pipe, the only option was to use the second (optional) argument of the `date` pipe, like this:
+
+`{{ myDate | date: "shortTime":"+1200" }}`
+
+This was cumbersome because it had to be repeated all over the place. Angular 13 introduces a new way to customize this, using a specific provider:
+
+```typescript
+providers: [
+  { provide: DATE_PIPE_DEFAULT_TIMEZONE, useValue: '+1200' }
+]
+```
+
+It's a small improvement, but it can be a big win for large projects. Less boilerplate is better for readability and developer experience (DX). You can learn more about this [here](https://github.com/angular/angular/issues/43031).
+
+### Service worker (NGSW) changes
+Small changes have been introduced for the Angular service workers. Previously, we had to check the `activated` observable in order to determine if the invocation resulted in an update of the service worker. This is no longer the case. The `activated` observable has been deprecated. As of Angular 13, the `activateUpdate` and `checkForUpdate` promises will return `true` if the update was activated.
+
+Note that the `available` observable has also been deprecated. The `versionUpdates` observable replaces it. The new one provides more information and emits whenever a new version of the service worker is available and if an installation failed.
+
+You can learn more about those changes [here](https://github.com/angular/angular/pull/43668).
+
+### ng serve changes
+The `ng serve` command now uses `webpack-dev-server` [4.x](https://github.com/webpack/webpack-dev-server/blob/master/migration-v4.md), which uses WebSockets to push changes to the browser. Check out [the release notes](https://github.com/webpack/webpack-dev-server/releases) of the package to discover other new features/improvements.
+
+If you use a proxy, you will need to make sure that your proxy is also configure for WebSockets. Otherwise you'll encounter some issues.. ;-)
+
+### Localization changes
+`$localize` is a fast and efficient method to implement internationalization (i18n) and tag messages for translation in code, but also in templates. Here's an example:
+
+```typescript
+function hello(name) {
+    return $localize `Hello ${name}`;
+}
+```
+
+This translates into:
+
+```typescript
+function hello(name) {
+    return "Bonjour" + name;
+}
+```
+
+Quite nice. Unfortunately, this new API is not compatible with third-party libraries like ngx-translate or transloco.
+
+The documentation describing the localization API has been updated. Check out the [guides](https://angular.io/guide/i18n-overview) to learn more. For instance, the [$localize](https://angular.io/api/localize/init/$localize) API has been documented.
+
+## Breaking changes
+There are also a number of breaking changes with this release. A necessary evil! 😈
+
+As the official release notes are pretty clear, I’m just copy/pasting those here:
+
+Common:
+- The behavior of the `SpyLocation` used by the `RouterTestingModule` has changed to match the behavior of browsers. It no longer emits a 'popstate' event when `Location.go` is called. In addition, `simulateHashChange` now triggers _both_ a `hashchange` and a `popstate` event. Tests which use `location.go` and expect the changes to be picked up by the `Router` should likely change to `simulateHashChange` instead.
+Each test is different in what it attempts to assert so there is no single change that works for all tests. Each test using the `SpyLocation` to simulate browser URL changes should be evaluated on a case-by-case basis.
+
+Core:
+- TypeScript versions older than 4.4.2 are no longer supported.
+- NodeJS versions older than `v12.20.0` are no longer supported due to the Angular packages using the NodeJS package exports feature with subpath patterns.
+- The `WrappedValue` class can no longer be imported from `@angular/core`, which may result in compile errors or failures at runtime if outdated libraries are used that are still using `WrappedValue`. The usage of `WrappedValue` should be removed as no replacement is available.
+
+Forms:
+- A new type called `FormControlStatus` has been introduced, which is a union of all possible status strings for form controls. `AbstractControl.status` has been narrowed from `string` to `FormControlStatus`, and `statusChanges` has been narrowed from `Observable<any>` to `Observable<FormControlStatus>`. Most applications should consume the new types seamlessly. Any breakage caused by this change is likely due to one of the following two problems: (1) the app is comparing `AbstractControl.status` against a string which is not a valid status; or, (2) the app is using `statusChanges` events as if they were something other than strings.
+
+Router:
+- The default url serializer would previously drop everything after and including a question mark in query parameters. That is, for a navigation to `/path?q=hello?&other=123`, the query params would be parsed to just `{q: 'hello'}`. This is incorrect because the URI spec allows for question mark characters in query data. This change will now correctly parse the params for the above example to be `{v: 'hello?', other: '123'}`.
+- Previously `null` and `undefined` inputs for `routerLink` were equivalent to empty string and there was no way to disable the link's
+navigation. In addition, the `href` is changed from a property `HostBinding()` to an attribute binding (`HostBinding('attr.href')`). The effect of this change is that `DebugElement.properties['href']` will now return the `href` value returned by the native element which will be the full URL rather than the internal value of the `RouterLink` `href` property.
+- The router will no longer replace the browser URL when a new navigation cancels an ongoing navigation. This often causes URL flicker and was only in place to support some AngularJS hybrid applications. Hybrid applications which rely on the `navigationId` being present on initial navigations that were handled by the Angular router should instead subscribe to `NavigationCancel` events and perform the `location.replaceState` themselves to add `navigationId` to the Router state. In addition, tests which assert `urlChanges` on the `SpyLocation` may
+need to be adjusted to account for the `replaceState` which is no longer triggered.
+- It is no longer possible to use `Route.loadChildren` using a string value. The following supporting classes were removed from `@angular/core`: `NgModuleFactoryLoader` and `SystemJsNgModuleFactoryLoader`
+- The `@angular/router` package no longer exports these symbols: `SpyNgModuleFactoryLoader` and `DeprecatedLoadChildren`
+- The signature of the `setupTestingRouter` function from `@angular/core/testing` has been changed to drop its `NgModuleFactoryLoader`
+parameter, as an argument for that parameter can no longer be created.
+
+Service worker:
+- The return type of `SwUpdate#activateUpdate` and `SwUpdate#checkForUpdate` changed to `Promise<boolean>`. Although unlikely, it is possible that this change will cause TypeScript type-checking to fail in some cases. If necessary, update your types to account for the new return type.
+
+CDK:
+- `CKD_COPY_TO_CLIPBOARD_CONFIG` has been removed. Use `CDK_COPY_TO_CLIPBOARD_CONFIG` instead.
+- `ConnectedPositionStrategy` has been removed. Use `FlexibleConnectedPositionStrategy` instead.
+- `OverlayPositionBuilder.connectedTo` has been removed. Use `OverlayPositionBuilder.flexibleConnectedTo` instead.
+
+Material:
+- `CanColorCtor` is no longer necessary and has been removed.
+- `CanDisableRippleCtor` is no longer necessary and has been removed.
+- `CanDisableCtor` is no longer necessary and has been removed.
+- `CanUpdateErrorStateCtor` is no longer necessary and has been removed.
+- `HasInitializedCtor` is no longer necessary and has been removed.
+- `HasTabIndexCtor` is no longer necessary and has been removed.
+- Material now requires at least version 1.34.0 of Sass. Version 1.38.0 is recommended.
+- The `_document` and `_dialog` parameters have been removed from the `MatDatepicker` and `MatDateRangePicker` constructors.
+- `MatFormFieldHarness.getHarnessLoaderForPrefix` has been removed. Use `MatFormFieldHarness.getPrefixText` instead.
+- `MatFormFieldHarness.getHarnessLoaderForSuffix` has been removed. Use `MatFormFieldHarness.getSuffixText` instead.
+- The `_labelOptions` parameter of the `MatFormField` constructor has been removed.
+- `MatFormField.underlineRef` has been removed.
+- `matTextareaAutosize` has been removed. Use `cdkTextareaAutosize` from the `@angular/cdk/text-field` module instead.
+- `MatTabHarness.getHarnessLoaderForContent` has been removed. Use `MatTabHarness.getRootHarnessLoader` instead.
+
+Youtube player:
+- `YouTubePlayer.createEventsBoundInZone` has been removed.
+
+## Deprecations and bug fixes
+
+Check out the release notes for the [full list of deprecations and bug fixes](https://github.com/angular/angular/blob/master/CHANGELOG.md#deprecations).
+
+## Angular Material & Angular CDK
+
+### Date adapter for date-fns
+Angular Material has included adapters for moment.js and luxon for a while. With Angular 13, a [new date adapter](https://github.com/angular/components/pull/23262/files) has been added that supports [date-fns](https://date-fns.org/). That's pretty cool!
+
+### Angular CDK changes
+Angular 13 only includes a small change for the Angular CDK.
+
+The `cdkConnectedOverlayOrigin` input of the `CdkConnectedOverlay` directive supports the additional types defined by `FlexibleConnectedPositionStrategyOrigin`
+
+### Angular Material changes
+There are also a few changes for Angular Material.
+
+It is now possible to [define content sections in test harnesses](https://github.com/angular/components/commit/3dc5af4bfd2e15fe9a1330740068732cfc65d29f) for the Dialog component.
+
+Also, a new injection token called `MAT_PROGRESS_BAR_DEFAULT_OPTIONS` has been [added to the for the progress bar](https://github.com/angular/components/pull/23363). It can be used to configure the default options as follows:
+
+```typescript
+provide: MAT_PROGRESS_BAR_DEFAULT_OPTIONS,
+useValue: {
+  mode: 'buffer',
+  color: 'warn'
+}
+```
+
+The `autoFocus` option of dialogs was previously a boolean. It was used to specify whether the container element or the first tabbable element was to be focused on dialog open. As of Angular Material 13,  it is now possible to configure it in other ways. For instance, we can now configure it to focus the first header element, or use a CSS selector and have it focus the first element that matches that selector. The new type of the `autoFocus` option is `AutoFocusTarget | string | boolean = 'first-tabbable';`. Check out [the PR for usage examples](https://github.com/angular/components/pull/22780).
+
+The experimental version of Material has also a few new features. The most noteworthy one is the following:
+
+A DI token called `MAT_CARD_CONFIG` has been [added for MDC-based cards](https://github.com/angular/components/commit/2789d8eb5f61ea4cb28ff8c6225178179e610571). It allows to set the default appearance: `provide: MAT_CARD_CONFIG, useValue: {appearance: 'outlined'}`.
+
+## Angular Universal
+Nothing new for Angular Universal in this release, apart from the support for NodeJS 16.
+
+## Google Maps
+As you know, Angular includes components for Google Maps and Youtube. Version 13 doesn't bring anything new. The only change is the fact that Angular's Google Map component now relies on more recent typings for the `google.maps` package: `^3.45.6`.
+
+## Upgrading
+As usual, there's a complete upgrade guide available, and `ng update` will help you out: https://update.angular.io/?l=3&v=12.0-13.0.
+
+A number of automated migrations have been included in this release:
+
+* Remove the old IE-specific polyfills
+* Remove options like `extractCss` which have been removed in this release
+* Add `.angular/cache` to `.gitignore`
+* Update empty `routerLink` in templates
+* ...
+
+If you're using [Nrwl NX](https://nx.dev/) (hint: you should!), I'm sure that support for Angular 13 will be added real soon.
+
+## Conclusion
+In this article, I've explored the new features of Angular 13 as well as all the nitty-gritty details. As usual, this is release is _heroic_ (what else could it be?!).
+
+Now that ViewEngine is gone, Ivy is king in Angular-land. Without a doubt, this will enable the Angular team to focus on forward-looking improvements like [making NgModules optional](https://github.com/angular/angular/discussions/43784) and [running type checks in the background](https://github.com/angular/angular/issues/43131), which could lead to huge developer experience improvements.
+
+If you want to learn more about optional NgModules, then check out the Angular Nation Meetup video:
+
+<YouTube youTubeId="AdvQ_lBDLUY" />
+
+By the way, you can already prepare for the future of Angular by [getting rid of shared modules](https://netbasal.com/aim-to-future-proof-your-standalone-angular-components-accb574d273f).
+
+I'm really optimistic about the next two major releases of Angular. Hopefully, Angular 14 will introduce much [safer reactive forms](https://github.com/angular/angular/pull/43834), and Angular 15 is certainly going to be an EPIC release 😎.
+
+Luckily for us, the Angular team now relies more and more on RFCs to discuss the future evolutions. This gives more room for the community to be listened to, and that's great!
+
+That's it for today! ✨
+
+<BlogPostSignature />
