@@ -50,7 +50,8 @@
             "passWithNoTests": true
           }
         }
-      }
+      },
+      "tags": []
     },
     "website-e2e": {
       "root": "apps/website-e2e",
@@ -76,24 +77,9 @@
             "lintFilePatterns": ["apps/website-e2e/**/*.{js,ts}"]
           }
         }
-      }
+      },
+      "tags": [],
+      "implicitDependencies": ["website"]
     }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/next"
-  },
-  "generators": {
-    "@nrwl/react": {
-      "application": {
-        "babel": true
-      }
-    },
-    "@nrwl/next": {
-      "application": {
-        "style": "styled-components",
-        "linter": "eslint"
-      }
-    }
-  },
-  "defaultProject": "website"
+  }
 }

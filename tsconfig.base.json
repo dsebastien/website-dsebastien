@@ -17,6 +17,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "importsNotUsedAsValues": "remove",
+    "incremental": true,
     "inlineSourceMap": false,
     "inlineSources": false,
     "isolatedModules": false,
@@ -38,10 +39,10 @@
     "noUnusedParameters": true,
     "outDir": "dist/out-tsc/dummy",
     "paths": {
+      "*": ["@types/*"],
       "@/components/*": ["apps/website/client/components/*"],
       "@/layouts/*": ["apps/website/layouts/*"],
-      "@/lib/*": ["apps/website/lib/*"],
-      "*": ["@types/*"]
+      "@/lib/*": ["apps/website/lib/*"]
     },
     "preserveConstEnums": true,
     "pretty": true,

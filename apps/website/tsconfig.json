@@ -3,17 +3,18 @@
   "compilerOptions": {
     "baseUrl": "../../",
     "noEmit": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "incremental": true
   },
   "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.d.ts",
+    "**/*.js",
+    "**/*.jsx"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

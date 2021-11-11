@@ -1,5 +1,5 @@
-'use strict';
+const { getJestProjects } = require('@nrwl/jest');
 
-module.exports = {
-  projects: ['<rootDir>/apps/website'],
-};
+('use strict');
+
+module.exports = { projects: getJestProjects() };

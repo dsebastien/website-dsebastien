@@ -20,6 +20,7 @@ module.exports = withNx(
         'pbs.twimg.com', // Twitter Profile Picture
       ],
     },
+    /*
     webpack: (
       config,
       { _buildId, dev, isServer, _defaultLoaders, _webpack }
@@ -29,9 +30,7 @@ module.exports = withNx(
 
       if (!isServer) {
         config.node = {
-          /**
-           * fs is a server-side dependency which we don't want added client-side
-           */
+          // fs is a server-side dependency which we don't want added client-side
           fs: 'empty',
           module: 'empty',
         };
@@ -51,6 +50,7 @@ module.exports = withNx(
 
       return config;
     },
+    */
     typescript: {
       /**
        * `lint:types` ran in CI already so we can safely assume no errors
@@ -68,6 +68,12 @@ module.exports = withNx(
      */
     sassOptions: {
       includePaths: [helpers.root('apps/website/styles')],
+    },
+    experimental: {
+      /**
+       * Enables the styled-components SWC transform
+       */
+      styledComponents: true,
     },
   }
 );
