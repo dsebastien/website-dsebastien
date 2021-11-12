@@ -157,7 +157,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
             property="og:url"
             content={`https://dsebastien.net${router.asPath}`}
           />
-          <link rel="canonical" href={`https://dsebastien.net${router.asPath}`} />
+          <link rel="canonical" href={meta.canonicalUrl} />
           <meta property="og:type" content={meta.type} />
           <meta property="og:site_name" content={meta.siteName} />
           <meta property="og:description" content={meta.description} />
