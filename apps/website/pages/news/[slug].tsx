@@ -56,6 +56,7 @@ export async function getStaticProps(input: { params: { slug: string } }) {
     return {
       redirect: {
         destination: post.frontMatter.redirectUrl,
+        permanent: true,
       }
     }
   }
