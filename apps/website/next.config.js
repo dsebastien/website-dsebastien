@@ -64,17 +64,6 @@ module.exports = withNx(
      */
     poweredByHeader: false,
     /**
-     * Redirects
-     * Reference: https://nextjs.org/docs/api-reference/next.config.js/redirects
-     */
-    redirects: [
-      {
-        source: '/news/2021-11-08-edition-031',
-        destination: 'https://newsletter.dsebastien.net/issues/developassion-s-newsletter-small-and-riskless-bets-846960',
-        permanent: true,
-      }
-    ],
-    /**
      * Configure Sass
      */
     sassOptions: {
