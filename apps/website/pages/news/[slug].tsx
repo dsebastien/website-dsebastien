@@ -52,7 +52,17 @@ export async function getStaticProps(input: { params: { slug: string } }) {
     slug: input.params.slug,
   });
 
-  return { props: post };
+  if(post.frontMatter.redirectUrl) {
+    return {
+      redirect: {
+        destination: post.frontMatter.redirectUrl,
+      }
+    }
+  }
+
+  return {
+    props: post,
+  };
 }
 
 export default NewsletterEdition;
