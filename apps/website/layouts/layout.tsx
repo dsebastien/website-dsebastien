@@ -7,7 +7,7 @@ import ThemeSwitcher from '@/components/theme-switcher';
 import { FaArrowUp, FaGithub } from 'react-icons/fa';
 import Footer from '@/components/footer';
 import ScrollToTop from '@/components/scroll-to-top';
-import {BLOG_AUTHOR, BLOG_DESCRIPTION, IS_BROWSER} from '../constants';
+import {SITE_AUTHOR, SITE_DESCRIPTION, IS_BROWSER} from '../constants';
 import {propertiesOf} from "../utils/type.utils";
 
 const StyledPage = tw.div``;
@@ -45,8 +45,8 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
     "@type": "WebSite",
     name: siteName,
     alternateName: "Sébastien Dubois's Website",
-    description: BLOG_DESCRIPTION,
-    publisher: BLOG_AUTHOR,
+    description: SITE_DESCRIPTION,
+    publisher: SITE_AUTHOR,
     url: IS_BROWSER ? window.location.origin : '',
   };
 
@@ -55,9 +55,9 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
    */
   const meta: SupportedMeta = {
     siteName: siteName,
-    author: BLOG_AUTHOR.name,
+    author: SITE_AUTHOR.name,
     title: siteName,
-    description: BLOG_DESCRIPTION,
+    description: SITE_DESCRIPTION,
     image: 'https://dsebastien.net/static/images/banner-2560.jpg',
     type: 'website',
     keywords:
@@ -210,15 +210,13 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
                   <div className="site-button text-base">Blog</div>
                 </a>
               </Link>
-              <Link href="/news">
-                <a
-                  className="main-menu-link"
-                  aria-label="Go to the news"
-                  title="Go to the news"
-                >
-                  <div className="site-button text-base">Newsletter</div>
-                </a>
-              </Link>
+              <a href="https://newsletter.dsebastien.net"
+                 className="main-menu-link"
+                 aria-label="Go to the news"
+                 title="Go to the news"
+              >
+                <div className="site-button text-base">Newsletter</div>
+              </a>
               <Link href="/books">
                 <a
                   className="main-menu-link"

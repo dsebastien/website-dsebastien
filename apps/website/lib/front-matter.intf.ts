@@ -26,10 +26,6 @@ export interface FrontMatter {
    */
   canonicalUrl?: string;
   /**
-   * Used to redirect to another URL
-   */
-  redirectUrl?: string;
-  /**
    * Added automatically
    */
   wordCount?: number;
