@@ -29,24 +29,11 @@ const NewsletterEdition = (input: NewsProps) => {
   );
 };
 
-export async function getStaticPaths() {
-  const newsletterEditions = await getFiles(WebsiteDataType.NEWS);
-
-  return {
-    paths: newsletterEditions.map((p) => ({
-      params: {
-        slug: p.replace(/\.mdx/, ''),
-      },
-    })),
-    fallback: true,
-  };
-}
-
 /**
  * The 'slug' property name comes from the pages/news/[slug].tsx page!
  * @param input
  */
-export async function getStaticProps(input: { params: { slug: string } }) {
+export async function getServerSideProps(input: { params: { slug: string } }) {
   const post = await getFileBySlug({
     type: WebsiteDataType.NEWS,
     slug: input.params.slug,

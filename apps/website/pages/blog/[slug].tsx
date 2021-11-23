@@ -38,7 +38,7 @@ export async function getStaticPaths() {
         slug: p.replace(/\.mdx/, ''),
       },
     })),
-    fallback: true,
+    fallback: false,
   };
 }
 
@@ -51,15 +51,6 @@ export async function getStaticProps(input: { params: { slug: string } }) {
     type: WebsiteDataType.BLOG,
     slug: input.params.slug,
   });
-
-  if(post.frontMatter.redirectUrl) {
-    return {
-      redirect: {
-        destination: post.frontMatter.redirectUrl,
-        permanent: true,
-      }
-    }
-  }
 
   return {
     props: post,
