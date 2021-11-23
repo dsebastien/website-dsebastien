@@ -20,7 +20,7 @@ const helpers = require('../../helpers');
     `${WEBSITE_ROOT_FOLDER_PATH}/pages/*.js`,
     `${WEBSITE_ROOT_FOLDER_PATH}/pages/*.ts`,
     `${WEBSITE_ROOT_FOLDER_PATH}/pages/*.tsx`,
-    `${WEBSITE_ROOT_FOLDER_PATH}/data/**/*.mdx`,
+    `${WEBSITE_ROOT_FOLDER_PATH}/data/blog/*.mdx`,
     `!${WEBSITE_ROOT_FOLDER_PATH}/data/uses.mdx`,
     `!${WEBSITE_ROOT_FOLDER_PATH}/pages/_*.js`,
     `!${WEBSITE_ROOT_FOLDER_PATH}/pages/_*.ts`,
