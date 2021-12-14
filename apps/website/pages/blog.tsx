@@ -9,15 +9,20 @@ import tw from 'twin.macro';
 import {WebsiteDataType} from "@/lib/website-data-types.intf";
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
 import {SITE_DESCRIPTION} from "../constants";
+import {GetStaticProps} from "next";
 
 const StyledArticle = tw.article``;
+
+interface BlogProps {
+  entries: FrontMatter[];
+}
 
 /**
  * Blog homepage
  * @param input
  * @constructor
  */
-export default function Blog(input: { entries: FrontMatter[] }) {
+export default function Blog(input: BlogProps) {
   const [searchValue, setSearchValue] = useState('');
   const filteredBlogPosts = input.entries
     .sort(
@@ -120,8 +125,12 @@ export default function Blog(input: { entries: FrontMatter[] }) {
   );
 }
 
-export async function getStaticProps() {
-  const posts = await getAllFilesFrontMatter(WebsiteDataType.BLOG);
+export const getStaticProps: GetStaticProps<BlogProps> = async(_context) => {
+  const posts = await getAllFilesFrontMatter(WebsiteDataType.BLOG) as FrontMatter[]; // FIXME remove cast
 
-  return { props: { entries: posts } };
+  return {
+    props: {
+      entries: posts,
+    }
+  };
 }

@@ -102,7 +102,7 @@ export async function getFileBySlug({
   };
 }
 
-export async function getAllFilesFrontMatter(type: WebsiteDataType) {
+export async function getAllFilesFrontMatter(type: WebsiteDataType) { // FIXME improve typings
   const files = fs.readdirSync(path.join(root, DATA_FOLDER_PATH, type));
 
   type AllEntries = { slug: string }[];

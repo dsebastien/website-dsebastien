@@ -3,15 +3,13 @@ import hydrate from 'next-mdx-remote/hydrate';
 import { getFileBySlug, MDXPage } from '@/lib/mdx';
 import MDXComponents from '@/components/mdx-components';
 import { WebsiteDataType } from '@/lib/website-data-types.intf';
-import { InferGetStaticPropsType } from 'next';
+import {GetStaticProps} from 'next';
 import Layout from '@/layouts/layout';
 import tw from "twin.macro";
 
 const StyledArticle = tw.article``;
 
-type UsesProps = InferGetStaticPropsType<typeof getStaticProps>;
-
-export default function Uses({ mdxSource }: UsesProps) {
+export default function Uses({ mdxSource }: MDXPage) {
   const content = hydrate(mdxSource, {
     components: MDXComponents,
   });
@@ -41,7 +39,7 @@ export default function Uses({ mdxSource }: UsesProps) {
   );
 }
 
-export async function getStaticProps(): Promise<{ props: MDXPage }> {
+export const getStaticProps: GetStaticProps<MDXPage> = async (_context) => {
   const uses = await getFileBySlug({ type: WebsiteDataType.USES });
   return { props: uses };
 }

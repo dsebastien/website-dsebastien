@@ -6,6 +6,7 @@ import { getFileBySlug, getFiles } from '@/lib/mdx';
 import { WebsiteDataType } from '@/lib/website-data-types.intf';
 import { MdxRemote } from 'next-mdx-remote/types';
 import BlogArticleLayout from '../../layouts/blog-article';
+import {GetStaticProps} from "next";
 
 interface BlogProps {
   mdxSource: MdxRemote.Source;
@@ -44,12 +45,11 @@ export async function getStaticPaths() {
 
 /**
  * The 'slug' property name comes from the pages/blog/[slug].tsx page!
- * @param input
  */
-export async function getStaticProps(input: { params: { slug: string } }) {
+export const getStaticProps: GetStaticProps<BlogProps> = async (context) => {
   const post = await getFileBySlug({
     type: WebsiteDataType.BLOG,
-    slug: input.params.slug,
+    slug: context?.params?.slug? `${context.params.slug}`: '',
   });
 
   return {
