@@ -36,7 +36,7 @@ const BooksPage = () => {
                 />
               </div>
               <footer>
-                <span>An online community for Software Crafters.</span>
+                <span>An online community for Software Crafters</span>
               </footer>
             </article>
           </a>
@@ -53,12 +53,27 @@ const BooksPage = () => {
                 />
               </div>
               <footer>
-                <span>An online community for lifelong learners and Personal Knowledge Management (PKM).</span>
+                <span>An online community for lifelong learners and Personal Knowledge Management (PKM)</span>
               </footer>
             </article>
           </a>
 
-
+          <a href="https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary" rel="noopener">
+            <article className="project-card">
+              <div>
+                <Image
+                  alt="Personal Knowledge Management Library"
+                  width={132}
+                  height={132}
+                  src="/static/images/logos/pkm-library.svg"
+                  className="rounded-md bg-white"
+                />
+              </div>
+              <footer>
+                <span>A collection of curated resources about Personal Knowledge Management (PKM)</span>
+              </footer>
+            </article>
+          </a>
 
           <a href="https://stark.nbb.be" rel="noopener">
             <article className="project-card">
@@ -72,7 +87,7 @@ const BooksPage = () => {
                 />
               </div>
               <footer>
-                <span>An Open Source Enterprise front-end framework on top of Angular.</span>
+                <span>An Open Source Enterprise front-end framework on top of Angular</span>
               </footer>
             </article>
           </a>
@@ -89,7 +104,7 @@ const BooksPage = () => {
                 />
               </div>
               <footer>
-                <span>A comprehensive Open Source design guide for RESTful APIs.</span>
+                <span>A comprehensive Open Source design guide for RESTful APIs</span>
               </footer>
             </article>
           </a>
