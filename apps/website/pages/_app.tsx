@@ -27,6 +27,7 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Head>
         {/* Why here? https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://gumroad.com/js/gumroad.js"></script>
       </Head>
       <GlobalStylesComponent />
       {/* Plausible Analytics. Reference: https://plausible.io/docs/nextjs-integration */}
