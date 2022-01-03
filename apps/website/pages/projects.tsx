@@ -9,7 +9,7 @@ import NewsletterSubscribe from "@/components/newsletter-subscribe";
 
 const StyledArticle = tw.article``;
 
-const BooksPage = () => {
+const ProjectsPage = () => {
   return (
     <Layout
       customMeta={{
@@ -118,4 +118,4 @@ const BooksPage = () => {
   );
 };
 
-export default BooksPage;
+export default ProjectsPage;
