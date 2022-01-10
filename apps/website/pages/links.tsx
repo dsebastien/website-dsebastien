@@ -33,12 +33,12 @@ const LinksPage = () => {
                   alt="Rosie.land"
                   width={132}
                   height={132}
-                  src="/static/images/logos/rosie.land.webp"
+                  src="/static/images/links/rosie.land.webp"
                   className="rounded-md bg-white"
                 />
               </div>
               <footer>
-                <span>A treasure trove of community building information curated by Rosie Sherry</span>
+                <span>Rosie.land - A treasure trove of community building information curated by Rosie Sherry</span>
               </footer>
             </article>
           </a>
@@ -50,12 +50,29 @@ const LinksPage = () => {
                   alt="The Indiependent Community"
                   width={132}
                   height={132}
-                  src="/static/images/logos/indiependent.webp"
+                  src="/static/images/links/indiependent.webp"
                   className="rounded-md bg-white"
                 />
               </div>
               <footer>
-                <span>A community for indie founders led by Rosie Sherry</span>
+                <span>The Indiependent Community - A community for indie founders led by Rosie Sherry</span>
+              </footer>
+            </article>
+          </a>
+
+          <a href="https://gumroad.com/a/535516275/VtAjF" rel="noopener">
+            <article className="project-card">
+              <div>
+                <Image
+                  alt="Calmer Notes"
+                  width={132}
+                  height={132}
+                  src="/static/images/links/calmer-notes.jpg"
+                  className="rounded-md bg-white"
+                />
+              </div>
+              <footer>
+                <span>Calmer Notes - A book about Personal Knowledge Management (PKM)</span>
               </footer>
             </article>
           </a>
