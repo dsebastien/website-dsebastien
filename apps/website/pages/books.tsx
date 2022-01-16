@@ -29,8 +29,8 @@ const BooksPage = () => {
               <div>
                 <Image
                   alt="Dev Concepts"
-                  width={320}
-                  height={367}
+                  width={272}
+                  height={312}
                   src="/static/images/books/dev-concepts-full-edition-cover-3d.png"
                   className="rounded-md"
                 />

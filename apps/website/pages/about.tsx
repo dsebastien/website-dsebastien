@@ -54,7 +54,7 @@ const AboutPage = () => {
           </div>
           <p>
             I wear many hats: father, husband, author, software crafter, CTO,
-            solution architect, mentor, coach, entrepreneur, geek, gamer. I'm
+            solution architect, mentor, coach, entrepreneur, indie hacker, bootstrapper, thinker, geek, gamer. I'm
             also the founder of{' '}
             <a href="https://developassion.be" rel="noopener">
               DeveloPassion
@@ -68,7 +68,7 @@ const AboutPage = () => {
             </a>{' '}
             . Since day one (and actually long before that), I have always been passionate about IT, software
             development, IT security, code quality, the open Web, and
-            open-source software. I write about knowledge management, software development, entrepreneurship, bootstrapping, management, leadership, and more.{' '}
+            open-source software. I write about knowledge management, software development, entrepreneurship, indie hacking, bootstrapping, management, leadership, and more.{' '}
             <a
               href="https://newsletter.dsebastien.net"
               rel="noopener"
@@ -76,6 +76,13 @@ const AboutPage = () => {
               Subscribe to my newsletter
             </a>{' '}
             if you're interested in those subjects.
+          </p>
+          <p>
+            I grew up when the world was waking up to the World Wide Web. I
+            started playing with computers when I was 8, and never stopped
+            since. I also have a few other passions like photography, board
+            games, piano, and errr... well too many other things ;-) I could
+            tell you more, but you'll have to ask ;-)
           </p>
           <p>
             Back in 2019, I wrote{' '}
@@ -106,11 +113,9 @@ const AboutPage = () => {
             full-stack developers.
           </p>
           <p>
-            I grew up when the world was waking up to the World Wide Web. I
-            started playing with computers when I was 8, and never stopped
-            since. I also have a few other passions like photography, board
-            games, piano, and errr... well too many other things ;-) I could
-            tell you more, but you'll have to ask ;-)
+            Next to that, I'm working on an app called <a href="https://focusd.app">focusd</a>. It is an infinite outliner with a strong calendar integration. With it, people will be able to take notes, easily introduce time-blocking in their lives (a super useful productivity technique), and focus on what really matters.
+          </p>
+          <p>Finally, I've had a strong strong interest in personal organization, and Knowledge Management in general and Personal Knowledge Management (PKM) in particular. Throughout 2021, I've spent countless hours researching the PKM space in order to prepare for a startup project, but also to improve my writing and note-taking skills. I've regrouped all the information in a Notion space that you can find <a href="https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary">here</a>
           </p>
           <p>
             If you're curious, I wrote a page about the{' '}

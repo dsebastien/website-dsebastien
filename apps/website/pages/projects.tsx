@@ -24,6 +24,40 @@ const ProjectsPage = () => {
 
         <section className="mb-8 text-gray-900 dark:text-gray-400 flex grid grid-cols-1 sm:grid-cols-2 grid-flow-row items-center gap-6">
 
+          <a href="https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary" rel="noopener">
+            <article className="project-card">
+              <div>
+                <Image
+                  alt="Personal Knowledge Management Library"
+                  width={132}
+                  height={132}
+                  src="/static/images/logos/pkm-library.svg"
+                  className="rounded-md"
+                />
+              </div>
+              <footer>
+                <span>A collection of curated resources about Personal Knowledge Management (PKM)</span>
+              </footer>
+            </article>
+          </a>
+
+          <a href="https://focusd.app" rel="noopener">
+            <article className="project-card">
+              <div>
+                <Image
+                  alt="focusd productivity app"
+                  width={132}
+                  height={132}
+                  src="/static/images/projects/focusd-logo-with-title.svg"
+                  className="rounded-md"
+                />
+              </div>
+              <footer>
+                <span>An infinite outliner with a strong calendar integration. Take notes, block time, and focus on what really matters</span>
+              </footer>
+            </article>
+          </a>
+
           <a href="https://dsebastien.net/blog/2021-08-25-software-crafters-community" rel="noopener">
             <article className="project-card">
               <div>
@@ -32,7 +66,7 @@ const ProjectsPage = () => {
                   width={132}
                   height={132}
                   src="/static/images/projects/community.svg"
-                  className="rounded-md bg-white"
+                  className="rounded-md"
                 />
               </div>
               <footer>
@@ -49,28 +83,11 @@ const ProjectsPage = () => {
                   width={132}
                   height={132}
                   src="/static/images/projects/pkm-community-logo.png"
-                  className="rounded-md bg-white"
+                  className="rounded-md"
                 />
               </div>
               <footer>
                 <span>An online community for lifelong learners and Personal Knowledge Management (PKM)</span>
-              </footer>
-            </article>
-          </a>
-
-          <a href="https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary" rel="noopener">
-            <article className="project-card">
-              <div>
-                <Image
-                  alt="Personal Knowledge Management Library"
-                  width={132}
-                  height={132}
-                  src="/static/images/logos/pkm-library.svg"
-                  className="rounded-md bg-white"
-                />
-              </div>
-              <footer>
-                <span>A collection of curated resources about Personal Knowledge Management (PKM)</span>
               </footer>
             </article>
           </a>
@@ -83,7 +100,7 @@ const ProjectsPage = () => {
                   width={345}
                   height={100}
                   src="/static/images/projects/stark.svg"
-                  className="rounded-md bg-white"
+                  className="rounded-md"
                 />
               </div>
               <footer>
@@ -100,7 +117,7 @@ const ProjectsPage = () => {
                   width={345}
                   height={100}
                   src="/static/images/projects/rest.png"
-                  className="rounded-md bg-white"
+                  className="rounded-md"
                 />
               </div>
               <footer>
