@@ -43,7 +43,7 @@ const Footer = () => {
         </li>
         <li>
           <SocialLink
-            url="https://dsebastien.net/news"
+            url="https://newsletter.dsebastien.net"
             name="Newsletter"
             hideText={true}
             ariaLabelText="Discover my newsletter"
