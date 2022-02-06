@@ -68,14 +68,14 @@ const AboutPage = () => {
             </a>{' '}
             . Since day one (and actually long before that), I have always been passionate about IT, software
             development, IT security, code quality, the open Web, and
-            open-source software. I write about knowledge management, software development, entrepreneurship, indie hacking, bootstrapping, management, leadership, and more.{' '}
+            open-source software. I write about knowledge management, software development, entrepreneurship, indie hacking, bootstrapping, management, leadership, personal development, productivity, and more.{' '}
             <a
               href="https://newsletter.dsebastien.net"
               rel="noopener"
             >
               Subscribe to my newsletter
             </a>{' '}
-            if you're interested in those subjects.
+            if you're interested in any of those subjects.
           </p>
           <p>
             I grew up when the world was waking up to the World Wide Web. I
@@ -113,9 +113,12 @@ const AboutPage = () => {
             full-stack developers.
           </p>
           <p>
-            Next to that, I'm working on an app called <a href="https://focusd.app">focusd</a>. It is an infinite outliner with a strong calendar integration. With it, people will be able to take notes, easily introduce time-blocking in their lives (a super useful productivity technique), and focus on what really matters.
+            I have create a [community for Software Crafters](https://dsebastien.net/blog/2021-08-25-software-crafters-community), artisants of code.
           </p>
-          <p>Finally, I've had a strong strong interest in personal organization, and Knowledge Management in general and Personal Knowledge Management (PKM) in particular. Throughout 2021, I've spent countless hours researching the PKM space in order to prepare for a startup project, but also to improve my writing and note-taking skills. I've regrouped all the information in a Notion space that you can find <a href="https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary">here</a>
+          <p>
+            Next to that, I'm working on a Zen productivity app called <a href="https://focusd.app">focusd</a>. It is an infinite outliner with a strong calendar integration. With it, people will be able to take notes, easily introduce time-blocking in their lives (a super useful productivity technique), and focus on what really matters. We have also created a [community to discuss Zen productivity](https://dsebastien.net/blog/2022-01-31-a-community-focused-on-zen-productivity).
+          </p>
+          <p>I also invest a lot of time and energy into Personal Knowledge Management (PKM). Throughout 2021, I've spent countless hours researching the PKM space in order to prepare for a startup project, but also to improve my writing and note-taking skills. I've regrouped all the information in a Notion space that you can find <a href="https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary">here</a>. I'm now working hard to help the PKM community. I've launched the [PKM Journal](https://pkmjournal.com), an online publication dedicated to PKM. I've also created [a community on Slack](https://dsebastien.net/blog/2021-11-12-personal-knowledge-management-community), a [subreddit](https://www.reddit.com/r/PersonalKnowledgeMgmt/) and [PKM Daily](https://twitter.com/PkmDaily), a Twitter account to share regular news about PKM.
           </p>
           <p>
             If you're curious, I wrote a page about the{' '}
@@ -131,6 +134,17 @@ const AboutPage = () => {
                   icon={<FaTwitter className="inline hover:text-blue-500" />}
                   ariaLabelText="Go to my Twitter profile"
                   titleText="Go to my Twitter profile"
+                />
+              </li>
+              <li>
+                <SocialLink
+                  url="https://www.youtube.com/channel/UCz0x-VJhvKwV-PK3E_i5G1w"
+                  name="Youtube"
+                  icon={
+                    <FaYoutube className="inline hover:text-red hover:bg-white" />
+                  }
+                  ariaLabelText="Go to my Youtube channel"
+                  titleText="Go to my Youtube channel"
                 />
               </li>
               <li>
@@ -186,17 +200,6 @@ const AboutPage = () => {
               </li>
               <li>
                 <SocialLink
-                  url="https://www.youtube.com/channel/UCz0x-VJhvKwV-PK3E_i5G1w"
-                  name="Youtube"
-                  icon={
-                    <FaYoutube className="inline hover:text-red hover:bg-white" />
-                  }
-                  ariaLabelText="Go to my Youtube channel"
-                  titleText="Go to my Youtube channel"
-                />
-              </li>
-              <li>
-                <SocialLink
                   url="https://www.twitch.tv/dsebastien"
                   name="Twitch"
                   icon={
@@ -219,6 +222,15 @@ const AboutPage = () => {
               </li>
               <li>
                 <SocialLink
+                  url="https://dsebastien.hashnode.dev"
+                  name="Hashnode"
+                  icon={<FaHashtag className="inline" />}
+                  ariaLabelText="Go to my blog on HashNode"
+                  titleText="Go to my blog on HashNode"
+                />
+              </li>
+              <li>
+                <SocialLink
                   url="https://www.facebook.com/trankill"
                   name="Facebook"
                   icon={
@@ -226,15 +238,6 @@ const AboutPage = () => {
                   }
                   ariaLabelText="Go to my Facebook profile"
                   titleText="Go to my Facebook profile"
-                />
-              </li>
-              <li>
-                <SocialLink
-                  url="https://dsebastien.hashnode.dev"
-                  name="Hashnode"
-                  icon={<FaHashtag className="inline" />}
-                  ariaLabelText="Go to my blog on HashNode"
-                  titleText="Go to my blog on HashNode"
                 />
               </li>
               <li>
