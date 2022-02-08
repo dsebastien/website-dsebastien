@@ -14,7 +14,7 @@ const BlogPostSignature = () => {
     <>
       <h2>About Sébastien</h2>
       <StyledDiv className="mb-2">
-      Hello everyone! I'm Sébastien Dubois. I'm an author, founder, and CTO. I write books and articles about programming (TypeScript, Web, React, Angular, NestJS, etc), personal knowledge management, personal organization, and productivity. I also craft lovely digital products 🚀
+      Hello everyone! I'm Sébastien Dubois. I'm an author, founder, and CTO. I write books and articles about software development & IT, personal knowledge management, personal organization, and productivity. I also craft lovely digital products 🚀
       <br /><br />
       If you've enjoyed this article and want to read more like this, then subscribe to <a href="https://newsletter.dsebastien.net">my newsletter</a> and check out my <a href="https://dev-concepts.dev">Dev Concepts collection of e-books about Software Development</a> 🔥.
       <br /><br />
