@@ -116,8 +116,8 @@ export default class CustomDocument extends Document<{
             name="msapplication-config"
           />
           <script defer data-domain="dsebastien.net"
-                  data-api="https://blue-bar-dsebastien-19fd.developassion..workers.dev/api/v1/event"
-                  src="https://blue-bar-dsebastien-19fd.developassion..workers.dev/content/script.js"></script>
+                  data-api="https://blue-bar-dsebastien-19fd.developassion.workers.dev/api/v1/event"
+                  src="https://blue-bar-dsebastien-19fd.developassion.workers.dev/content/script.js"></script>
         </Head>
         <body>
           <Main />
