@@ -16,7 +16,7 @@ const BlogPostSignature = () => {
       <StyledDiv className="mb-2">
       Hello everyone! I'm Sébastien Dubois. I'm an author, founder, and CTO. I write books and articles about software development & IT, personal knowledge management, personal organization, and productivity. I also craft lovely digital products 🚀
       <br /><br />
-      If you've enjoyed this article and want to read more like this, then subscribe to <a href="https://newsletter.dsebastien.net">my newsletter</a>, check out my <a href="https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary">PKM Library</a> and my <a href="https://dev-concepts.dev">Dev Concepts collection of e-books about Software Development</a> 🔥.
+      If you've enjoyed this article and want to read more like this, then subscribe to <a href="https://newsletter.dsebastien.net">my newsletter</a>, check out my <a href="https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary">PKM Library</a> and my <a href="https://dev-concepts.dev">collection of books about software development</a> 🔥.
       <br /><br />
       You can <a href="https://twitter.com/dSebastien">follow me on Twitter</a> 🐦
       <br /><br />
