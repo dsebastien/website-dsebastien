@@ -91,7 +91,7 @@
     "@nrwl/eslint-plugin-nx": "13.1.3",
     "@nrwl/jest": "13.1.3",
     "@nrwl/next": "13.1.3",
-    "@nrwl/nx-cloud": "^12.5.2",
+    "@nrwl/nx-cloud": "12.5.2",
     "@nrwl/react": "13.1.3",
     "@nrwl/tao": "13.1.3",
     "@nrwl/web": "13.1.3",
