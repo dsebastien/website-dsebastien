@@ -19,10 +19,8 @@ async function generate() {
     });
 
     const BLOG_ROOT_FOLDER_PATH = helpers.root(`apps/website/data/${BLOG_FOLDER_NAME}/`);
-    const NEWSLETTER_ROOT_FOLDER_PATH = helpers.root(`apps/website/data/${NEWSLETTER_FOLDER_NAME}/`);
 
     const blogPosts = await fs.readdir(BLOG_ROOT_FOLDER_PATH);
-    const newsletterEditions = await fs.readdir(NEWSLETTER_ROOT_FOLDER_PATH);
 
     const feedEntries = [];
 
@@ -40,26 +38,6 @@ async function generate() {
           date: frontmatter.data.publishedAt,
           description: frontmatter.data.summary,
           type: 'blog',
-        }
-
-        feedEntries.push(feedEntry);
-      })
-    );
-
-    await Promise.all(
-      newsletterEditions.map(async (name) => {
-        const content = await fs.readFile(`${NEWSLETTER_ROOT_FOLDER_PATH}/${name}`, {
-          encoding: 'utf-8',
-        });
-
-        const frontmatter = matter(content);
-
-        const feedEntry = {
-          title: frontmatter.data.title,
-          url: `${BASE_URL}/${NEWSLETTER_FOLDER_NAME}/` + name.replace(/\.mdx?/, ''),
-          date: frontmatter.data.publishedAt,
-          description: frontmatter.data.summary,
-          type: 'news',
         }
 
         feedEntries.push(feedEntry);

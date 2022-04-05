@@ -115,6 +115,9 @@ export default class CustomDocument extends Document<{
             content="/static/browserconfig.xml"
             name="msapplication-config"
           />
+          <link rel="alternate" type="application/rss+xml"
+                title="RSS Feed for dSebastien.net"
+                href="feed.xml" />
           <script defer data-domain="dsebastien.net"
                   data-api="https://blue-bar-dsebastien-19fd.developassion.workers.dev/api/v1/event"
                   src="https://blue-bar-dsebastien-19fd.developassion.workers.dev/content/script.js"></script>
