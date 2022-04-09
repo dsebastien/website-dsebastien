@@ -99,7 +99,7 @@
     "@types/jest": "27.0.2",
     "@types/mdx-js__react": "1.5.3",
     "@types/node": "14.14.33",
-    "@types/react": "17.0.40",
+    "@types/react": "17.0.44",
     "@types/react-dom": "17.0.13",
     "@types/react-is": "17.0.3",
     "@types/react-mailchimp-subscribe": "2.1.1",
