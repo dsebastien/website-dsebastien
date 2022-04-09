@@ -68,6 +68,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
         {JSON.stringify(articleStructuredData)}
       </Script>
       <StyledArticle className="article-content-wrapper">
+        <TextAd />
         <h1 className="page-heading">{frontMatter.title}</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full mt-2 mb-8">
           <div className="flex items-center">
@@ -89,7 +90,6 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
             {frontMatter.readingTime?.text}
           </p>
         </div>
-        <TextAd />
         <div className="prose dark:prose-dark max-w-none w-full">
           {children}
         </div>

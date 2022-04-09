@@ -12,7 +12,7 @@ type TextAdeProps = PropsWithChildren<{
 const TextAd = (_props: TextAdeProps) => {
   return (
     <StyledDiv
-      className=""
+      className="mb-2"
       data-ea-publisher="dsebastiennet" data-ea-type="text"
     >
     </StyledDiv>
