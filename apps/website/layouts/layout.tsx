@@ -1,6 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import Script from 'next/script';
 import { useRouter } from 'next/router';
 import tw from 'twin.macro';
 import ThemeSwitcher from '@/components/theme-switcher';
@@ -139,9 +140,9 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
 
   return (
     <>
-      <script type="application/ld+json">
+      <Script type="application/ld+json">
         {JSON.stringify(siteMicrodata)}
-      </script>
+      </Script>
       <StyledPage className="full-page flex flex-col flex-grow dark:prose-dark">
         <Head>
           <meta charSet="utf-8" />

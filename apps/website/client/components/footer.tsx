@@ -8,7 +8,7 @@ const StyledList = tw.ul``;
 const Footer = () => {
   return (
     <>
-      <StyledList tw="flex justify-center space-x-2">
+      <StyledList className="flex justify-center space-x-2">
         <li>
           <SocialLink
             url="https://twitter.com/dsebastien"

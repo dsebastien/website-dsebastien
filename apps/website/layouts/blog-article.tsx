@@ -1,11 +1,13 @@
 import React, { PropsWithChildren } from 'react';
 import Image from 'next/image';
+import Script from 'next/script';
 import { parseISO, format } from 'date-fns';
 
 import { FrontMatter } from '@/lib/front-matter.intf';
 import Layout from './layout';
 import tw from 'twin.macro';
 import {SITE_AUTHOR} from "../constants";
+import TextAd from "@/components/text-ad";
 
 const StyledArticle = tw.article``;
 
@@ -62,9 +64,9 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
         canonicalUrl: frontMatter.canonicalUrl,
       }}
     >
-      <script type="application/ld+json">
+      <Script type="application/ld+json">
         {JSON.stringify(articleStructuredData)}
-      </script>
+      </Script>
       <StyledArticle className="article-content-wrapper">
         <h1 className="page-heading">{frontMatter.title}</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full mt-2 mb-8">
@@ -87,6 +89,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
             {frontMatter.readingTime?.text}
           </p>
         </div>
+        <TextAd />
         <div className="prose dark:prose-dark max-w-none w-full">
           {children}
         </div>

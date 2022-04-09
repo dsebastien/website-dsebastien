@@ -61,7 +61,7 @@ module.exports = withNx(
     sassOptions: {
       includePaths: [helpers.root('apps/website/styles')],
     },
-    experimental: {
+    compiler: {
       /**
        * Enables the styled-components SWC transform
        */

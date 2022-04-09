@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react';
 import Image from 'next/image';
+import Script from 'next/script';
 import { parseISO, format } from 'date-fns';
 
 import { FrontMatter } from '@/lib/front-matter.intf';
@@ -62,9 +63,9 @@ const NewsArticleLayout = ({ children, frontMatter }: NewsLayoutProps) => {
         canonicalUrl: frontMatter.canonicalUrl,
       }}
     >
-      <script type="application/ld+json">
+      <Script type="application/ld+json">
         {JSON.stringify(articleStructuredData)}
-      </script>
+      </Script>
       <StyledArticle className="article-content-wrapper">
         <h1 className="page-heading">{frontMatter.title}</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full mt-2 mb-8">
