@@ -113,7 +113,7 @@
     "node-polyfill-webpack-plugin": "1.1.4",
     "browserslist": "4.16.3",
     "caniuse-lite": "1.0.30001197",
-    "concurrently": "6.0.0",
+    "concurrently": "6.5.1",
     "cypress": "6.3.0",
     "dotenv": "10.0.0",
     "dotenv-cli": "4.0.0",
