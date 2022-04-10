@@ -68,7 +68,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
         {JSON.stringify(articleStructuredData)}
       </Script>
       <StyledArticle className="article-content-wrapper">
-        <TextAd />
+        <TextAd keywords={frontMatter.keywords} />
         <h1 className="page-heading">{frontMatter.title}</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full mt-2 mb-8">
           <div className="flex items-center">
