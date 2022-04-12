@@ -109,6 +109,23 @@ const ProjectsPage = () => {
             </article>
           </a>
 
+          <a href="https://developassion.gumroad.com/l/Obsidian-Starter-Kit" rel="noopener">
+            <article className="project-card">
+              <div>
+                <Image
+                  alt="Obsidian Starter Kit"
+                  width={132}
+                  height={132}
+                  src="/static/images/logos/obsidian-starter-kit.svg"
+                  className="rounded-md"
+                />
+              </div>
+              <footer>
+                <span>Obsidian Starter Kit: A solid starting point for your note-making journey</span>
+              </footer>
+            </article>
+          </a>
+
           <a href="https://personal-knowledge-management.com" rel="noopener">
             <article className="project-card">
               <div>
