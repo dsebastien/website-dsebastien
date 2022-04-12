@@ -27,7 +27,6 @@ const App = ({ Component, pageProps }: AppProps) => {
       <Head>
         {/* Why here? https://nextjs.org/docs/messages/no-document-viewport-meta */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Script src="https://gumroad.com/js/gumroad.js"></Script>
       </Head>
       <GlobalStylesComponent />
       {/* Use the ThemeProvider of next-themes, combined with Tailwind: https://github.com/pacocoursey/next-themes#with-tailwind */}
