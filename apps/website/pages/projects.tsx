@@ -116,7 +116,7 @@ const ProjectsPage = () => {
                   alt="Obsidian Starter Kit"
                   width={132}
                   height={132}
-                  src="/static/images/logos/obsidian-starter-kit.svg"
+                  src="/static/images/projects/obsidian-starter-kit.svg"
                   className="rounded-md"
                 />
               </div>
