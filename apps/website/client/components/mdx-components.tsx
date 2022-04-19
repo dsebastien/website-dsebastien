@@ -19,6 +19,7 @@ import BlogPostCenteredContent from './blog-post-centered-content';
 import BlogPostTip from './blog-post-tip';
 import BlogPostQuote from "./blog-post-quote";
 import BlogPostNote from "@/components/blog-post-note";
+import PKMSignature from "@/components/pkm-signature";
 
 type CustomLinkProps = { href: string } & any;
 
@@ -54,6 +55,7 @@ const MDXComponents = {
   BlogPostTip,
   BlogPostWarning,
   BlogPostCenteredContent,
+  PKMSignature,
 };
 
 export default MDXComponents;
