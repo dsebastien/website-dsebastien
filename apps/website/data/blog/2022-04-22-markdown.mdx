@@ -1,0 +1,193 @@
+---
+title: "Markdown introduction"
+summary: "Markdown is everywhere. Learn what it is, why it is useful as well as its pros and cons."
+publishedAt: '2022-04-22'
+image: '/static/images/logos/markdown.svg'
+slug: 'markdown'
+categories: [pkm]
+keywords: [markdown, introduction to markdown, markup language, pkm, personal knowledge management, note-taking, markup languages]
+published: true
+---
+
+In this article, I will introduce the Markdown markup language. This article is aimed mainly at non-technical users, but the information it provides is also relevant for IT professionals.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Markdown mark`}
+    src={`/static/images/logos/markdown.svg`}
+    width={208}
+    height={128}
+    priority
+  />
+</BlogPostCenteredContent>
+
+This content is part of my [Obsidian Starter Kit](https://developassion.gumroad.com/l/obsidian-starter-kit)
+
+## Introduction
+Markdown is really useful to know about. It is used and supported by many other tools and platforms (e.g., note-taking tools, wikis, GitHub, Gitlab, Microsoft Teams, Atlassian Confluence, IDEs, and many more).
+
+My goal here is not to teach you the Markdown syntax or get into the nitty-gritty details. Instead, my goal is to give you an idea about what Markdown is, why it’s useful to know about it, its pros and cons, and where you can go to learn more!
+
+## What is Markdown
+Markdown is a pure-text _markup language_ created back in 2004 by [John Gruber](https://en.wikipedia.org/wiki/John_Gruber) (Daring Fireball) and [Aaron Swartz](https://en.wikipedia.org/wiki/Aaron_Swartz).
+
+A markup language defines a set of rules to define, format, and render textual data. This might not make much sense to you if you’re not in IT, but that’s all right.
+
+Markdown dictates how to represent certain things such as bold text, text in italics, emphasis, headings, lists, quotes, images, code, etc. Its syntax defines how text/content should look.
+
+Here are a few examples (there’s more to know!). For each example, I start by showing you the Markdown syntax, and below it how the result looks when rendered by a capable editor (or when transformed into another format):
+
+- `# My level 1 heading`
+
+  # My level 1 heading
+
+- `## My level 2 heading`
+
+  ## My level 2 heading
+
+- `### My level 3 heading`
+
+  ### My level 3 heading
+
+- `**some text in bold**`
+
+  **some text in bold**
+
+- `_some text in italics_`
+
+  _some text in italics_
+
+- `_**some text in bold and italics**_`
+
+  _**some text in bold and italics**_
+
+- `> A quote`
+
+  > A quote
+
+- Some code: `const foo = "bar";`
+
+  `const foo = "bar";`
+
+- `[A link](https://dsebastien.net)`
+
+  [A link](https://dsebastien.net)
+
+- A list
+
+  `- A`
+
+  `- B`
+
+  `- C`
+
+  - A
+  - B
+  - C
+
+As you can see, Markdown is a text-based format, so you actually don’t need any specific tool to write Markdown.
+
+Markdown files use the “.md” extension. Note that the name “Markdown” is actually a fun reference to the term “Markup”.
+
+You can find more examples [here](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax). Also check out the references at the end.
+
+## What are the benefits of using Markdown?
+Markdown is very popular among technical writers. But not only. Let me tell you why.
+
+Markdown has various use cases: write notes, create documents, craft blog articles, write books, prepare presentations, emails, etc. It is supported by many tools and platforms. This means that learning this syntax will prove useful in different situations.
+
+Markdown defines a common set of rules that works across different text editors. It might not seem like much, but without something like this each editor would have to invent its own way of expressing things like bold text, text in italics, headings, lists, etc. And this would be problematic because your data would not be _portable_. Data portability corresponds to the ability for information to be easily migrated and understood by different tools, instead of being stuck with one specific vendor. European citizens have a right to data portability, as per [GDPR article 20](https://gdpr-info.eu/art-20-gdpr/). So, first and foremost, Markdown provides you with a good level of confidence that your content will be portable. Of course, it really depends on what the editor you use supports. As we will see, there are different variants of Markdown, and certain text editors add vendor-specific features that are not necessarily portable, which is something to be aware of.
+
+In addition to data portability, Markdown is also portable. You can write on one device and continue on any another, independently of its operating system.
+
+Another benefit of Markdown lies in its simplicity and ease of use. It offers the simplicity and benefits of using pure text files, but with the power of word processors. You can quickly learn the basic syntax and create _beautiful_ documents easily. The user experience of writing documents using Markdown is very different from that of using a word processor like Microsoft Word, Open Office, or Google Docs. If you’ve used those long enough, you know how bad it feels when the formatting breaks, and you spend a ton of time trying to fix it. It doesn’t happen with Markdown because the formatting is part of the text, making it much more obvious when and where something is wrong. It’s only my personal opinion, but there’s a lot more fluidity in the writing experience when using Markdown. As a blogger and author who has tried many tools and approaches over the years, I would choose Markdown or [AsciiDoc](https://asciidoc.org/) (another popular markup language) over old-school documents any day of the week.
+
+Markdown (and its most popular flavors) are supported by a vast number of tools. This means that you have many options to edit Markdown content, including many free and Open Source ones. I’ve listed many of those in the [PKM Library](https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary). But even without that, given that it’s a plain-text format, you can actually edit it with any text editor.
+
+Contrary to _What You See Is What You Get (WYSIWYG)_ visual editors, Markdown lets us focus on the activity that _really_ matters: writing. If you have to take your mouse around to highlight some text and find an icon on a ribbon to make that text bold, then you’re wasting time and energy without realizing it. Once you get used to the Markdown syntax, your mind will not even need to see the rendered version to know what it will look like. This is because the syntax is really lightweight and easy to interpret. As a matter of fact, Markdown was designed to look just as good when looking at the source or the rendered result.
+
+One more benefit of Markdown is that it can be easily transformed into different file formats (e.g., PDF, HTML, DOCX, etc) using tools such as [Pandoc](https://pandoc.org). It’s also possible to convert document file formats to Markdown.
+
+Since Markdown is pure text, it is also easy to backup. Create copies of the files and you are done. You can even go further and _version_ your content using Source Control Management (SCM) tools such as [Git](https://git-scm.com/). It’s a bit more advanced but worth looking into. It also makes it very easy to synchronize file format.
+
+In conclusion, using Markdown is a great idea for _future-proofing_ your content.
+
+## Markdown flavors
+Note that Markdown is not a standard. There are different variants, often called “flavors”, which are not necessarily compatible with each other.
+
+When Markdown was created, there was no standardization effort at all. Markdown was an [informal specification](https://daringfireball.net/projects/markdown/syntax). As it gained popularity, many flavors started appearing, because different groups of people needed different features (e.g., tables, footnotes, etc).
+
+Around 2012, [CommonMark](https://commonmark.org/) was created. CommonMark is a [formal and unambiguous specification](https://spec.commonmark.org).
+
+This is important to mention because of portability. Ideally, you want the content you create using one text editor to be recognized and rendered the same way by other editors. This is especially useful when you migrate a lot of content from one tool to another. So CommonMark is quite important for Markdown.
+
+A well-established variant of Markdown is [GitHub Flavored Markdown (GFM)](https://github.github.com/gfm/), which is a superset of CommonMark introduced by GitHub, which is a very popular Website for software developers around the world. The GitHub flavored Markdown flavor introduces support for additional elements including tables, task lists, strike-through text, and code syntax highlighting.
+
+Here are a few other noteworthy flavors:
+
+- Reddit: https://www.reddit.com/wiki/markdown
+- StackOverflow: https://stackoverflow.com/editing-help
+- Discord: https://support.discord.com/hc/en-us/articles/210298617
+- GitLab Flavored Markdown (GLFM): https://docs.gitlab.com/ee/user/markdown.html
+- Doxygen: https://riptutorial.com/markdown/example/6811/doxygen-markdown
+- Markdown Extra: https://michelf.ca/specs/markdown-extra
+- MultiMarkdown: https://fletcherpenney.net/multimarkdown
+- Microsoft Teams: https://support.microsoft.com/en-us/office/use-markdown-formatting-in-teams-4d10bd65-55e2-4b2d-a1f3-2bebdcd2c772
+- etc
+
+You can find a comparison here: [](https://gist.github.com/vimtaai/99f8c89e7d3d02a362117284684baa0f)[https://gist.github.com/vimtaai/99f8c89e7d3d02a362117284684baa0f](https://gist.github.com/vimtaai/99f8c89e7d3d02a362117284684baa0f)
+
+## What are the limitations of Markdown?
+While Markdown is awesome and while I’m a Markdown “believer” and advocate, it’s important to be aware that it isn’t perfect. Here are some of its limitations/issues:
+
+- You can’t easily generate a table of contents for a Markdown document. Also, it isn’t ideal for long-form content
+- While CommonMark and GitHub Flavored Markdown (see the previous section) provide good enough text formatting options, Markdown isn’t really extensible. If an editor incorporates additional Markdown features, those will be “proprietary” ones. Unless other editors bring support for those, you will lose portability
+- Markdown has many flavors, and while many do support some parts of Markdown, there’s no guarantee that different Markdown editors will always interpret and render your content in the same way. That’s why it’s important to ensure which “flavor” of Markdown your editor supports (see the previous section)
+- Markdown combines the content and the formatting. You might or might not like it. I appreciate it because it helps me focus on the text, its meaning, and emphasis
+- Markdown doesn't support defining semantic meaning. So, you can’t explain that a given paragraph is information, a warning, a problem, a concept, ... It focuses solely on text and formatting
+- Markdown isn’t the most powerful tool for integrating images into your content. You can add images and control the size, but that’s about it. For instance, putting an image on the right side of a text paragraph or having text wrap an image is not possible with Markdown
+
+I’ll leave you with these two pieces of advice:
+
+- Whenever you pick a note-taking tool, check if it supports Markdown. If it does, make sure that it uses a well-known flavor like CommonMark or GitHub Flavored Markdown
+- Be careful about proprietary Markdown extensions. They may feel nice but will almost always hurt data portability, making it harder for you to migrate your content elsewhere
+
+## Conclusion
+In this article, I've introduced the concept of a markup language, Markdown and Markdown flavors. I've also explained the benefits and limitations as Markdown and provided you with a number of quality resources to further explore.
+
+Markdown is here to stay, and it's a great tool to master. Learning Markdown will make you more productive with many tools and platforms.
+
+That's it for today! ✨
+
+## References
+
+- Markdown informal specification: https://daringfireball.net/projects/markdown/syntax
+- CommonMark
+
+  - Official Website: https://commonmark.org
+  - Formal specification: https://spec.commonmark.org
+-   GitHub flavored Markdown
+- Specification: https://github.github.com/gfm
+- Basic syntax: https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax
+- Internet standard discussing Markdown: https://datatracker.ietf.org/doc/html/rfc7764
+- Comparison of Markdown flavors: https://gist.github.com/vimtaai/99f8c89e7d3d02a362117284684baa0f
+- Data portability
+
+  - Data portability @ Wikipedia: https://en.wikipedia.org/wiki/Data_portability
+  - GDPR article 20: https://gdpr-info.eu/art-20-gdpr
+- Tutorials
+
+  - CommonMark: https://commonmark.org/help/tutorial
+  - https://www.markdownguide.org
+  - https://www.markdowntutorial.com
+- Cheatsheets
+
+  -  https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet
+  -  https://www.markdownguide.org/cheat-sheet
+
+    -  Markdown version: https://www.markdownguide.org/assets/markdown-cheat-sheet.md
+  - https://towardsdatascience.com/the-ultimate-markdown-cheat-sheet-3d3976b31a0
+  - https://www.freecodecamp.org/news/markdown-cheat-sheet
+  - https://devhints.io/markdown
+
+<PKMSignature />
