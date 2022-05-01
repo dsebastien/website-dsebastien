@@ -118,7 +118,7 @@
     "dotenv-cli": "4.0.0",
     "eslint": "7.18.0",
     "eslint-config-prettier": "7.2.0",
-    "eslint-plugin-cypress": "2.11.2",
+    "eslint-plugin-cypress": "2.12.1",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jsx-a11y": "6.4.1",
     "eslint-plugin-react": "7.29.4",
