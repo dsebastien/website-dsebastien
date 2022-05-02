@@ -124,7 +124,6 @@ export default class CustomDocument extends Document<{
                   src="https://blue-bar-dsebastien-19fd.developassion.workers.dev/content/script.js"></Script>
 
           <script src="https://gumroad.com/js/gumroad.js"></script>
-          <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
         </Head>
         <body>
           <Main />

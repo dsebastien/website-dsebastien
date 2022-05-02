@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react';
 import Image from 'next/image';
 import Script from 'next/script';
+import Head from 'next/head';
 import { parseISO, format } from 'date-fns';
 
 import { FrontMatter } from '@/lib/front-matter.intf';
@@ -64,6 +65,9 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
         canonicalUrl: frontMatter.canonicalUrl,
       }}
     >
+      <Head>
+        <script async src="https://media.ethicalads.io/media/client/ethicalads.min.js"></script>
+      </Head>
       <Script type="application/ld+json">
         {JSON.stringify(articleStructuredData)}
       </Script>
