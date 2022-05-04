@@ -24,12 +24,7 @@ export default class CustomDocument extends Document<{
 
       return {
         ...initialProps,
-        styles: (
-          <>
-            {initialProps.styles}
-            {sheet.getStyleElement()}
-          </>
-        ),
+        styles: [...initialProps.styles? initialProps.styles: [], sheet.getStyleElement()],
       };
     } finally {
       sheet.seal();
@@ -111,6 +106,13 @@ export default class CustomDocument extends Document<{
             href="/static/icons/safari-pinned-tab.svg"
             rel="mask-icon"
           />
+          <script defer data-domain="dsebastien.net"
+                  data-api="https://blue-bar-dsebastien-19fd.developassion.workers.dev/api/v1/event"
+                  src="https://blue-bar-dsebastien-19fd.developassion.workers.dev/content/script.js"
+          ></script>
+
+          <script defer src="https://gumroad.com/js/gumroad.js"></script>
+
           <meta
             content="/static/browserconfig.xml"
             name="msapplication-config"
@@ -118,11 +120,6 @@ export default class CustomDocument extends Document<{
           <link rel="alternate" type="application/rss+xml"
                 title="RSS Feed for dSebastien.net"
                 href="feed.xml" />
-          <script defer data-domain="dsebastien.net"
-                  data-api="https://blue-bar-dsebastien-19fd.developassion.workers.dev/api/v1/event"
-                  src="https://blue-bar-dsebastien-19fd.developassion.workers.dev/content/script.js"></script>
-
-          <script defer src="https://gumroad.com/js/gumroad.js"></script>
         </Head>
         <body>
           <Main />
