@@ -1,5 +1,4 @@
 import React, { ReactElement } from 'react';
-import Script from "next/script";
 import Document, { Html, Head, Main, NextScript, DocumentContext } from 'next/document';
 import { ServerStyleSheet } from 'styled-components';
 
@@ -119,9 +118,9 @@ export default class CustomDocument extends Document<{
           <link rel="alternate" type="application/rss+xml"
                 title="RSS Feed for dSebastien.net"
                 href="feed.xml" />
-          <Script strategy="lazyOnload" data-domain="dsebastien.net"
+          <script defer data-domain="dsebastien.net"
                   data-api="https://blue-bar-dsebastien-19fd.developassion.workers.dev/api/v1/event"
-                  src="https://blue-bar-dsebastien-19fd.developassion.workers.dev/content/script.js"></Script>
+                  src="https://blue-bar-dsebastien-19fd.developassion.workers.dev/content/script.js"></script>
 
           <script src="https://gumroad.com/js/gumroad.js"></script>
         </Head>
