@@ -1,14 +1,11 @@
 import React from 'react';
 import { FaGithub, FaLinkedin, FaTwitter, FaNewspaper } from 'react-icons/fa';
 import SocialLink from './social-link';
-import tw from 'twin.macro';
-
-const StyledList = tw.ul``;
 
 const Footer = () => {
   return (
     <>
-      <StyledList className="flex justify-center space-x-2">
+      <ul className="flex justify-center space-x-2">
         <li>
           <SocialLink
             url="https://twitter.com/dsebastien"
@@ -51,7 +48,7 @@ const Footer = () => {
             icon={<FaNewspaper className="inline dark:hover:text-white hover:text-blue-400" />}
           />
         </li>
-      </StyledList>
+      </ul>
       <p className="mt-6 text-center text-sm mb-12">
         Copyright © Dubois Sébastien
       </p>

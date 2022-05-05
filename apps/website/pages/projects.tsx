@@ -3,11 +3,8 @@ import Layout from '@/layouts/layout';
 import {
   FaBook,
 } from 'react-icons/fa';
-import tw from 'twin.macro';
 import Image from 'next/image';
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
-
-const StyledArticle = tw.article``;
 
 const ProjectsPage = () => {
   return (
@@ -17,29 +14,13 @@ const ProjectsPage = () => {
         description: 'My projects',
       }}
     >
-      <StyledArticle className="article-content-wrapper">
+      <article className="article-content-wrapper">
         <h1 className="page-heading">
-          My projects <FaBook className="inline" />
+          My projects <FaBook className="inline"/>
         </h1>
 
-        <section className="mb-8 text-gray-900 dark:text-gray-400 flex grid grid-cols-1 sm:grid-cols-2 grid-flow-row items-center gap-6">
-
-        <a href="https://focusd.app" rel="noopener">
-            <article className="project-card">
-              <div>
-                <Image
-                  alt="focusd productivity app"
-                  width={132}
-                  height={132}
-                  src="/static/images/projects/focusd-logo-with-title.svg"
-                  className="rounded-md"
-                />
-              </div>
-              <footer>
-                <span>An infinite outliner with a strong calendar integration. Take notes, block time, and focus on what really matters</span>
-              </footer>
-            </article>
-          </a>
+        <section
+          className="mb-8 text-gray-900 dark:text-gray-400 flex grid grid-cols-1 sm:grid-cols-2 grid-flow-row items-center gap-6">
 
           <a href="https://developassion.gumroad.com/l/PersonalKnowledgeManagementLibrary" rel="noopener">
             <article className="project-card">
@@ -54,6 +35,40 @@ const ProjectsPage = () => {
               </div>
               <footer>
                 <span>PKM Library: A collection of curated resources about Personal Knowledge Management (PKM)</span>
+              </footer>
+            </article>
+          </a>
+
+          <a href="https://developassion.gumroad.com/l/Obsidian-Starter-Kit" rel="noopener">
+            <article className="project-card">
+              <div>
+                <Image
+                  alt="Obsidian Starter Kit"
+                  width={132}
+                  height={132}
+                  src="/static/images/projects/obsidian-starter-kit.svg"
+                  className="rounded-md"
+                />
+              </div>
+              <footer>
+                <span>Obsidian Starter Kit: A solid starting point for your note-making journey</span>
+              </footer>
+            </article>
+          </a>
+
+          <a href="https://focusd.app" rel="noopener">
+            <article className="project-card">
+              <div>
+                <Image
+                  alt="focusd productivity app"
+                  width={132}
+                  height={132}
+                  src="/static/images/projects/focusd-logo-with-title.svg"
+                  className="rounded-md"
+                />
+              </div>
+              <footer>
+                <span>An infinite outliner with a strong calendar integration. Take notes, block time, and focus on what really matters</span>
               </footer>
             </article>
           </a>
@@ -109,23 +124,6 @@ const ProjectsPage = () => {
             </article>
           </a>
 
-          <a href="https://developassion.gumroad.com/l/Obsidian-Starter-Kit" rel="noopener">
-            <article className="project-card">
-              <div>
-                <Image
-                  alt="Obsidian Starter Kit"
-                  width={132}
-                  height={132}
-                  src="/static/images/projects/obsidian-starter-kit.svg"
-                  className="rounded-md"
-                />
-              </div>
-              <footer>
-                <span>Obsidian Starter Kit: A solid starting point for your note-making journey</span>
-              </footer>
-            </article>
-          </a>
-
           <a href="https://personal-knowledge-management.com" rel="noopener">
             <article className="project-card">
               <div>
@@ -163,7 +161,7 @@ const ProjectsPage = () => {
           <a href="https://stark.nbb.be" rel="noopener">
             <article className="project-card">
               <div>
-              <div className="h-6"></div>
+                <div className="h-6"></div>
                 <Image
                   alt="Stark Framework"
                   width={345}
@@ -182,13 +180,13 @@ const ProjectsPage = () => {
           <a href="https://github.com/NationalBankBelgium/REST-API-Design-Guide/wiki" rel="noopener">
             <article className="project-card">
               <div>
-                  <Image
-                    alt="REST API Design Guide"
-                    width={345}
-                    height={100}
-                    src="/static/images/projects/rest.png"
-                    className="rounded-md"
-                  />
+                <Image
+                  alt="REST API Design Guide"
+                  width={345}
+                  height={100}
+                  src="/static/images/projects/rest.png"
+                  className="rounded-md"
+                />
               </div>
               <footer>
                 <span>A comprehensive Open Source design guide for RESTful APIs</span>
@@ -198,9 +196,9 @@ const ProjectsPage = () => {
 
         </section>
         <section>
-          <NewsletterSubscribe />
+          <NewsletterSubscribe/>
         </section>
-      </StyledArticle>
+      </article>
     </Layout>
   );
 };

@@ -1,5 +1,4 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const helpers = require('../../helpers');
 
 console.debug(`> Building on NODE_ENV="${process.env.NODE_ENV}"`);
 
@@ -27,7 +26,7 @@ module.exports = withNx(
       // Uncomment to display the Webpack config
       //console.log(config);
 
-      if (isServer) {
+      if (!isServer) {
         require('./generate-sitemap');
         require('./generate-rss');
       }
@@ -55,17 +54,8 @@ module.exports = withNx(
      * Disable powered by header
      */
     poweredByHeader: false,
-    /**
-     * Configure Sass
-     */
-    sassOptions: {
-      includePaths: [helpers.root('apps/website/styles')],
-    },
-    compiler: {
-      /**
-       * Enables the styled-components SWC transform
-       */
-      styledComponents: true,
-    },
+    trailingSlash: false,
+    reactStrictMode: true,
+    swcMinify: true,
   }
 );

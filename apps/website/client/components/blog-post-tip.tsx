@@ -1,18 +1,15 @@
 import React, { PropsWithChildren } from 'react';
-import tw from 'twin.macro';
 import { FcIdea } from 'react-icons/fc';
 
-const StyledDiv = tw.div``;
-
-type StyledDivProps = PropsWithChildren<{}>;
+type BlogPostTipProps = PropsWithChildren<{}>;
 
 /**
  * Tip embedded in blog posts
  * @constructor
  */
-const BlogPostTip = ({ children }: StyledDivProps) => {
+const BlogPostTip = ({ children }: BlogPostTipProps) => {
   return (
-    <StyledDiv
+    <div
       className="bg-green-100 border-l-8 border-green-500 text-green-800 p-4 rounded-md"
       role="comment"
     >
@@ -21,7 +18,7 @@ const BlogPostTip = ({ children }: StyledDivProps) => {
         <span className="ml-2">TIP</span>
       </div>
       <div>{children}</div>
-    </StyledDiv>
+    </div>
   );
 };
 

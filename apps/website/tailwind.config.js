@@ -1,41 +1,14 @@
 'use strict';
 
+const { join } = require('path');
+const { createGlobPatternsForDependencies } = require('@nrwl/next/tailwind');
 const { spacing } = require('tailwindcss/defaultTheme');
-const mdx = require('@mdx-js/mdx');
 
 module.exports = {
-  mode: 'jit',
-  purge: {
-    content: [
-      './apps/**/*.{html,mdx,tsx,ts,jsx,js,scss}',
-      './libs/**/*.{html,mdx,tsx,ts,jsx,js,scss}',
-    ],
-    // PurgeCSS options
-    // Reference: https://purgecss.com/
-    options: {
-      rejected: true,
-      printRejected: true,
-      safelist: ['html', 'body', 'dark'],
-      extractors: [
-        {
-          extensions: ['mdx'],
-          extractor: (content) => {
-            content = mdx.sync(content);
-
-            // Capture as liberally as possible, including things like `h-(screen-1.5)`
-            const broadMatches = content.match(/[^<>"'`\s]*[^<>"'`\s:]/g) || [];
-
-            // Capture classes within other delimiters like .block(class="w-1/2") in Pug
-            const innerMatches =
-              content.match(/[^<>"'`\s.(){}[\]#=%]*[^<>"'`\s.(){}[\]#=%:]/g) ||
-              [];
-
-            return broadMatches.concat(innerMatches);
-          },
-        },
-      ],
-    },
-  },
+  content: [
+    join(__dirname,'**/*.{js,ts,jsx,tsx,css,html,mdx,scss}'),
+    ...createGlobPatternsForDependencies(__dirname),
+  ],
   /**
    * Enable dark mode
    */
@@ -276,11 +249,6 @@ module.exports = {
       animation: {
         wave: 'wave 1.5s infinite'
       },
-    },
-  },
-  variants: {
-    extend: {
-      typography: ['dark'],
     },
   },
   plugins: [require('@tailwindcss/typography')],

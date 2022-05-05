@@ -15,11 +15,10 @@
   CSS
   TypeScript / EcmaScript
   React
-  React Styled Components
   Next.js
   next-themes
   Tailwind
-  Tailwind Custom Forms
+  Tailwind Typography
   MDX
   CSP
   Webpack

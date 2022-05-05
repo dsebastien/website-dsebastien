@@ -3,15 +3,12 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Script from 'next/script';
 import { useRouter } from 'next/router';
-import tw from 'twin.macro';
 import ThemeSwitcher from '@/components/theme-switcher';
 import { FaArrowUp, FaGithub } from 'react-icons/fa';
 import Footer from '@/components/footer';
 import ScrollToTop from '@/components/scroll-to-top';
 import {SITE_AUTHOR, SITE_DESCRIPTION, IS_BROWSER} from '../constants';
 import {propertiesOf} from "../utils/type.utils";
-
-const StyledPage = tw.div``;
 
 /**
  * Page metadata that pages can customize
@@ -143,7 +140,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
       <Script type="application/ld+json">
         {JSON.stringify(siteMicrodata)}
       </Script>
-      <StyledPage className="full-page flex flex-col flex-grow dark:prose-dark">
+      <div className="full-page flex flex-col flex-grow dark:prose-dark">
         <Head>
           <meta charSet="utf-8" />
           <title>{meta.title}</title>
@@ -286,7 +283,7 @@ const Layout = ({ children, customMeta }: LayoutProps) => {
         <footer className="px-4 mb-4 sm:px-8">
           <Footer />
         </footer>
-      </StyledPage>
+      </div>
     </>
   );
 };

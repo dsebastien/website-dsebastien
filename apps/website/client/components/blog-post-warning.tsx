@@ -1,18 +1,15 @@
 import React, { PropsWithChildren } from 'react';
-import tw from 'twin.macro';
 import { RiErrorWarningLine } from 'react-icons/ri';
 
-const StyledDiv = tw.div``;
-
-type StyledDivProps = PropsWithChildren<{}>;
+type BlogPostWarningProps = PropsWithChildren<{}>;
 
 /**
  * Warning embedded in blog posts
  * @constructor
  */
-const BlogPostWarning = ({ children }: StyledDivProps) => {
+const BlogPostWarning = ({ children }: BlogPostWarningProps) => {
   return (
-    <StyledDiv
+    <div
       className="bg-orange-100 border-l-8 border-orange-500 text-orange-800 p-4 rounded-md"
       role="alert"
     >
@@ -21,7 +18,7 @@ const BlogPostWarning = ({ children }: StyledDivProps) => {
         <span className="ml-2">WARNING</span>
       </div>
       <div>{children}</div>
-    </StyledDiv>
+    </div>
   );
 };
 

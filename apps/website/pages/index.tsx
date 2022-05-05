@@ -1,16 +1,13 @@
 import React from 'react';
 import Layout from '@/layouts/layout';
 import Link from 'next/link';
-import tw from "twin.macro";
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
-
-const StyledDiv = tw.div``;
 
 const IndexPage = () => {
   return (
     <Layout>
-      <StyledDiv className="article-content-wrapper">
-        <h1 className="page-heading">Hello! <span className="animate-wave ">👋</span></h1>
+      <div className="article-content-wrapper">
+        <h1 className="page-heading">Hello! <span className="animate-wave">👋</span></h1>
         <p className="text-gray-900 dark:text-gray-400 text-5xl	tracking-wide leading-normal">
           I'm <span className="font-bold text-gray-900 dark:text-gray-100">Sébastien Dubois</span>, <span className="font-bold text-gray-900 dark:text-gray-100">Author</span> ✍, <span className="font-bold text-gray-900 dark:text-gray-100">Founder</span> 🚀, <span className="font-bold text-gray-900 dark:text-gray-100">CTO</span> 🔨 & <span className="font-bold text-gray-900 dark:text-gray-100">Indie Hacker</span> ✨.
         </p>
@@ -19,7 +16,7 @@ const IndexPage = () => {
         </p>
 
         <NewsletterSubscribe />
-      </StyledDiv>
+      </div>
     </Layout>
   );
 };

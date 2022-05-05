@@ -5,13 +5,10 @@ import BlogPostSummary from '@/components/blog-post-summary';
 import Layout from '@/layouts/layout';
 import {FaDev, FaHashtag, FaMedium} from 'react-icons/fa';
 import SocialLink from '@/components/social-link';
-import tw from 'twin.macro';
 import {WebsiteDataType} from "@/lib/website-data-types.intf";
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
 import {SITE_DESCRIPTION} from "../constants";
 import {GetStaticProps} from "next";
-
-const StyledArticle = tw.article``;
 
 interface BlogProps {
   entries: FrontMatter[];
@@ -43,7 +40,7 @@ export default function Blog(input: BlogProps) {
         description: SITE_DESCRIPTION,
       }}
     >
-      <StyledArticle className="page-content-wrapper space-y-4">
+      <article className="page-content-wrapper space-y-4">
         <h1 className="page-heading">Blog</h1>
         <p className="text-gray-900 dark:text-gray-400">
           I've published <b>{`${input.entries.length}`}</b> article
@@ -120,7 +117,7 @@ export default function Blog(input: BlogProps) {
           <NewsletterSubscribe />
         </div>
 
-      </StyledArticle>
+      </article>
     </Layout>
   );
 }

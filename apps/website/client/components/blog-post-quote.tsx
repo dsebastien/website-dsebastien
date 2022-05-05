@@ -1,10 +1,7 @@
 import React, { PropsWithChildren } from 'react';
-import tw from 'twin.macro';
 import {FaQuoteLeft} from "react-icons/fa";
 
-const StyledBlockquote = tw.blockquote``;
-
-type StyledDivProps = PropsWithChildren<{
+type BlogPostQuote = PropsWithChildren<{
   quote: string;
   by: string;
 }>;
@@ -13,9 +10,9 @@ type StyledDivProps = PropsWithChildren<{
  * Quote embedded in blog posts
  * @constructor
  */
-const BlogPostQuote = ({ quote, by }: StyledDivProps) => {
+const BlogPostQuote = ({ quote, by }: BlogPostQuote) => {
   return (
-    <StyledBlockquote
+    <blockquote
       className="relative p-4 rounded-md text-xl italic border-l-8 bg-gray-100 border-gray-500 quote"
     >
       <div className="stylistic-quote-mark" aria-hidden="true">
@@ -25,7 +22,7 @@ const BlogPostQuote = ({ quote, by }: StyledDivProps) => {
       <cite className="flex items-center text-gray-500">
         {by}
       </cite>
-    </StyledBlockquote>
+    </blockquote>
   );
 };
 

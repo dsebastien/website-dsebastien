@@ -1,3 +1,7 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
 ::selection {
   background-color: #3c74db; // blue-500
   color: #fefefe; // gray-100

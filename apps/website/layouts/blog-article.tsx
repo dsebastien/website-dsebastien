@@ -6,11 +6,8 @@ import { parseISO, format } from 'date-fns';
 
 import { FrontMatter } from '@/lib/front-matter.intf';
 import Layout from './layout';
-import tw from 'twin.macro';
 import {SITE_AUTHOR} from "../constants";
 import TextAd from "@/components/text-ad";
-
-const StyledArticle = tw.article``;
 
 interface EntryDetails {
   publishedAt: string;
@@ -71,7 +68,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
       <Script type="application/ld+json">
         {JSON.stringify(articleStructuredData)}
       </Script>
-      <StyledArticle className="article-content-wrapper">
+      <article className="article-content-wrapper">
         <TextAd keywords={frontMatter.keywords} />
         <h1 className="page-heading">{frontMatter.title}</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full mt-2 mb-8">
@@ -114,7 +111,7 @@ const BlogArticleLayout = ({ children, frontMatter }: BlogLayoutProps) => {
             {'Edit on GitHub'}
           </a>
         </div>
-      </StyledArticle>
+      </article>
     </Layout>
   );
 };

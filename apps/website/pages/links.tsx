@@ -3,11 +3,8 @@ import Layout from '@/layouts/layout';
 import {
   FaLink,
 } from 'react-icons/fa';
-import tw from 'twin.macro';
 import Image from 'next/image';
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
-
-const StyledArticle = tw.article``;
 
 const LinksPage = () => {
   return (
@@ -17,7 +14,7 @@ const LinksPage = () => {
         description: 'My links',
       }}
     >
-      <StyledArticle className="article-content-wrapper">
+      <article className="article-content-wrapper">
         <h1 className="page-heading">
           My Links <FaLink className="inline" />
         </h1>
@@ -81,7 +78,7 @@ const LinksPage = () => {
         <section>
           <NewsletterSubscribe />
         </section>
-      </StyledArticle>
+      </article>
     </Layout>
   );
 };

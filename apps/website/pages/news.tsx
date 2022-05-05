@@ -1,10 +1,7 @@
 import React from 'react';
 import Layout from '@/layouts/layout';
-import tw from 'twin.macro';
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
 import {SITE_DESCRIPTION} from "../constants";
-
-const StyledArticle = tw.article``;
 
 /**
  * News homepage
@@ -19,7 +16,7 @@ export default function News() {
         description: SITE_DESCRIPTION,
       }}
     >
-      <StyledArticle className="page-content-wrapper space-y-4">
+      <article className="page-content-wrapper space-y-4">
         <h1 className="page-heading">Newsletter</h1>
 
         <p>
@@ -36,7 +33,7 @@ export default function News() {
           The past editions of my newsletter are available <a href="https://newsletter.dsebastien.net">on Revue</a>
         </p>
 
-      </StyledArticle>
+      </article>
     </Layout>
   );
 }

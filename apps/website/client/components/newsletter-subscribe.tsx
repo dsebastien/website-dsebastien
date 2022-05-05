@@ -1,10 +1,7 @@
 import React, {useState, useRef, KeyboardEvent, FormEvent} from 'react';
-import tw from 'twin.macro';
 import {IoIosMailOpen} from "react-icons/io";
 import {AiOutlineLoading} from "react-icons/ai";
 import {NEWSLETTER_MUST_VALIDATE_EMAIL} from "../../constants";
-
-const StyledDiv = tw.div``;
 
 interface NewsletterFormState {
   state: 'ready' | 'loading' | 'error' | 'success';
@@ -119,7 +116,7 @@ const NewsletterSubscribe = () => {
   }
 
   return (
-    <StyledDiv
+    <div
       className="dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-800 hover:border-blue-400 dark:hover:border-blue-400 p-4 rounded-md transform hover:shadow-lg dark:hover:opacity-90 transition-all duration-150 ease-in"
     >
       <div className="flex flex-col items-center justify-center mb-4">
@@ -176,7 +173,7 @@ const NewsletterSubscribe = () => {
           </form>
         </>
       )}
-    </StyledDiv>
+    </div>
   );
 };
 

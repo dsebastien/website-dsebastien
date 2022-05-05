@@ -5,9 +5,6 @@ import MDXComponents from '@/components/mdx-components';
 import { WebsiteDataType } from '@/lib/website-data-types.intf';
 import {GetStaticProps} from 'next';
 import Layout from '@/layouts/layout';
-import tw from "twin.macro";
-
-const StyledArticle = tw.article``;
 
 export default function Uses({ mdxSource }: MDXPage) {
   const content = hydrate(mdxSource, {
@@ -21,7 +18,7 @@ export default function Uses({ mdxSource }: MDXPage) {
         description: 'Stuff I use',
       }}
     >
-      <StyledArticle className="article-content-wrapper">
+      <article className="article-content-wrapper">
         <h1 className="page-heading">
           What I use, like, enjoy, love, or can't live without
         </h1>
@@ -34,7 +31,7 @@ export default function Uses({ mdxSource }: MDXPage) {
           Links for hardware are affiliate links.
         </p>
         <div>{content}</div>
-      </StyledArticle>
+      </article>
     </Layout>
   );
 }

@@ -3,11 +3,8 @@ import Layout from '@/layouts/layout';
 import {
   FaBook,
 } from 'react-icons/fa';
-import tw from 'twin.macro';
 import Image from 'next/image';
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
-
-const StyledArticle = tw.article``;
 
 const BooksPage = () => {
   return (
@@ -17,7 +14,7 @@ const BooksPage = () => {
         description: 'My books',
       }}
     >
-      <StyledArticle className="article-content-wrapper">
+      <article className="article-content-wrapper">
         <h1 className="page-heading">
           My Books <FaBook className="inline" />
         </h1>
@@ -62,7 +59,7 @@ const BooksPage = () => {
         <section>
           <NewsletterSubscribe />
         </section>
-      </StyledArticle>
+      </article>
     </Layout>
   );
 };

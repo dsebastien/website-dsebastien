@@ -1,16 +1,13 @@
 import React, { PropsWithChildren } from 'react';
-import tw from 'twin.macro';
 
-const StyledDiv = tw.div``;
-
-type StyledDivProps = PropsWithChildren<{}>;
+type BlogPostCenteredContentProps = PropsWithChildren<{}>;
 
 /**
  * Centered content
  * @constructor
  */
-const BlogPostCenteredContent = ({ children }: StyledDivProps) => {
-  return <StyledDiv className="flex justify-around ">{children}</StyledDiv>;
+const BlogPostCenteredContent = ({ children }: BlogPostCenteredContentProps) => {
+  return <div className="flex justify-around ">{children}</div>;
 };
 
 export default BlogPostCenteredContent;

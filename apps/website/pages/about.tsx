@@ -17,11 +17,8 @@ import {
 } from 'react-icons/fa';
 import Link from 'next/link';
 import SocialLink from '@/components/social-link';
-import tw from 'twin.macro';
 import Image from 'next/image';
 import NewsletterSubscribe from "@/components/newsletter-subscribe";
-
-const StyledArticle = tw.article``;
 
 const AboutPage = () => {
   return (
@@ -31,7 +28,7 @@ const AboutPage = () => {
         description: 'A few things about who I am',
       }}
     >
-      <StyledArticle className="article-content-wrapper">
+      <article className="article-content-wrapper">
         <div className="page-heading">
           A little about me <FaCoffee className="inline" />
         </div>
@@ -257,7 +254,7 @@ const AboutPage = () => {
         <section>
           <NewsletterSubscribe />
         </section>
-      </StyledArticle>
+      </article>
     </Layout>
   );
 };
