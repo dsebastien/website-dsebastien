@@ -1,0 +1,197 @@
+---
+title: "Why and how to tag notes in your PKM"
+summary: "Tags are a great way to categorize, describe and track your notes. This post will show you how to approach tagging the notes in your PKM"
+publishedAt: '2022-05-17'
+image: '/static/images/blog/2022/2022-05-17-tag'
+slug: 'why-and-how-to-tag-notes-in-your-pkm'
+categories: [pkm]
+keywords: [how to tag notes in your PKM, tagging, pkm, personal knowledge management, personal organization, personal development]
+published: true
+---
+
+In this article, I'll discuss about tags and how to leverage those to categorize, describe and track the notes in your Personal Knowledge Management system.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Tags add breadcrumbs to your knowledge base. Picture courtesy of dlxmedia.hu: https://unsplash.com/@dlxmedia`}
+    src={`/static/images/blog/2022/2022-05-17-tag.png`}
+    width={1035}
+    height={690}
+    priority
+  />
+</BlogPostCenteredContent>
+
+This content is part of my [Obsidian Starter Kit](https://developassion.gumroad.com/l/obsidian-starter-kit)
+
+## Introduction
+Tags are metadata you can add to your notes to describe them. In most tools and on the Web (e.g., Twitter), tags are preceded by the “#” character. Here’s an example: **#pkm**.
+
+Tags are one of the best ways to make the notes in your PKM _useful_ and _findable_.
+
+Tags are much more powerful than folders because you can add as many as you want to a single note, whereas a note can only ever be in a single folder.
+
+In a knowledge base, being able to resurface relevant information where and when you need is critical. Consider tags as breadcrumbs. Leave enough to find your way!
+
+## Types of tags
+We can consider multiple usages for tags:
+
+- **Describing information**: What is this?
+- **Categorizing information**: Which topics does this relate to?
+- **Identifying the status**: Is this a draft? Is it published? Do I still need to do something?
+
+At the end of the day, those are just tags, but each type serves a different purpose, and it's useful to explore those separately.
+
+## How to tag notes in Obsidian
+In [Obsidian](https://obsidian.md/), there are two ways to add tags to notes:
+
+- Within the body of your notes
+- Using [YAML front matter](https://help.obsidian.md/Advanced+topics/YAML+front+matter)
+
+The simplest approach is to add tags within the body of your notes:
+
+```markdown
+# Test
+Hello, this is a note and this is a tag: #cool
+```
+
+Tags can be placed anywhere within your notes.
+
+The other option is adding YAML front matter to your notes:
+
+```markdown
+---
+location: Belgium
+languages: en, fr, nl
+website: <https://dsebastien.net>
+twitter: <https://twitter.com/dSebastien>
+tags:
+- people
+- contacts
+- entrepreneur
+- author
+- blogger
+---
+
+# Sébastien Dubois
+Author, entrepreneur, founder, Indie Hacker, CTO, freelancer, coach, father, human from Belgium.
+He writes about programming, personal knowledge management, learning, personal organization, and productivity.
+
+Publishes a weekly newsletter: ✉️ <https://newsletter.dsebastien.net> ❤️
+```
+
+In the example above, tags have been added within the YAML front matter at the top of the file. The `tags` property is automatically recognized by Obsidian.
+
+Finally, note that Obsidian has built-in support for [tag hierarchies](https://help.obsidian.md/Plugins/Tag+pane#Nested+tags). Here’s an example:
+
+```markdown
+#psychology/positive_psychology
+```
+
+See the “Recommendations” section below for some advice on when to use those.
+
+## Using tags to describe notes
+The first thing you can do using tags is to describe your notes. In my article about the [Zettelkasten method](https://dsebastien.net/blog/2022-05-01-zettelkasten-method), I’ve described a number of note types: fleeting notes, literature notes, and permanent notes. We can use tags to indicate the type of each note.
+
+Let’s look at an example:
+
+```markdown
+> It's an order of magnitude less work to create a lie than to refute one
+
+Those who lie have it easy. It takes a lot more effort to refute lies.
+
+Tags: #quotes #literature #lies #truth #communication
+```
+
+This simple note is a quote that I found interesting and decided to capture. As you can see, I’ve used the tag `#quotes` to indicate that it is one. I've also used the tag `#literature` to indicate that it is a literature note, part of my Zettelkasten.
+
+It’s not mandatory to use tags to describe information when it can be inferred from the _location_ of the note, but it remains useful. In this case, the note is actually placed in my “quotes” folder. Still, I like explicitly adding description tags to make it easier for me to find specific types of notes back without having to worry about _where_ those are located.
+
+Using such tags makes it easier to search. Here’s an example:
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Tags make it easier to slice and dice information in your knowledge base`}
+    src={`/static/images/blog/2022/2022-05-17-tag-search.png`}
+    width={293}
+    height={509}
+    priority
+  />
+</BlogPostCenteredContent>
+
+In this example, I’ve pulled all the quotes in my knowledge base that discuss the notion of truth.
+
+## Using tags to categorize notes
+The most obvious usage of tags is to **categorize your notes**. You can add one tag for each _topic_ you want to associate the note with.
+
+You can add as many tags to categorize notes as you want. Here’s an example:
+
+```markdown
+> Everything that irritates us about others can lead us to an understanding of ourselves
+
+[[Carl Jung]]
+
+The reason why people irritate us is our [[Shadow Side]]
+
+Tags: #quotes #personal_development #understanding #self #psychology
+```
+
+In this example, I’ve added four different tags:
+
+- personal_development
+- understanding
+- self
+- psychology
+
+Each of those tags represents a specific topic (or sub-topic) that the note relates to. Using multiple tags serves different purposes:
+
+- Helps resurface notes in different contexts
+- Helps uncover relationships between different notes
+- Enables more efficient searches
+
+Here's another example:
+
+```markdown
+# Focus on the process, not the outcome
+Focusing on the outcome can induce pessimism, negativity, angst, anxiety, etc. Focusing on the process helps you get where you want faster. You get to improve the process, fine-tune it, etc. Most importantly, you get to _enjoy_ the journey.
+
+Tags: #focus #goals #rewards #processes #agility
+```
+
+Don’t try to find “the perfect tag” for each note. It doesn’t exist. It’s the same issue as trying to fit every note in a rigid organization system. It does not work. Instead, add as many tags as needed. Each of those will act as a breadcrumb; a pathway to find that note again in the future.
+
+## Using tags to identify a status
+The last useful way to use tags is to add a status to your notes. Statuses could be tags like: `#todo` `#in_progress`, `#reviewed`, `#planned`, `#on_hold`, `#researching`, etc.
+
+Status tags are useful to qualify your notes and keep track of your progress. You can use such tags to codify your writing/publishing workflow. I personally rely a lot on those tags. They are useful because some notes take more time than others to reach a certain level of quality. With the help of those tags, I can easily know which notes have become mature enough to be published and which ones I need to iterate on. All I need to do is search for specific tags.
+
+## Recommendations for tagging
+First, I want to insist on the fact that you should definitely tag all your notes. At a minimum, add tags for the related topics. Limit yourself to 10 tags at most. Past a certain number, there are diminishing returns. Make it a habit to immediately tag notes as soon as you add them and to update those each time you revisit a note.
+
+Add tags to describe notes if you want to give yourself easy means to resurface your notes more easily using search.
+
+Consider using status tags to keep track of the state of your notes and identify the next actions for each.
+
+Consistency is key. Try to always reuse the same tags to refer to the same topics (e.g., choose one between `#programming` and `#software_development`). As your system scales, you'll start introducing different terms for the same purposes. That's to be expected past a certain point. Don’t become obsessed with this though. You *will* make mistakes, and that’s ok. Just make it a habit to fix the incorrect tags you stumble upon.
+
+Do experiment with different types of tags, and focus on those that actually add value to your own process. No need to spend hours and hours perfecting your tags if you never need those in practice.
+
+Regarding naming, I recommend this:
+
+- Use the plural form (e.g., `#challenges` instead of `#challenge`) as it will work for more scenarios
+- Use an underscore (”_”) to separate words
+- Introduce tag hierarchies if you start having name clashes
+- Only use lowercase characters to avoid issues with case-sensitive applications
+
+## Conclusion
+In this article, I've discussed the why and how of tagging. Tagging the notes in your PKM is very valuable and should be done with care. Tags are not perfect, but they shouldn't be ignored in favor of other techniques. Tagging is central to knowledge management.
+
+Don't fall into the trap of thinking that tagging is an either or proposition. Instead, combine tagging with links/backlinks, folders and [Maps of Content (MoCs)](https://dsebastien.net/blog/2022-05-15-maps-of-content). By combining these approaches your knowledge graph will be much more useful as there will be additional pathways between your notes, and more opportunities for you to resurface relevant notes when you need.
+
+That's it for today! ✨
+
+## References
+- Working with tags in Obsidian: https://help.obsidian.md/How+to/Working+with+tags
+- Obsidian YAML front matter support: https://help.obsidian.md/Advanced+topics/YAML+front+matter
+- Good tagging: https://zettelkasten.de/posts/object-tags-vs-topic-tags
+
+<PKMSignature />
