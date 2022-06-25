@@ -50,7 +50,7 @@ const AboutPage = () => {
             />
           </div>
           <p>
-            I wear many hats: father, husband, author, software crafter, CTO,
+            I wear many hats: father, author, software crafter, CTO,
             solution architect, mentor, coach, entrepreneur, indie hacker, bootstrapper, thinker, geek, gamer. I'm
             also the founder of{' '}
             <a href="https://developassion.be" rel="noopener">
