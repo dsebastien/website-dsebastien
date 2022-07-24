@@ -2,4 +2,4 @@ const { getJestProjects } = require('@nrwl/jest');
 
 ('use strict');
 
-module.exports = { projects: getJestProjects() };
+export default { projects: getJestProjects() };

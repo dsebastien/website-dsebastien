@@ -3,5 +3,6 @@
   "projects": {
     "website": "apps/website",
     "website-e2e": "apps/website-e2e"
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }

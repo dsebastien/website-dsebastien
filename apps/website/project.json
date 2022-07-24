@@ -1,4 +1,5 @@
 {
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/website",
   "projectType": "application",
   "targets": {
@@ -11,7 +12,9 @@
       },
       "configurations": {
         "production": {},
-        "development": {}
+        "development": {
+          "outputPath": "tmp/apps/website"
+        }
       },
       "defaultConfiguration": "production"
     },
