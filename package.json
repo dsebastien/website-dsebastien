@@ -119,7 +119,7 @@
     "eslint-plugin-jsx-a11y": "6.6.0",
     "eslint-plugin-react": "7.30.1",
     "eslint-plugin-react-hooks": "4.6.0",
-    "globby": "11.0.2",
+    "globby": "11.1.0",
     "image-size": "0.9.4",
     "jest": "27.5.1",
     "npm-check-updates": "11.8.5",
