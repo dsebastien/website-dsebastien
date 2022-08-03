@@ -64,7 +64,7 @@
     "mdx-embed": "0.0.22",
     "mdx-prism": "0.3.4",
     "next": "12.1.6",
-    "next-mdx-remote": "^4.1.0",
+    "next-mdx-remote": "^2.1.3",
     "next-themes": "0.0.12",
     "preact": "10.7.1",
     "react": "18.2.0",
