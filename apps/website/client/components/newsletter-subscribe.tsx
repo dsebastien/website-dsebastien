@@ -125,8 +125,7 @@ const NewsletterSubscribe = () => {
           <div className="text-xl text-gray-900 dark:text-gray-100 font-bold">
             {form.state === 'ready'? (
               <>
-                <div className="text-center"><span>Subscribe to my newsletter</span></div>
-                <div className="text-center"><span className="text-lg! font-normal!">Weekly newsletter discussing personal knowledge management, software development, building in public and productivity</span></div>
+                <div className="text-center"><span className="text-sm! font-normal!">Get Sébastien's free weekly newsletter. Read by hundreds of people to explore and stay up to date on learning, personal knowledge management, personal organization, software development, and bootstrapping</span></div>
               </>
               )
                 : form.state === 'loading'? (
