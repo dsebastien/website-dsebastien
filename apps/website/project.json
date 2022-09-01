@@ -13,7 +13,7 @@
       "configurations": {
         "production": {},
         "development": {
-          "outputPath": "tmp/apps/website"
+          "outputPath": "apps/website"
         }
       },
       "defaultConfiguration": "production"

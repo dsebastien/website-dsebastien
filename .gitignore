@@ -64,3 +64,6 @@ Thumbs.db
 /.next/
 apps/website/public/sitemap.xml
 apps/website/public/feed.xml
+
+# Next.js
+.next
