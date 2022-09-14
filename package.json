@@ -109,7 +109,7 @@
     "browserslist": "^4.21.3",
     "caniuse-lite": "1.0.30001197",
     "concurrently": "6.0.0",
-    "cypress": "6.3.0",
+    "cypress": "6.9.1",
     "dotenv": "10.0.0",
     "dotenv-cli": "4.0.0",
     "eslint": "7.18.0",
