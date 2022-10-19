@@ -1,0 +1,517 @@
+---
+title: 'The Must-Have Obsidian plugins'
+summary: 'An overview of the best Obsidian plugins. Make sure to read this and try these out!'
+publishedAt: '2022-10-19'
+image: '/static/images/logos/obsidian.svg'
+slug: 'the-must-have-obsidian-plugins'
+categories: [pkm, obsidian, plugins]
+keywords: [best obsidian plugins, best obsidian plugins 2022, obsidian best plugins]
+published: true
+---
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`The logo of Obsidian`}
+    src={`/static/images/logos/obsidian.svg`}
+    width={256}
+    height={256}
+    priority
+  />
+</BlogPostCenteredContent>
+
+In this article, I'll list my favorite plugins for [Obsidian](https://obsidian.md/). Most of those are part of my [Obsidian Starter Kit](https://developassion.gumroad.com/l/obsidian-starter-kit).
+
+## Introduction
+
+Obsidian has a really large community and a huge library of community plugins. Those plugins really add a lot of value to Obsidian and make for a much better user experience. Exploring those can be daunting as there are [hundreds](https://obsidian-plugin-stats.vercel.app/plugins) (600+ at the time of writing). Let me spare you some time and introduce you to the very best plugins out there!
+
+## Built-in plugins
+Obsidian comes out of the box with a set of "core" plugins that are disabled by default. You can enable/disable those through the options, under "Core plugins". Many of those are super useful.
+
+Here's a short overview:
+
+* Audio recorder: easily record audio from Obsidian and add the recording as attachment
+* Backlinks: show links from other notes to the current one
+* Command palette: hit "Cmd/Ctrl + P" to show the palette and quickly execute commands
+* Daily notes: create or open today's daily note. I don't recommend this plugin because the "Periodic Notes" plugin discussed later in this article is much more powerful
+* File explorer: see the files and folders in the vault
+* File recovery: recover files
+* Format converter: convert Markdown from other applications to Obsidian's own format
+* Graph view: View a graph that displays links between notes
+* Notes composer: manipulate notes (merge, split, refactor)
+* Outgoing links: show links from the current note to other ones. Also detects unlinked mentions
+* Outline: display the outline of the current note
+* Page preview: preview the content of links by pressing Ctrl/Cmd while hovering those
+* Publish: publish notes through Obsidian Publish
+* Quick switcher: Use "Ctrl/Cmd + O" to navigate between notes
+* Random note
+* Search
+* Slash commands: Allows triggering commands by typing "/" in the editor
+* Starred: star frequently used files and searches
+* Sync: synchronize files using Obsidian Sync
+* Tag pane: display your tags and their number of occurrences
+* Templates: insert templates. This one is great, but the "Templater" plugin discussed afterwards is much more powerful
+* Word count: display the word count
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`The core plugins of Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-core-plugins.png`}
+    width={1533}
+    height={477}
+    priority
+  />
+</BlogPostCenteredContent>
+
+## Calendar
+This plugin adds a useful calendar to the sidebar of Obsidian. It provides a simple way to navigate between your daily notes. I use it all the time instead of navigating through the file tree. At a glance, you can see the days for which you have taken daily notes. The second use case of this plugin is to easily create a future daily note. This is useful when you want to add a reminder for yourself.
+
+Link: https://github.com/liamcain/obsidian-calendar-plugin
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`The Calendar plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-calendar.png`}
+    width={419}
+    height={400}
+    priority
+  />
+</BlogPostCenteredContent>
+
+## Periodic notes
+Using the periodic notes plugin, you can easily create periodic notes (i.e., daily, weekly, monthly, quarterly and yearly notes).
+
+You can associate a specific template with each periodicity (e.g. a template for daily notes, another for weekly notes, etc). This plugin is also well integrated with the calendar plugin above. When you click on a date in the calendar, it creates the corresponding daily note.
+
+With this plugin, [journaling](https://dsebastien.net/blog/2021-10-07-periodic-journaling-part-1) is much easier to do on a regular basis, and so are weekly, monthly, quarterly and yearly [periodic reviews](https://dsebastien.net/blog/2022-05-16-periodic-reviews).
+
+Link: https://github.com/liamcain/obsidian-periodic-notes
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`The Periodic Notes plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-periodic-notes-02.png`}
+    width={148}
+    height={45}
+    priority
+  />
+</BlogPostCenteredContent>
+
+<br />
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`The Periodic Notes plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-periodic-notes-01.png`}
+    width={532}
+    height={224}
+    priority
+  />
+</BlogPostCenteredContent>
+
+## Rollover daily todos
+If your list of tasks for the day is part of your daily notes (which I recommend), then this plugin is a must-have. It will automatically copy the incomplete tasks to the list of the next day. This makes it a breeze to continue where you left things off.
+
+
+Link: https://github.com/shichongrui/obsidian-rollover-daily-todos
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`The Rollover Daily Todos plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-rollover-daily-todos.png`}
+    width={841}
+    height={282}
+    priority
+  />
+</BlogPostCenteredContent>
+
+## Dataview
+Dataview is the most powerful Obsidian plugin there is. Using it, you can add queries to your notes to fetch information from your knowledge base.
+
+To give you an idea of how powerful it is, take a look at these examples, taken directly from the [Obsidian Starter Kit](https://developassion.gumroad.com/l/obsidian-starter-kit):
+
+Find quotes corresponding to a specific author:
+
+```javascript
+LIST FROM #quotes and [[<% tp.file.title %>]]
+SORT file.name ASC
+```
+
+Find recently modified notes:
+
+```javascript
+$=dv.list(dv.pages('').sort(f=>f.file.mtime.ts,"desc").limit(5).file.link)
+```
+
+Find orphan notes:
+
+```javascript
+TABLE file.ctime AS "updated"
+FROM "" WHERE length(file.inlinks) = 0
+AND length(file.outlinks) = 0
+AND length(file.tags) = 0
+AND file.name != "Orphans"
+SORT file.mtime desc
+```
+
+Find duplicate notes:
+
+```javascript
+// Reference: https://github.com/claremacrae/obsidian-experiments-plugin/issues/1#issuecomment-1139556976
+function listFileNameIssues(dv) {
+    let pages = dv.pages();
+    let groups = pages.groupBy(p => p.file.name.toLowerCase());
+    for (let group of groups) {
+        let count = 0
+        for (let page of group.rows.sort(p => p.file.path, 'asc')) {
+            count += 1;
+        }
+
+        if (count === 1 ) {
+            continue;
+        }
+
+        for (let page of group.rows.sort(p => p.file.path, 'asc')) {
+            dv.paragraph(page.file.link + ': ' + page.file.path);
+        }
+    }
+}
+
+listFileNameIssues(dv);
+```
+
+Pick random notes:
+
+```javascript
+const limit = 10;
+const notes = dv.pages().sort(() => Math.random()).slice (0, limit).map(note => note.file.link);
+dv.list(notes);
+```
+
+Count the number of notes:
+
+```javascript
+$=dv.pages().length
+```
+
+And this is just the tip of the iceberg. Check out the [official documentation of the dataview plugin](https://blacksmithgu.github.io/obsidian-dataview/) for more details about its possibilities.
+
+Link: https://github.com/blacksmithgu/obsidian-dataview
+
+## Templater
+The templater plugin is a powerful templating engine for Obsidian. It provides many functions to help you create really cool templates.
+
+Here's an example, again taken from the [Obsidian Starter Kit](https://developassion.gumroad.com/l/obsidian-starter-kit) which uses the Templater plugin extensively:
+
+```markdown
+---
+tags:
+- weekly_notes
+---
+
+# <% tp.file.title %>
+<< [[<% tp.date.now("YYYY-[W]WW", "P-1W") %>]] | [[<% tp.date.now("YYYY-[W]WW", "P+1W") %>]] >>
+Current month: [[<% tp.date.now("YYYY-MM") %>]] | Next month: [[<% tp.date.now("YYYY-MM", "P+1M") %>]]
+Year note: [[<% tp.date.now("YYYY") %>]]
+
+## Goals
+-
+
+## Achievements
+-
+
+## Discoveries
+### [[<% tp.date.now("YYYY-MM-DD") %>]]
+-
+
+### [[<% tp.date.now("YYYY-MM-DD", 1) %>]]
+-
+
+### [[<% tp.date.now("YYYY-MM-DD", 2) %>]]
+-
+
+### [[<% tp.date.now("YYYY-MM-DD", 3) %>]]
+-
+
+### [[<% tp.date.now("YYYY-MM-DD", 4) %>]]
+-
+
+### [[<% tp.date.now("YYYY-MM-DD", 5) %>]]
+-
+
+### [[<% tp.date.now("YYYY-MM-DD", 6) %>]]
+-
+
+## Challenges
+-
+
+## Gratitude
+-
+```
+
+Once you have created a template, you can easily add it to any note using the `ALT/Cmd + E` shortcut.
+
+Take a look at the [Templater plugin reference documentation](https://silentvoid13.github.io/Templater/) to learn more about its capabilities.
+
+Link: https://github.com/SilentVoid13/Templater
+
+## Auto Note Mover
+The Auto Note Mover is one of my favorite Obsidian plugin. It provides a way to automatically move notes around within your knowledge base. This is great as it removes the need to manually file notes.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Auto Note Mover plugin rules for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-auto-note-mover-rules.png`}
+    width={800}
+    height={348}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/farux/obsidian-auto-note-mover
+
+## Homepage
+The homepage plugin does exactly what it says: it lets you create a homepage for your knowledge base. I personally rely on this plugin to create my productivity dashboard. The homepage is just a note like any other, meaning that you can add whatever you want to it: text, titles, images, tasks, dataview queries, etc.
+
+Link: https://github.com/mirnovov/obsidian-homepage
+
+## Kanban
+This plugin makes it possible to create [Kanban boards](https://en.wikipedia.org/wiki/Kanban_board) in Obsidian. Thanks to this plugin, you could manage your entire todo list within Obsidian instead of using other tools such as Trello.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Kanban plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-kanban.png`}
+    width={3084}
+    height={1954}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/mgmeyers/obsidian-kanban
+
+## Paste image renamer
+The Paste image renamer allows you to rename images and attachments when you add those to your Obsidian vault. This is a must-have.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Paste image renamer plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-paste-image-renamer.png`}
+    width={1663}
+    height={596}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/reorx/obsidian-paste-image-rename
+
+## Linter
+This Obsidian plugin formats and styles notes automatically, based on the rules you configure. This helps a lot to maintain a consistent knowledge base.
+
+Link: https://github.com/platers/obsidian-linter
+
+## Tag Wrangler
+The Tag Wrangler plugin helps you rename, merge, toggle, and search tags from the Obsidian tag pane.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Tag wrangler plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-tag-wrangler.png`}
+    width={407}
+    height={421}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/pjeby/tag-wrangler
+
+## Text transporter
+The Text Transporter plugin is a Swiss Army Knife of text manipulation for Obsidian. Clearly a must-have to apply transformations to your notes.
+
+Link: https://github.com/TfTHacker/obsidian42-text-transporter
+
+## Notes refactor
+This plugin lets you copy/extract text selections from a note into other ones. It completements the features offered by the text transporter plugin.
+
+Link: https://github.com/lynchjames/note-refactor-obsidian
+
+## Various complements
+This plugin boosts productivity by automatically completing what you type, proposing to add links when some text matches the title of a note, etc.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Various complements plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-various-complements.gif`}
+    width={824}
+    height={422}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/tadashi-aikawa/obsidian-various-complements-plugin
+
+## Tasks
+The Obsidian Tasks plugin helps you track tasks across your Obsidian vault. It supports due dates, recurring tasks, querying, filtering, etc. This plugin, combined with the Kanban plugin is a killer combo.
+
+Check out the [official plugin documentation](https://obsidian-tasks-group.github.io/obsidian-tasks/) for more details.
+
+Link: https://github.com/obsidian-tasks-group/obsidian-tasks
+
+## Extract URL
+This plugin makes it really easy to capture external content into Obsidian. It extracts Markdown compatible with Obsidian out of URLs. Thanks to this plugin, you can paste the URL of a Website in an Obsidian note, invoke a command and have the URL be replaced by the content converted into Markdown.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Extract URL plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-extract-url.gif`}
+    width={1280}
+    height={810}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/trashhalo/obsidian-extract-url
+
+## Find unlinked files
+This plugin enables you to quickly identify orphaned notes (i.e., notes with no backlinks) and notes with broken links.
+
+Link: https://github.com/Vinzent03/find-unlinked-files
+
+## Natural language dates
+This plugin allows you to use natural language dates more easily.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Natural language dates plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-nl-dates.gif`}
+    width={1280}
+    height={720}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/argenos/nldates-obsidian
+
+## Excalidraw
+This plugin integrates [Excalidraw](https://excalidraw.com/). This provides a great way to create mind maps and other schemas.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Excalidraw plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-excalidraw.png`}
+    width={1920}
+    height={1080}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/zsviczian/obsidian-excalidraw-plugin
+
+## Mind Map
+An Obsidian plugin for displaying markdown notes as mind maps using [Markmap](https://markmap.js.org/).
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Mind map plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-mind-map.png`}
+    width={1916}
+    height={2347}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/lynchjames/obsidian-mind-map
+
+## Outliner
+Allows you to work with your lists exactly like in Workflowy, RoamResearch or LogSeq
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Outliner plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-outliner.gif`}
+    width={1660}
+    height={952}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/vslinko/obsidian-outliner
+
+## Image in editor
+Enables you to view Images, Transclusions, iFrames and PDF Files within the Editor without a necessity to switch to the Preview mode.
+
+Link: https://github.com/ozntel/oz-image-in-editor-obsidian
+
+## Recent files
+Display a list of most recently opened files.
+
+Link: https://github.com/tgrosinger/recent-files-obsidian
+
+## Table editor
+An editor for Markdown tables. It can open CSV data and data from Microsoft Excel, Google Sheets, Apple Numbers and LibreOffice Calc as Markdown tables from Obsidian Markdown editor.
+
+Link: https://github.com/ganesshkumar/obsidian-table-editor
+
+## Smart random note
+This plugin adds a way to open a random note based on the list of search results. This is a great addition to explore your knowledge base randomly (always useful to re-discover old/forgotten notes)
+
+Link: https://github.com/erichalldev/obsidian-smart-random-note
+
+## Zoom
+This plugin lets you "zoom" into headings and lists. This makes it much easier to focus on specific parts of long notes.
+
+<BlogPostCenteredContent>
+  <Image
+    alt={`Zoom plugin for Obsidian`}
+    src={`/static/images/blog/2022/2022-10-12-obsidian-plugin-zoom.gif`}
+    width={1718}
+    height={1036}
+    priority
+  />
+</BlogPostCenteredContent>
+
+Link: https://github.com/vslinko/obsidian-zoom
+
+## Doubleshift
+Obsidian Plugin to open the command palette by pressing shift twice. Software developers will love this one!
+
+Link: https://github.com/Qwyntex/doubleshift
+
+## Vault statistics
+Status bar item with vault statistics such as number of notes, files, attachments, and links.
+
+Link: https://github.com/bkyle/obsidian-vault-statistics-plugin
+
+## Tomorrow's daily note
+Easily open tomorrow's daily note
+
+Link: https://github.com/frankolson/obsidian-tomorrows-daily-note
+
+## Obsidian Git
+Backup your Obsidian.md vault with git. A bit technical but really valuable!
+
+Link: https://github.com/denolehov/obsidian-git
+
+## And more...
+There are many other really interesting plugins for Obsidian. Here are some you might want to check out as well:
+
+* Admonition: https://github.com/valentine195/obsidian-admonition
+* Banners: https://github.com/noatpad/obsidian-banners
+* Day Planner: https://github.com/lynchjames/obsidian-day-planner
+* Emotion picker: https://github.com/dartungar/obsidian-emotion-picker
+* Icon shortcodes: https://github.com/aidenlx/obsidian-icon-shortcodes
+* Kindle: https://github.com/hadynz/obsidian-kindle-plugin
+* Simple embeds: https://github.com/samwarnick/obsidian-simple-embeds
+* Review: https://github.com/ryanjamurphy/review-obsidian
+* Syntax highlight: https://github.com/deathau/cm-editor-syntax-highlight-obsidian
+* Page count: https://github.com/ReaderGuy42/Obsidian-Page-Count
+* Reading time: https://github.com/avr/obsidian-reading-time
+* Better word count: https://github.com/lukeleppan/better-word-count
+* Dialogue: https://github.com/holubj/obsidian-dialogue-plugin
+
+## Conclusion
+In this article, I've listed the best Obsidian plugins I know of, and then some. The Obsidian developer community is large and very productive. The plugin ecosystem of Obsidian adds a ton of value and really deserves your time and attention. Check those plugins out and tell me which ones you love most. I'm also curious about which plugins you think I should add to this list!
+
+That's it for today! ✨
+
+<PKMSignature />
