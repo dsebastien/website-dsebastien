@@ -121,6 +121,9 @@ const AboutPage = () => {
             If you're curious, I wrote a page about the{' '}
             <Link href="/uses">stuff I use</Link>.
           </p>
+          <p>
+            Useful links: <Link href={"https://linktr.ee/dsebastien"}>LinkTree</Link>
+          </p>
           <div>
             You can find me on:
             <ul>
