@@ -138,7 +138,7 @@ const AboutPage = () => {
               </li>
               <li>
                 <SocialLink
-                  url="https://www.youtube.com/c/SébastienDuboisBE"
+                  url="https://www.youtube.com/@dsebastien"
                   name="Youtube"
                   icon={
                     <FaYoutube className="inline hover:text-red hover:bg-white" />
