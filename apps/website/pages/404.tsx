@@ -15,8 +15,8 @@ const NotFound = () => {
           You seem to be lost. Hold my hand (yes, it's safe here), and let me
           show you the way.
         </p>
-        <Link href="/">
-          <a className="site-button">Go back home</a>
+        <Link href="/" className="site-button">
+          Go back home
         </Link>
       </div>
     </Layout>
