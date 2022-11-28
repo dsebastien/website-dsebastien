@@ -16,8 +16,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(400).json({ error: 'Email is required' });
   }
 
-  // TODO validate email
-
   console.log("New newsletter subscriber to add: ", email);
 
   try {
@@ -26,6 +24,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       throw new Error("The following environment variable is mandatory: [REVUE_API_KEY]");
     }
 
+    // FIXME post to Ghost instead
     const response = await fetch(
       `https://www.getrevue.co/api/v2/subscribers`,
 
