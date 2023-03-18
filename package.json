@@ -80,10 +80,10 @@
     "tslib": "2.1.0"
   },
   "devDependencies": {
-    "@babel/core": "7.13.8",
-    "@babel/preset-env": "7.13.9",
-    "@babel/preset-react": "7.12.13",
-    "@babel/preset-typescript": "7.13.0",
+    "@babel/core": "7.21.3",
+    "@babel/preset-env": "7.20.2",
+    "@babel/preset-react": "7.18.6",
+    "@babel/preset-typescript": "7.21.0",
     "@nrwl/cli": "15.0.13",
     "@nrwl/cypress": "15.0.13",
     "@nrwl/eslint-plugin-nx": "15.0.13",
